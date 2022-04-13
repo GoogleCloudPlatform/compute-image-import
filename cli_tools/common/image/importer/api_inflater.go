@@ -24,10 +24,10 @@ import (
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/googleapi"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/daisyutils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
 )
 
 func isCausedByUnsupportedFormat(err error) bool {
@@ -244,7 +244,7 @@ func (inflater *apiInflater) getCalculateChecksumWorkflow(diskURI string, daisyP
 				{
 					Disk: compute.Disk{
 						Name:        "disk-${NAME}",
-						SourceImage: "projects/compute-image-tools/global/images/family/debian-9-worker",
+						SourceImage: "projects/compute-image-import/global/images/family/debian-9-worker",
 						Type:        "pd-ssd",
 					},
 				},

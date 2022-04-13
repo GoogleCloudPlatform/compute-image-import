@@ -26,12 +26,12 @@ import (
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
 	"google.golang.org/api/googleapi"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/paramhelper"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools_tests/e2e"
-	"github.com/GoogleCloudPlatform/compute-image-tools/common/gcp"
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/junitxml"
-	testconfig "github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/test_config"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/paramhelper"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e"
+	"github.com/GoogleCloudPlatform/compute-image-import/common/gcp"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
+	testconfig "github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
 )
 
 const (

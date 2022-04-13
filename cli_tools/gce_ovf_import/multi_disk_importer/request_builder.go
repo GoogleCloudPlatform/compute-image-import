@@ -18,10 +18,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/image/importer"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
-	daisyovfutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/daisy_utils"
-	ovfdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
+	daisyovfutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/daisy_utils"
+	ovfdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/domain"
 )
 
 type requestBuilder struct {

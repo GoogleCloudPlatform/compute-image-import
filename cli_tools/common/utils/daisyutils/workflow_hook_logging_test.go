@@ -24,7 +24,7 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/common/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/common/logging"
 )
 
 func Test_ConfigureDaisyLogging_LeavesLoggingEnabled_ByDefault(t *testing.T) {

@@ -23,8 +23,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/vmware/govmomi/ovf"
 
-	ovfdomainmocks "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/domain/mocks"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
+	ovfdomainmocks "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/domain/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
 var (

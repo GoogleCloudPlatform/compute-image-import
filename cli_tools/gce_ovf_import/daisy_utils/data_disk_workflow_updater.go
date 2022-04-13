@@ -20,8 +20,8 @@ import (
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	ovfutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/ovf_utils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	ovfutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/ovf_utils"
 )
 
 const (
@@ -79,7 +79,7 @@ func AddDiskImportSteps(w *daisy.Workflow, dataDiskInfos []ovfutils.DiskInfo) {
 			{
 				Disk: compute.Disk{
 					Name:        diskImporterDiskName,
-					SourceImage: "projects/compute-image-tools/global/images/family/debian-9-worker",
+					SourceImage: "projects/compute-image-import/global/images/family/debian-9-worker",
 					Type:        "pd-ssd",
 				},
 				SizeGb: gceMinimumDiskSizeGB,

@@ -21,7 +21,7 @@ import (
 
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/junitxml"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
 )
 
 // GuestOSFeatures asserts expected & unexpected guestOSFeatures.

@@ -25,8 +25,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/compute/v1"
 
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_export/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
 func TestDiskExporter_HappyPath(t *testing.T) {
@@ -76,7 +76,7 @@ func TestDiskExporter_HappyPath(t *testing.T) {
 	}
 	mockComputeClient.EXPECT().GetProject(project).Return(&compute.Project{Name: project}, nil).AnyTimes()
 	mockComputeClient.EXPECT().ListZones(project).Return([]*compute.Zone{{Id: 0, Name: params.Zone}}, nil).AnyTimes()
-	mockComputeClient.EXPECT().GetImageFromFamily("compute-image-tools", "debian-9-worker").Return(&compute.Image{Name: "debian-9-worker"}, nil).AnyTimes()
+	mockComputeClient.EXPECT().GetImageFromFamily("compute-image-import", "debian-9-worker").Return(&compute.Image{Name: "debian-9-worker"}, nil).AnyTimes()
 	mockComputeClient.EXPECT().ListDisks(project, params.Zone).Return(disks, nil).AnyTimes()
 	mockComputeClient.EXPECT().ListMachineTypes(project, params.Zone).Return([]*compute.MachineType{}, nil).AnyTimes()
 	mockComputeClient.EXPECT().GetMachineType(project, params.Zone, gomock.Any()).Return(&compute.MachineType{Name: "n1-highcpu-4"}, nil).AnyTimes()

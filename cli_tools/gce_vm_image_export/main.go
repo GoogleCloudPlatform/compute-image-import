@@ -19,9 +19,9 @@ import (
 	"flag"
 	"os"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging/service"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_vm_image_export/exporter"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging/service"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_vm_image_export/exporter"
 )
 
 const logPrefix = "[image-export]"

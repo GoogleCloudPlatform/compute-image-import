@@ -19,8 +19,8 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_vm_image_import/cli"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_vm_image_import/cli"
 )
 
 // logPrefix is a string that conforms to gcloud's output filter.

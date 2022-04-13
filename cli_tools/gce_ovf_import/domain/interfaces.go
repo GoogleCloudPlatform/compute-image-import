@@ -19,9 +19,9 @@ import (
 
 	"github.com/vmware/govmomi/ovf"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/image/importer"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 )
 
 // To rebuild mocks, run `go generate ./...`

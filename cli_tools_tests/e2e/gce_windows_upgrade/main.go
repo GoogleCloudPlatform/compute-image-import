@@ -21,11 +21,11 @@ import (
 	"regexp"
 	"sync"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/junitxml"
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/test_config"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools_tests/e2e/gce_windows_upgrade/test_suites/windows_upgrade"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e/gce_windows_upgrade/test_suites/windows_upgrade"
 )
 
 func main() {

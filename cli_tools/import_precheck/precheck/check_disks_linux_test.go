@@ -20,7 +20,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/mount"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/mount"
 
 	"github.com/stretchr/testify/assert"
 )

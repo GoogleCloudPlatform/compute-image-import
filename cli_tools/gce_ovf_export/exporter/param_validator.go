@@ -20,11 +20,11 @@ import (
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	computeutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/compute"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/validation"
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_export/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	computeutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/validation"
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
 )
 
 type ovfExportParamValidatorImpl struct {

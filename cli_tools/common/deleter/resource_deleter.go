@@ -18,8 +18,8 @@ import (
 	"fmt"
 
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 )
 
 // NewResourceDeleter creates a Recource Deleter object.

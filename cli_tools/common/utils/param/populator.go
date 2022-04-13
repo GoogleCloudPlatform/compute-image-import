@@ -15,7 +15,7 @@
 package param
 
 import (
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 )
 
 // Populator standardizes user input, and determines omitted values.

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/files"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/files"
 )
 
 // NotEmpty asserts that obj is non-null and does not have a zero value.

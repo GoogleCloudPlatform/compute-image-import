@@ -21,8 +21,8 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/param"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/validation"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/validation"
 )
 
 // awsImportArguments holds the structured results of parsing CLI arguments,

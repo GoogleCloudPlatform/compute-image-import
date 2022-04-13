@@ -23,10 +23,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_vm_image_import/cli"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pbtesting"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_vm_image_import/cli"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pbtesting"
 )
 
 func Test_IncludeInflationWorkerLogs_WhenInflationFails(t *testing.T) {

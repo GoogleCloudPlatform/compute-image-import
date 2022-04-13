@@ -19,9 +19,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/flags"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/test"
-	ovfimporter "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/ovf_importer"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/flags"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/test"
+	ovfimporter "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/ovf_importer"
 )
 
 func TestBuildParams(t *testing.T) {

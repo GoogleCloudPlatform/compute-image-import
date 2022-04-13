@@ -20,8 +20,8 @@ import (
 
 	"github.com/GoogleCloudPlatform/osconfig/osinfo"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/distro"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/daisyutils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/distro"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 )
 
 const (

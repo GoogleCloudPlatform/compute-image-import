@@ -14,7 +14,7 @@
 
 package service
 
-import "github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+import "github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 
 type literalLoggable struct {
 	strings           map[string]string

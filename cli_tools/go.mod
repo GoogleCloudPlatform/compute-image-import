@@ -1,16 +1,14 @@
-module github.com/GoogleCloudPlatform/compute-image-tools/cli_tools
+module github.com/GoogleCloudPlatform/compute-image-import/cli_tools
 
 go 1.13
 
 require (
 	cloud.google.com/go/compute v1.2.0
-	cloud.google.com/go/logging v1.4.0
 	cloud.google.com/go/storage v1.14.0
 	cos.googlesource.com/cos/tools.git v0.0.0-20210104210903-4b3bc7d49b79 // indirect
 	github.com/GoogleCloudPlatform/compute-daisy v0.0.0-20220223233810-60345cd7065c
-	github.com/GoogleCloudPlatform/compute-image-tools/common v0.0.0-20220201175241-7409375050b9
-	github.com/GoogleCloudPlatform/compute-image-tools/mocks v0.0.0-20200416045929-22b14b6b7c19
-	github.com/GoogleCloudPlatform/compute-image-tools/proto/go v0.0.0-20220126184140-b288db61775e
+	github.com/GoogleCloudPlatform/compute-image-import/common v0.0.0-00010101000000-000000000000
+	github.com/GoogleCloudPlatform/compute-image-import/proto/go v0.0.0-00010101000000-000000000000
 	github.com/GoogleCloudPlatform/osconfig v0.0.0-20210202205636-8f5a30e8969f
 	github.com/aws/aws-sdk-go v1.37.5
 	github.com/cenkalti/backoff/v4 v4.1.0
@@ -34,10 +32,9 @@ require (
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27
 	google.golang.org/api v0.67.0
-	google.golang.org/genproto v0.0.0-20220207164111-0872dc986b00
 	google.golang.org/protobuf v1.27.1
 )
 
-replace github.com/GoogleCloudPlatform/compute-image-tools/proto/go => ../proto/go
+replace github.com/GoogleCloudPlatform/compute-image-import/proto/go => ../proto/go
 
-replace github.com/GoogleCloudPlatform/compute-image-tools/common => ../common
+replace github.com/GoogleCloudPlatform/compute-image-import/common => ../common

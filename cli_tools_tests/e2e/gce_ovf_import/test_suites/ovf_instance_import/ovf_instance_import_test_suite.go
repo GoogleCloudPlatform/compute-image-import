@@ -26,14 +26,14 @@ import (
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/paramhelper"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
-	daisyovfutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/daisy_utils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools_tests/e2e"
-	ovfimporttestsuite "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools_tests/e2e/gce_ovf_import/test_suites"
-	"github.com/GoogleCloudPlatform/compute-image-tools/common/gcp"
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/junitxml"
-	testconfig "github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/test_config"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/paramhelper"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
+	daisyovfutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/daisy_utils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e"
+	ovfimporttestsuite "github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e/gce_ovf_import/test_suites"
+	"github.com/GoogleCloudPlatform/compute-image-import/common/gcp"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
+	testconfig "github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
 )
 
 const (

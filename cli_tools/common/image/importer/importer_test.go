@@ -30,8 +30,8 @@ import (
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/googleapi"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 func TestRun_HappyCase_CollectDiskMetrics(t *testing.T) {

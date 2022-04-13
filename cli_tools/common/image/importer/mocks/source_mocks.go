@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 
-	importer "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/image/importer"
+	importer "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
 )
 
 // MockSource is a mock of Source interface

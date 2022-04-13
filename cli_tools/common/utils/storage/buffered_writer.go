@@ -28,8 +28,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	pathutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	pathutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
 	"google.golang.org/api/googleapi"
 )
 
