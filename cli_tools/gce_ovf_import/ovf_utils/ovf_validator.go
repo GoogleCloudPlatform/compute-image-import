@@ -19,7 +19,7 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 )
 
 // OvfValidator is responsible for validating OVF packages

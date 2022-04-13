@@ -20,8 +20,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging/service"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_onestep_image_import/onestep_importer"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging/service"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_onestep_image_import/onestep_importer"
 )
 
 func main() {

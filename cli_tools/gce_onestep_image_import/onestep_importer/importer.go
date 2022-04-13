@@ -23,10 +23,10 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/daisyutils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/flags"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging/service"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/validation"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/flags"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging/service"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/validation"
 )
 
 // OneStepImportArguments holds the structured results of parsing CLI arguments,

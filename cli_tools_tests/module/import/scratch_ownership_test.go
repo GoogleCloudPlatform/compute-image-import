@@ -34,8 +34,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/googleapi"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_vm_image_import/cli"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_vm_image_import/cli"
 )
 
 const (
@@ -287,7 +287,7 @@ func (path gcsPath) toURI() string {
 // setupPrivateBucket makes a bucket within the current project.
 // Naming is deterministic, and it's fine to re-use between tests.
 func setupPrivateBucket(project string) string {
-	bucketName := "compute-image-tools-e2e-" + project
+	bucketName := "compute-image-import-e2e-" + project
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
 	if err != nil {

@@ -27,8 +27,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools_tests/e2e"
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/junitxml"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
 )
 
 const (

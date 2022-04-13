@@ -24,11 +24,11 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools_tests/e2e"
-	"github.com/GoogleCloudPlatform/compute-image-tools/common/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/junitxml"
-	testconfig "github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/test_config"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e"
+	"github.com/GoogleCloudPlatform/compute-image-import/common/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
+	testconfig "github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
 )
 
 const (

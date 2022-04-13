@@ -26,7 +26,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 var (
@@ -202,7 +202,7 @@ func TestRunWithServerLogging_LogsFailure_WhenApplicationPanics(t *testing.T) {
 		func() (Loggable, error) {
 			panic(panicMessage)
 		}, nil)
-	assert.EqualError(t, err, "A fatal error has occurred. Please submit an issue at https://github.com/GoogleCloudPlatform/compute-image-tools/issues")
+	assert.EqualError(t, err, "A fatal error has occurred. Please submit an issue at https://github.com/GoogleCloudPlatform/compute-image-import/issues")
 	assert.Equal(t, statusFailure, logExtension.Status)
 
 	// Include stacktrace and panic message in serial outputs.

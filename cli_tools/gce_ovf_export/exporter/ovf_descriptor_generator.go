@@ -23,12 +23,12 @@ import (
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	storageutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_export/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_export/exporter/ovf"
-	ovfutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/ovf_utils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	storageutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/exporter/ovf"
+	ovfutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/ovf_utils"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 //TODO: merge with OVF import ovf_utils.go

@@ -22,10 +22,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/disk"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/validation"
-	ovfutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/ovf_utils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/disk"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/validation"
+	ovfutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/ovf_utils"
 )
 
 func TestAddDiskImportSteps(t *testing.T) {

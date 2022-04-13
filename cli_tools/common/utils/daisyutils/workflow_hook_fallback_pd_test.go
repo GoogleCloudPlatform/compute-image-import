@@ -22,7 +22,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 )
 
 var errQuota = errors.New("insufficient quota: SSD_TOTAL_GB")

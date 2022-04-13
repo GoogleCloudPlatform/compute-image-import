@@ -20,9 +20,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pbtesting"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pbtesting"
 )
 
 func Test_OutputInfoLoggable_GetInspectionResults(t *testing.T) {

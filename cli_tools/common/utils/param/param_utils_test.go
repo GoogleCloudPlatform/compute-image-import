@@ -23,8 +23,8 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/paramhelper"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/paramhelper"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
 func TestGetRegion(t *testing.T) {

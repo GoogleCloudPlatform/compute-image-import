@@ -19,7 +19,7 @@ import (
 	"io"
 
 	"cloud.google.com/go/storage"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 )
 
 // storageObjectCreator is responsible for creating GCS Object.

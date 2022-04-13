@@ -23,7 +23,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
 var (

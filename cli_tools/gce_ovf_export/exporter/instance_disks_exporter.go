@@ -24,12 +24,12 @@ import (
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/daisyutils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	storageutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
-	stringutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/string"
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_export/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	storageutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
+	stringutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/string"
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
 )
 
 type instanceDisksExporterImpl struct {
@@ -143,7 +143,7 @@ func (ide *instanceDisksExporterImpl) addExportDisksSteps(w *daisy.Workflow, ins
 			"source_disk":                diskPath,
 			"destination":                exportedDiskGCSPath,
 			"format":                     params.DiskExportFormat,
-			"export_instance_disk_image": "projects/compute-image-tools/global/images/family/debian-9-worker",
+			"export_instance_disk_image": "projects/compute-image-import/global/images/family/debian-9-worker",
 			"export_instance_disk_size":  "200",
 			"export_instance_disk_type":  "pd-ssd",
 			"export_network":             params.Network,

@@ -24,14 +24,14 @@ import (
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/option"
 
-	commondisk "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/disk"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	computeutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/compute"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging/service"
-	storageutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_export/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	commondisk "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/disk"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	computeutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging/service"
+	storageutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 const (

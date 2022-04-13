@@ -1,4 +1,4 @@
-module github.com/GoogleCloudPlatform/compute-image-tools/common
+module github.com/GoogleCloudPlatform/compute-image-import/common
 
 go 1.13
 

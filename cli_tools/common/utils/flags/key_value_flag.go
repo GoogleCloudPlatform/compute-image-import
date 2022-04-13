@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/param"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 )
 
 // KeyValueString is an implementation of flag.Value that creates a map

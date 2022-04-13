@@ -25,9 +25,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/compute/v1"
 
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_export/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 func TestOvfDescriptorGenerator_GenerateAndWriteOVFDescriptor(t *testing.T) {

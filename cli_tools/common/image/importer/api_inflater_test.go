@@ -23,9 +23,9 @@ import (
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/googleapi"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
 const daisyWorkflows = "../../../../daisy_workflows"

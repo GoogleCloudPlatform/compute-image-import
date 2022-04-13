@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/distro"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/distro"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 )
 
 func Test_customizeErrorToDetectionResults(t *testing.T) {

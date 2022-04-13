@@ -20,7 +20,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/import_precheck/precheck"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/import_precheck/precheck"
 
 	"github.com/GoogleCloudPlatform/osconfig/osinfo"
 	"github.com/google/logger"

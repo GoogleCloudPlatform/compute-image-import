@@ -22,12 +22,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/disk"
-	mock_disk "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/disk/mocks"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/distro"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/mocks"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/disk"
+	mock_disk "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/disk/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/distro"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 func Test_DefaultPlanner_Plan_SkipInspectionWhenCustomWorkflowExists(t *testing.T) {

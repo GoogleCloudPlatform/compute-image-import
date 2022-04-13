@@ -28,8 +28,8 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/flags"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/flags"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
 )
 
 // runCmd executes the named program with given arguments.

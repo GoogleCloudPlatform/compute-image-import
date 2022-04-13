@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 
-	pb "github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	pb "github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 // MockInspector is a mock of Inspector interface

@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/imagefile"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/imagefile"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -15,8 +15,8 @@ package importer
 import (
 	"fmt"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/distro"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/distro"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 )
 
 // customizeErrorToDetectionResults returns a custom error message when the detected OS doesn't match the detected OS.

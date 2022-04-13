@@ -21,10 +21,10 @@ import (
 	"regexp"
 	"sync"
 
-	instanceovfexporttestsuite "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools_tests/e2e/gce_ovf_export/test_suites/instance_ovf_export"
-	e2etestutils "github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/junitxml"
-	testconfig "github.com/GoogleCloudPlatform/compute-image-tools/go/e2e_test_utils/test_config"
+	instanceovfexporttestsuite "github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e/gce_ovf_export/test_suites/instance_ovf_export"
+	e2etestutils "github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils"
+	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
+	testconfig "github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
 )
 
 func main() {

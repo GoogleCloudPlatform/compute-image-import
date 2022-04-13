@@ -8,10 +8,10 @@ import (
 	context "context"
 	reflect "reflect"
 
-	domain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	importer "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/image/importer"
-	logging "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	domain0 "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/domain"
+	domain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	importer "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
+	logging "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	domain0 "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/domain"
 	gomock "github.com/golang/mock/gomock"
 	ovf "github.com/vmware/govmomi/ovf"
 )

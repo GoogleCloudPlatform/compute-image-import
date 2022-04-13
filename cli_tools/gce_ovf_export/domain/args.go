@@ -24,9 +24,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/assert"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/daisyutils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/flags"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/assert"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/flags"
 )
 
 const (

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/shell"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/shell"
 )
 
 // To rebuild mocks, run `go generate ./...`

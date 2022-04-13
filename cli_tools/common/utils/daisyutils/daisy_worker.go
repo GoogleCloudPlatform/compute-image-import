@@ -21,8 +21,8 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/assert"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/assert"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 )
 
 // To rebuild the mock for DaisyWorker, run `go generate ./...`

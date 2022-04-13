@@ -33,8 +33,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/minio/highwayhash"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/daisyutils"
-	"github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
+	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 var (
@@ -401,7 +401,7 @@ func runWithRecovery(inner func() (Loggable, error)) (loggable Loggable, err err
 				},
 			}
 			err = errors.New("A fatal error has occurred. " +
-				"Please submit an issue at https://github.com/GoogleCloudPlatform/compute-image-tools/issues")
+				"Please submit an issue at https://github.com/GoogleCloudPlatform/compute-image-import/issues")
 		}
 	}()
 	return inner()

@@ -38,12 +38,12 @@ import (
 	"google.golang.org/api/option"
 	htransport "google.golang.org/api/transport/http"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/compute"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/param"
-	pathutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
-	storageutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
+	pathutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
+	storageutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
 )
 
 const (

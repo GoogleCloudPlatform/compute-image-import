@@ -1,4 +1,4 @@
-module github.com/GoogleCloudPlatform/compute-image-tools/proto/go
+module github.com/GoogleCloudPlatform/compute-image-import/proto/go
 
 go 1.13
 

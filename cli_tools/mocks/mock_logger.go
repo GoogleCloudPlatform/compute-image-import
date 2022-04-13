@@ -9,8 +9,8 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 
-	logging "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	pb "github.com/GoogleCloudPlatform/compute-image-tools/proto/go/pb"
+	logging "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	pb "github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
 // MockLogger is a mock of Logger interface

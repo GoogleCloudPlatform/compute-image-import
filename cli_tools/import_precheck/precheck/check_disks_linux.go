@@ -20,7 +20,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/mount"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/mount"
 )
 
 // DisksCheck performs disk configuration checking:

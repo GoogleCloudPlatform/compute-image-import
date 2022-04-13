@@ -14,7 +14,7 @@
 
 package import_test
 
-import "github.com/GoogleCloudPlatform/compute-image-tools/common/runtime"
+import "github.com/GoogleCloudPlatform/compute-image-import/common/runtime"
 
 var (
 	project = runtime.GetConfig("GOOGLE_CLOUD_PROJECT", "project")

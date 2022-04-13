@@ -26,14 +26,14 @@ import (
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 	"google.golang.org/api/iterator"
 
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/compute"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/logging"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/param"
-	pathutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/path"
-	storageutils "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/storage"
-	"github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/common/utils/validation"
-	ovfdomain "github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
+	pathutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
+	storageutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/validation"
+	ovfdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/domain"
 )
 
 const (
