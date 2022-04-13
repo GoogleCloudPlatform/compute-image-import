@@ -8,7 +8,7 @@
       "Value": "image-${ID}"
     },
     "file": {
-      "Value": "gs://compute-image-tools-test-resources/ubuntu-1804-vmware.vmdk"
+      "Value": "gs://compute-image-import-test-resources/ubuntu-1804-vmware.vmdk"
     }
   },
   "Steps": {

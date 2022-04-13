@@ -28,7 +28,7 @@ func TestInspectDisk(t *testing.T) {
 	defer cancelFunc()
 
 	inspector := imagefile.NewGCSInspector()
-	metaData, err := inspector.Inspect(deadline, "gs://compute-image-tools-test-resources/file-inflation-test/virt-8G.vmdk")
+	metaData, err := inspector.Inspect(deadline, "gs://compute-image-import-test-resources/file-inflation-test/virt-8G.vmdk")
 	assert.NoError(t, err)
 	assert.Equal(t, metaData.Checksum, "dffcdd4e62005b1d5558d4c11fb85073-d41d8cd98f00b204e9800998ecf8427e-d41d8cd98f00b204e9800998ecf8427e-dffcdd4e62005b1d5558d4c11fb85073")
 }

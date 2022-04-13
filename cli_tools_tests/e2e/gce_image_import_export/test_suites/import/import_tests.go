@@ -81,25 +81,25 @@ var basicCases = []*testCase{
 	// Disk image formats
 	{
 		caseName: "vhd-ubuntu-1804",
-		source:   "gs://compute-image-tools-test-resources/ubuntu-1804-azure.vhd",
+		source:   "gs://compute-image-import-test-resources/ubuntu-1804-azure.vhd",
 		os:       "ubuntu-1804",
 	},
 	{
 		caseName: "vpc-file-format-ubuntu-1804",
-		source:   "gs://compute-image-tools-test-resources/ubuntu-1804.vpc",
+		source:   "gs://compute-image-import-test-resources/ubuntu-1804.vpc",
 		os:       "ubuntu-1804",
 	},
 
 	// Error messages
 	{
 		caseName:      "incorrect OS specified",
-		source:        "projects/compute-image-tools-test/global/images/debian-9-translate",
+		source:        "projects/compute-image-import-test/global/images/debian-9-translate",
 		os:            "opensuse-15",
 		expectedError: "\"debian-9\" was detected on your disk, but \"opensuse-15\" was specified",
 	},
 	{
 		caseName:      "SLES import with no OS on disk",
-		source:        "gs://compute-image-tools-test-resources/empty-10gb.qcow2",
+		source:        "gs://compute-image-import-test-resources/empty-10gb.qcow2",
 		os:            "opensuse-15",
 		expectedError: "no operating systems found",
 	},
@@ -107,53 +107,53 @@ var basicCases = []*testCase{
 	// Debian
 	{
 		caseName: "debian-9",
-		source:   "projects/compute-image-tools-test/global/images/debian-9-translate",
+		source:   "projects/compute-image-import-test/global/images/debian-9-translate",
 		os:       "debian-9",
 	},
 	{
 		caseName: "debian-10",
-		source:   "projects/compute-image-tools-test/global/images/debian-10",
+		source:   "projects/compute-image-import-test/global/images/debian-10",
 		os:       "debian-10",
 	},
 	{
 		caseName: "debian-11",
-		source:   "projects/compute-image-tools-test/global/images/debian-11",
+		source:   "projects/compute-image-import-test/global/images/debian-11",
 	},
 
 	// Ubuntu
 	{
 		caseName:             "ubuntu-1404",
-		source:               "projects/compute-image-tools-test/global/images/ubuntu-1404-img-import",
+		source:               "projects/compute-image-import-test/global/images/ubuntu-1404-img-import",
 		os:                   "ubuntu-1404",
 		osConfigNotSupported: true,
 	}, {
 		caseName: "ubuntu-1604",
-		source:   "projects/compute-image-tools-test/global/images/ubuntu-1604-vmware-import",
+		source:   "projects/compute-image-import-test/global/images/ubuntu-1604-vmware-import",
 		os:       "ubuntu-1604",
 	}, {
 		caseName: "ubuntu-1804",
-		source:   "gs://compute-image-tools-test-resources/ubuntu-1804-vmware.vmdk",
+		source:   "gs://compute-image-import-test-resources/ubuntu-1804-vmware.vmdk",
 		os:       "ubuntu-1804",
 	}, {
 		caseName: "ubuntu-2004",
-		source:   "projects/compute-image-tools-test/global/images/ubuntu-2004",
+		source:   "projects/compute-image-import-test/global/images/ubuntu-2004",
 		os:       "ubuntu-2004",
 	}, {
 		caseName: "ubuntu-2004-aws",
-		source:   "projects/compute-image-tools-test/global/images/ubuntu-2004-aws",
+		source:   "projects/compute-image-import-test/global/images/ubuntu-2004-aws",
 		os:       "ubuntu-2004",
 	},
 
 	// OpenSUSE
 	{
 		caseName:             "opensuse-15-1",
-		source:               "projects/compute-image-tools-test/global/images/opensuse-15-1",
+		source:               "projects/compute-image-import-test/global/images/opensuse-15-1",
 		os:                   "opensuse-15",
 		osConfigNotSupported: true,
 	},
 	{
 		caseName:             "opensuse-15-2",
-		source:               "projects/compute-image-tools-test/global/images/opensuse-15-2",
+		source:               "projects/compute-image-import-test/global/images/opensuse-15-2",
 		os:                   "opensuse-15",
 		osConfigNotSupported: true,
 	},
@@ -162,84 +162,84 @@ var basicCases = []*testCase{
 	// Uses a mixture of tactics for specifying BYOL, all of which should be successful.
 	{
 		caseName:      "sles-12-5-byol",
-		source:        "projects/compute-image-tools-test/global/images/sles-12-5-registered",
+		source:        "projects/compute-image-import-test/global/images/sles-12-5-registered",
 		expectLicense: "https://www.googleapis.com/compute/v1/projects/suse-byos-cloud/global/licenses/sles-12-byos",
 		extraArgs:     []string{"-byol"}, // -byol with OS detection
 	}, {
 		caseName:  "sles-sap-12-5-byol",
-		source:    "projects/compute-image-tools-test/global/images/sles-sap-12-5-registered",
+		source:    "projects/compute-image-import-test/global/images/sles-sap-12-5-registered",
 		os:        "sles-sap-12-byol",
 		extraArgs: []string{"-byol"}, // -byol specified when not required
 	}, {
 		caseName:  "sles-15-2-byol",
-		source:    "projects/compute-image-tools-test/global/images/sles-15-2-registered",
+		source:    "projects/compute-image-import-test/global/images/sles-15-2-registered",
 		os:        "sles-15",
 		extraArgs: []string{"-byol"}, // -byol transforms sles-15 to sles-15-byol
 	}, {
 		caseName: "sles-sap-15-2-byol",
-		source:   "projects/compute-image-tools-test/global/images/sles-sap-15-2-registered",
+		source:   "projects/compute-image-import-test/global/images/sles-sap-15-2-registered",
 		os:       "sles-sap-15-byol", // No -byol flag
 	},
 
 	// SLES: On-demand
 	{
 		caseName: "sles-12-4-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-12-4-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-12-4-unregistered",
 		os:       "sles-12",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-12-5-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-12-5-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-12-5-unregistered",
 		os:       "sles-12",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-sap-12-4-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-sap-12-4-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-sap-12-4-unregistered",
 		os:       "sles-sap-12",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-sap-12-5-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-sap-12-5-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-sap-12-5-unregistered",
 		os:       "sles-sap-12",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-15-0-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-15-0-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-15-0-unregistered",
 		os:       "sles-15",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-15-1-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-15-1-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-15-1-unregistered",
 		os:       "sles-15",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-15-2-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-15-2-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-15-2-unregistered",
 		os:       "sles-15",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-15-3-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-15-3-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-15-3-unregistered",
 		os:       "sles-15",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-sap-15-0-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-sap-15-0-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-sap-15-0-unregistered",
 		os:       "sles-sap-15",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-sap-15-1-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-sap-15-1-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-sap-15-1-unregistered",
 		os:       "sles-sap-15",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-sap-15-2-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-sap-15-2-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-sap-15-2-unregistered",
 		os:       "sles-sap-15",
 		tip:      slesOnDemandTip,
 	}, {
 		caseName: "sles-sap-15-3-on-demand",
-		source:   "projects/compute-image-tools-test/global/images/sles-sap-15-3-unregistered",
+		source:   "projects/compute-image-import-test/global/images/sles-sap-15-3-unregistered",
 		os:       "sles-sap-15",
 		tip:      slesOnDemandTip,
 	},
@@ -247,40 +247,40 @@ var basicCases = []*testCase{
 	// EL
 	{
 		caseName: "el-centos-7-8",
-		source:   "projects/compute-image-tools-test/global/images/centos-7-8",
+		source:   "projects/compute-image-import-test/global/images/centos-7-8",
 		os:       "centos-7",
 	}, {
 		caseName: "el-centos-8-0",
-		source:   "projects/compute-image-tools-test/global/images/centos-8-import",
+		source:   "projects/compute-image-import-test/global/images/centos-8-import",
 		os:       "centos-8",
 	}, {
 		caseName: "el-centos-8-3",
-		source:   "projects/compute-image-tools-test/global/images/centos-8-3",
+		source:   "projects/compute-image-import-test/global/images/centos-8-3",
 		os:       "centos-8",
 	}, {
 		caseName: "el-rhel-6-10",
-		source:   "projects/compute-image-tools-test/global/images/rhel-6-10",
+		source:   "projects/compute-image-import-test/global/images/rhel-6-10",
 		os:       "rhel-6",
 	}, {
 		caseName:  "el-rhel-7-uefi",
-		source:    "projects/compute-image-tools-test/global/images/linux-uefi-no-guestosfeature-rhel7",
+		source:    "projects/compute-image-import-test/global/images/linux-uefi-no-guestosfeature-rhel7",
 		os:        "rhel-7",
 		extraArgs: []string{"-uefi_compatible=true"},
 	}, {
 		caseName: "el-rhel-7-8",
-		source:   "projects/compute-image-tools-test/global/images/rhel-7-8",
+		source:   "projects/compute-image-import-test/global/images/rhel-7-8",
 		os:       "rhel-7",
 	}, {
 		caseName: "el-rhel-8-0",
-		source:   "projects/compute-image-tools-test/global/images/rhel-8-0",
+		source:   "projects/compute-image-import-test/global/images/rhel-8-0",
 		os:       "rhel-8",
 	}, {
 		caseName: "el-rhel-8-2",
-		source:   "projects/compute-image-tools-test/global/images/rhel-8-2",
+		source:   "projects/compute-image-import-test/global/images/rhel-8-2",
 		os:       "rhel-8",
 	}, {
 		caseName: "el-rocky-8-4",
-		source:   "projects/compute-image-tools-test/global/images/rocky-8-4",
+		source:   "projects/compute-image-import-test/global/images/rocky-8-4",
 	},
 
 	// EL - Error cases
@@ -289,31 +289,31 @@ var basicCases = []*testCase{
 		// Spec: http://linux-training.be/sysadmin/ch28.html#idp68123376
 		// Bug: b/168774581
 		caseName: "el-allow-extra-dirs-in-lib-modules",
-		source:   "projects/compute-image-tools-test/global/images/el-depmod-extra-lib-modules",
+		source:   "projects/compute-image-import-test/global/images/el-depmod-extra-lib-modules",
 		os:       "centos-8",
 	}, {
 		// Fail when a package isn't found, and alert user with useful message.
 		caseName:      "el-package-not-found",
-		source:        "projects/compute-image-tools-test/global/images/centos-7-missing-repo",
+		source:        "projects/compute-image-import-test/global/images/centos-7-missing-repo",
 		os:            "centos-7",
 		expectedError: "There are no enabled repos",
 	}, {
 		// Fail when yum has an unreachable repo.
 		caseName:      "el-unreachable-repos",
-		source:        "projects/compute-image-tools-test/global/images/centos-8-cdrom-repo",
+		source:        "projects/compute-image-import-test/global/images/centos-8-cdrom-repo",
 		os:            "centos-8",
 		expectedError: "Ensure all configured repos are reachable",
 	}, {
 		// Fail when imported as RHEL BYOL, but image does not have valid subscription.
 		caseName: "rhel-byol-without-subscription",
-		source:   "projects/compute-image-tools-test/global/images/rhel-8-0",
+		source:   "projects/compute-image-import-test/global/images/rhel-8-0",
 		os:       "rhel-8-byol",
 		expectedError: "subscription-manager did not find an active subscription.*" +
 			"Omit `-byol` to register with on-demand licensing.",
 	}, {
 		// Fail when `yum` not found.
 		caseName:      "el-yum-not-found",
-		source:        "projects/compute-image-tools-test/global/images/manjaro",
+		source:        "projects/compute-image-import-test/global/images/manjaro",
 		os:            "centos-8",
 		expectedError: "Verify the disk's OS: `yum` not found.",
 	},
@@ -321,22 +321,22 @@ var basicCases = []*testCase{
 	// Windows
 	{
 		caseName:                "windows-2016-azure",
-		source:                  "projects/compute-image-tools-test/global/images/windows-server-2016-azure",
+		source:                  "projects/compute-image-import-test/global/images/windows-server-2016-azure",
 		expectLicense:           "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2016-dc",
 		requiredGuestOsFeatures: []string{"WINDOWS"},
 	}, {
 		caseName:                "windows-2019-uefi",
-		source:                  "projects/compute-image-tools-test/global/images/windows-2019-uefi-nodrivers",
+		source:                  "projects/compute-image-import-test/global/images/windows-2019-uefi-nodrivers",
 		expectLicense:           "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2019-dc",
 		requiredGuestOsFeatures: []string{"WINDOWS"},
 	}, {
 		caseName:                "windows-2022-uefi",
-		source:                  "projects/compute-image-tools-test/global/images/windows-2022-uefi-nodrivers",
+		source:                  "projects/compute-image-import-test/global/images/windows-2022-uefi-nodrivers",
 		expectLicense:           "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2022-dc",
 		requiredGuestOsFeatures: []string{"WINDOWS"},
 	}, {
 		caseName:             "windows-10-x86-byol",
-		source:               "projects/compute-image-tools-test/global/images/windows-10-1909-ent-x86-nodrivers",
+		source:               "projects/compute-image-import-test/global/images/windows-10-1909-ent-x86-nodrivers",
 		os:                   "windows-10-x86-byol",
 		osConfigNotSupported: true,
 	},
@@ -346,49 +346,49 @@ var inspectUEFICases = []*testCase{
 	{
 		caseName: "inspect-uefi-linux-uefi-rhel-7",
 		// source created from projects/gce-uefi-images/global/images/rhel-7-v20200403
-		source:                  "gs://compute-image-tools-test-resources/uefi/linux-uefi-rhel-7.vmdk",
+		source:                  "gs://compute-image-import-test-resources/uefi/linux-uefi-rhel-7.vmdk",
 		os:                      "rhel-7",
 		requiredGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-linux-uefi-rhel-7-from-image",
 		// image created from projects/gce-uefi-images/global/images/rhel-7-v20200403 and removed UEFI_COMPATIBLE
-		source:                  "projects/compute-image-tools-test/global/images/linux-uefi-no-guestosfeature-rhel7",
+		source:                  "projects/compute-image-import-test/global/images/linux-uefi-no-guestosfeature-rhel7",
 		os:                      "rhel-7",
 		requiredGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-linux-nonuefi-debian-9",
 		// source created from projects/debian-cloud/global/images/debian-9-stretch-v20200714
-		source:                    "gs://compute-image-tools-test-resources/uefi/linux-nonuefi-debian-9.vmdk",
+		source:                    "gs://compute-image-import-test-resources/uefi/linux-nonuefi-debian-9.vmdk",
 		os:                        "debian-9",
 		notAllowedGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-linux-dual-protective-mbr-ubuntu-1804",
 		// source created from projects/gce-uefi-images/global/images/ubuntu-1804-bionic-v20200317
-		source:                    "gs://compute-image-tools-test-resources/uefi/linux-protective-mbr-ubuntu-1804.vmdk",
+		source:                    "gs://compute-image-import-test-resources/uefi/linux-protective-mbr-ubuntu-1804.vmdk",
 		os:                        "ubuntu-1804",
 		notAllowedGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-linux-dual-hybrid-mbr-ubuntu-2004",
 		// source created from scratch
-		source:                    "gs://compute-image-tools-test-resources/uefi/linux-hybrid-mbr-ubuntu-2004.vmdk",
+		source:                    "gs://compute-image-import-test-resources/uefi/linux-hybrid-mbr-ubuntu-2004.vmdk",
 		os:                        "ubuntu-2004",
 		notAllowedGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-linux-uefi-mbr-ubuntu-1804",
 		// source created from projects/gce-uefi-images/global/images/ubuntu-1804-bionic-v20200317 and converted from GPT to MBR
-		source:                  "gs://compute-image-tools-test-resources/uefi/linux-ubuntu-mbr-uefi.vmdk",
+		source:                  "gs://compute-image-import-test-resources/uefi/linux-ubuntu-mbr-uefi.vmdk",
 		os:                      "ubuntu-1804",
 		requiredGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-windows-uefi",
 		// source created from projects/gce-uefi-images/global/images/windows-server-2019-dc-core-v20200609
-		source:                  "gs://compute-image-tools-test-resources/uefi/windows-uefi-2019.vmdk",
+		source:                  "gs://compute-image-import-test-resources/uefi/windows-uefi-2019.vmdk",
 		os:                      "windows-2019",
 		requiredGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-windows-nonuefi",
 		// source created from projects/windows-cloud/global/images/windows-server-2019-dc-v20200114
-		source:                    "gs://compute-image-tools-test-resources/uefi/windows-nonuefi-2019.vmdk",
+		source:                    "gs://compute-image-import-test-resources/uefi/windows-nonuefi-2019.vmdk",
 		os:                        "windows-2019",
 		notAllowedGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	},

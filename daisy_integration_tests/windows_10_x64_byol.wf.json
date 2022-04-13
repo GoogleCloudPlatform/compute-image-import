@@ -8,7 +8,7 @@
       "Value": "translated-windows-10-x64-byol-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/windows-10-1709-import"
+      "Value": "projects/compute-image-import-test/global/images/windows-10-1709-import"
     },
     "translate_workflow": {
       "Value": "../daisy_workflows/image_import/windows/translate_windows_10_x64_byol.wf.json"

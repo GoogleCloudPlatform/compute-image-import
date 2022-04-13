@@ -5,7 +5,7 @@
       "Value": "image-import-test-${ID}"
     },
     "source_disk_file": {
-      "Value": "gs://compute-image-tools-test-resources/xenial-server-cloudimg-amd64-disk1.vmdk"
+      "Value": "gs://compute-image-import-test-resources/xenial-server-cloudimg-amd64-disk1.vmdk"
     }
   },
   "Steps": {
@@ -24,7 +24,7 @@
           "image_name": "${image_name}",
           "importer_instance_disk_size": "200",
           "source_disk_file": "${source_disk_file}",
-          "import_instance_disk_image": "projects/compute-image-tools-test/global/images/family/debian-10-worker"
+          "import_instance_disk_image": "projects/compute-image-import-test/global/images/family/debian-10-worker"
         }
       }
     }

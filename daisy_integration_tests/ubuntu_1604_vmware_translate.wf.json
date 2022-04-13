@@ -8,7 +8,7 @@
       "Value": "ubuntu-1604-translate-test-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/ubuntu-1604-vmware-import"
+      "Value": "projects/compute-image-import-test/global/images/ubuntu-1604-vmware-import"
     }
   },
   "Steps": {

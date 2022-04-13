@@ -8,7 +8,7 @@
       "Value": "translated-windows-7-x86-byol-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/windows-7-ent-x86-nodrivers"
+      "Value": "projects/compute-image-import-test/global/images/windows-7-ent-x86-nodrivers"
     },
     "translate_workflow": {
       "Value": "../daisy_workflows/image_import/windows/translate_windows_7_x86_byol.wf.json"

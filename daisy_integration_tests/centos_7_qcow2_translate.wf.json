@@ -8,7 +8,7 @@
       "Value": "centos-7-translate-test-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/centos-7-qcow2-import"
+      "Value": "projects/compute-image-import-test/global/images/centos-7-qcow2-import"
     },
     "test-id": {
       "Value": "",

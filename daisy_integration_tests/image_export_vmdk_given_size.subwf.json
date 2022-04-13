@@ -16,7 +16,7 @@
         "Vars": {
           "destination": "${gcs_export}",
           "format": "vmdk",
-          "source_image": "projects/compute-image-tools-test/global/images/image-export-given-size-${size}gb"
+          "source_image": "projects/compute-image-import-test/global/images/image-export-given-size-${size}gb"
         }
       }
     },

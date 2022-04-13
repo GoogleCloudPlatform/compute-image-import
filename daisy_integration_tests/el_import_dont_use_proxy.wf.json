@@ -5,7 +5,7 @@
       "Value": "el-dont-use-proxy-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/cent-7-http-proxy"
+      "Value": "projects/compute-image-import-test/global/images/cent-7-http-proxy"
     },
     "test-id": {
       "Value": "",

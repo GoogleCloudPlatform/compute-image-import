@@ -8,7 +8,7 @@
       "Value": "centos-7-translate-test-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/cent-7-immutable-resolv"
+      "Value": "projects/compute-image-import-test/global/images/cent-7-immutable-resolv"
     },
     "test-id": {
       "Value": "",

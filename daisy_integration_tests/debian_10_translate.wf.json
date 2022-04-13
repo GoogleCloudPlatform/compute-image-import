@@ -8,7 +8,7 @@
       "Value": "debian-10-translate-test-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/debian-10"
+      "Value": "projects/compute-image-import-test/global/images/debian-10"
     }
   },
   "Steps": {
