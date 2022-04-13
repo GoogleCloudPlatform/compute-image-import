@@ -160,7 +160,7 @@ func TestInspectDisk(t *testing.T) {
 			},
 		}, {
 			caseName: "UEFI inspection test for GPT UEFI with hybrid MBR",
-			imageURI: "projects/compute-image-tools-test/global/images/image-ubuntu-2004-hybrid-mbr",
+			imageURI: "projects/compute-image-import-test/global/images/image-ubuntu-2004-hybrid-mbr",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "ubuntu-2004",
@@ -176,7 +176,7 @@ func TestInspectDisk(t *testing.T) {
 			},
 		}, {
 			caseName: "UEFI inspection test for MBR-only UEFI",
-			imageURI: "projects/compute-image-tools-test/global/images/image-uefi-mbr-only",
+			imageURI: "projects/compute-image-import-test/global/images/image-uefi-mbr-only",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "ubuntu-1604",
@@ -206,7 +206,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-2012-r2-vmware-import",
+			imageURI: "projects/compute-image-import-test/global/images/windows-2012-r2-vmware-import",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-2012r2",
@@ -219,7 +219,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-2016-import",
+			imageURI: "projects/compute-image-import-test/global/images/windows-2016-import",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-2016",
@@ -231,7 +231,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-2019",
+			imageURI: "projects/compute-image-import-test/global/images/windows-2019",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-2019",
@@ -243,7 +243,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-2022-uefi-nodrivers",
+			imageURI: "projects/compute-image-import-test/global/images/windows-2022-uefi-nodrivers",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-2022",
@@ -258,7 +258,7 @@ func TestInspectDisk(t *testing.T) {
 
 		// Windows Desktop
 		{
-			imageURI: "projects/compute-image-tools-test/global/images/windows-7-ent-x86-nodrivers",
+			imageURI: "projects/compute-image-import-test/global/images/windows-7-ent-x86-nodrivers",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-7-x86",
@@ -270,7 +270,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-7-import",
+			imageURI: "projects/compute-image-import-test/global/images/windows-7-import",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-7-x64",
@@ -282,7 +282,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-8-1-ent-x86-nodrivers",
+			imageURI: "projects/compute-image-import-test/global/images/windows-8-1-ent-x86-nodrivers",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-8-x86",
@@ -295,7 +295,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-8-1-x64",
+			imageURI: "projects/compute-image-import-test/global/images/windows-8-1-x64",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-8-x64",
@@ -308,7 +308,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-10-1909-ent-x86-nodrivers",
+			imageURI: "projects/compute-image-import-test/global/images/windows-10-1909-ent-x86-nodrivers",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-10-x86",
@@ -320,7 +320,7 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		}, {
-			imageURI: "projects/compute-image-tools-test/global/images/windows-10-1709-import",
+			imageURI: "projects/compute-image-import-test/global/images/windows-10-1709-import",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-10-x64",
@@ -364,7 +364,7 @@ func TestInspectDisk(t *testing.T) {
 func TestInspectDisk_NoOSResults_WhenDistroUnrecognized(t *testing.T) {
 	t.Parallel()
 
-	image := "projects/compute-image-tools-test/global/images/manjaro"
+	image := "projects/compute-image-import-test/global/images/manjaro"
 	expected := &pb.InspectionResults{}
 
 	assertInspectionSucceeds(t, image, createEnvironment(), expected)
@@ -373,7 +373,7 @@ func TestInspectDisk_NoOSResults_WhenDistroUnrecognized(t *testing.T) {
 func TestInspectDisk_NoOSResults_WhenDiskEmpty(t *testing.T) {
 	t.Parallel()
 
-	image := "projects/compute-image-tools-test/global/images/blank-10g"
+	image := "projects/compute-image-import-test/global/images/blank-10g"
 	expected := &pb.InspectionResults{}
 
 	assertInspectionSucceeds(t, image, createEnvironment(), expected)

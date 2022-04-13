@@ -36,7 +36,7 @@ func Test_IncludeInflationWorkerLogs_WhenInflationFails(t *testing.T) {
 	err := cli.Main([]string{
 		"-image_name", imageName,
 		"-client_id", "test",
-		"-source_file", "gs://compute-image-tools-test-resources/vmdk-with-missing-footer.vmdk",
+		"-source_file", "gs://compute-image-import-test-resources/vmdk-with-missing-footer.vmdk",
 		"-project", project,
 		"-zone", zone,
 	}, logger, "../../../daisy_workflows")
@@ -56,7 +56,7 @@ func Test_IncludeTranslationLogs_WhenTranslationFails(t *testing.T) {
 	err := cli.Main([]string{
 		"-image_name", imageName,
 		"-client_id", "test",
-		"-source_image", "projects/compute-image-tools-test/global/images/debian-9-translate",
+		"-source_image", "projects/compute-image-import-test/global/images/debian-9-translate",
 		"-os=sles-15",
 		"-project", project,
 		"-zone", zone,

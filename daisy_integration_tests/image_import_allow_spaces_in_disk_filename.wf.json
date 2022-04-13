@@ -5,7 +5,7 @@
       "Value": "image-import-allows-spaces-test-${ID}"
     },
     "source_disk_file": {
-      "Value": "gs://compute-image-tools-test-resources/ubuntu 1604 name image with spaces.vmdk"
+      "Value": "gs://compute-image-import-test-resources/ubuntu 1604 name image with spaces.vmdk"
     }
   },
   "Steps": {

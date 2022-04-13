@@ -35,9 +35,9 @@ import (
 
 const (
 	testSuiteName              = "WindowsUpgradeTests"
-	standardImage              = "projects/compute-image-tools-test/global/images/test-image-win2008r2-20200414"
-	insufficientDiskSpaceImage = "projects/compute-image-tools-test/global/images/test-image-windows-2008r2-no-space"
-	byolImage                  = "projects/compute-image-tools-test/global/images/test-image-windows-2008r2-byol"
+	standardImage              = "projects/compute-image-import-test/global/images/test-image-win2008r2-20200414"
+	insufficientDiskSpaceImage = "projects/compute-image-import-test/global/images/test-image-windows-2008r2-no-space"
+	byolImage                  = "projects/compute-image-import-test/global/images/test-image-windows-2008r2-byol"
 )
 
 var (
@@ -331,7 +331,7 @@ func runTest(ctx context.Context, image string, args []string, testType e2e.CLIT
 		if !e2e.RunTestCommand("gcloud", []string{
 			"compute", "disks", "create", fmt.Sprintf("--zone=%v", testProjectConfig.TestZone),
 			fmt.Sprintf("--project=%v", testProjectConfig.TestProjectID), "--size=10gb",
-			"--image=projects/compute-image-tools-test/global/images/empty-ntfs-10g",
+			"--image=projects/compute-image-import-test/global/images/empty-ntfs-10g",
 			diskName,
 		}, logger, testCase) {
 			return

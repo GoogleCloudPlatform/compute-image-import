@@ -5,7 +5,7 @@
       "Value": "image-import-and-translate-no-ext-${ID}"
     },
     "source_disk_file": {
-      "Value": "gs://compute-image-tools-test-resources/xenial-server-cloudimg-amd64-disk1-no-ext"
+      "Value": "gs://compute-image-import-test-resources/xenial-server-cloudimg-amd64-disk1-no-ext"
     }
   },
   "Steps": {

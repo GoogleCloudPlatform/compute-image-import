@@ -8,7 +8,7 @@
       "Value": "image-${ID}"
     },
     "file": {
-      "Value": "gs://compute-image-tools-test-resources/ubuntu-1804-azure.vhd"
+      "Value": "gs://compute-image-import-test-resources/ubuntu-1804-azure.vhd"
     }
   },
   "Steps": {

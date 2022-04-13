@@ -9,7 +9,7 @@
       "Value": "windows-2003-32-translate-test-${ID}"
     },
     "source_image": {
-      "Value": "projects/compute-image-tools-test/global/images/windows-2003-32-import"
+      "Value": "projects/compute-image-import-test/global/images/windows-2003-32-import"
     }
   },
   "Steps": {

@@ -37,7 +37,7 @@ import (
 
 const (
 	testSuiteName = "OVFMachineImageImportTests"
-	ovaBucket     = "compute-image-tools-test-resources"
+	ovaBucket     = "compute-image-import-test-resources"
 )
 
 var (
