@@ -12,7 +12,7 @@ Prow runs these tests periodically against HEAD.
 
 ## Test Environment Details
 
-* Periodic Tests run in the `compute-image-test-pool-xxx` projects and have permissions:
+* Periodic Tests run in the `compute-import-test-pool-xxx` projects and have permissions:
   * GCE read/write
   * GCS read on the `compute-image-import-test-resources` bucket.
   * GCS read/write on the `compute-image-tools-test-sandbox` bucket.

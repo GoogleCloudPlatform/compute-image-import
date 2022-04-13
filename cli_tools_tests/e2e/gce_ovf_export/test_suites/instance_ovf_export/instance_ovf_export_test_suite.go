@@ -103,7 +103,7 @@ func runInstanceOVFExportDebian3Disks(ctx context.Context, testCase *junitxml.Te
 		zone:                  testProjectConfig.TestZone,
 		expectedStartupOutput: "All tests passed!",
 		failureMatches:        []string{"FAILED:", "TestFailed:"},
-		sourceGMI:             "projects/compute-image-test-pool-001/global/machineImages/debian-11-three-disks-do-not-delete",
+		sourceGMI:             "projects/compute-import-test-pool-001/global/machineImages/debian-11-three-disks-do-not-delete",
 		destinationURI:        fmt.Sprintf("gs://%v/%v/", exportBucket, exportPath),
 		exportBucket:          exportBucket,
 		exportPath:            exportPath,
