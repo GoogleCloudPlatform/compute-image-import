@@ -255,7 +255,7 @@ var (
 	privacyRegex    = regexp.MustCompile(`\[Privacy\->.*?<\-Privacy\]`)
 	privacyTagRegex = regexp.MustCompile(`(\[Privacy\->)|(<\-Privacy\])`)
 
-	debianWorkerRegex = regexp.MustCompile("projects/compute-image-import/global/images/family/debian-\\d+-worker")
+	debianWorkerRegex = regexp.MustCompile("projects/compute-image-tools/global/images/family/debian-\\d+-worker")
 )
 
 // GetSortedOSIDs returns the supported OS identifiers, sorted.
