@@ -151,7 +151,7 @@ func runWindowsUpgradeWithRichParamsAndLatestInstallMedia(ctx context.Context, t
 			fmt.Sprintf("-create-machine-backup=false"),
 			fmt.Sprintf("-auto-rollback"),
 			fmt.Sprintf("-timeout=2h"),
-			fmt.Sprintf("-project=%v", "compute-image-test-pool-002"),
+			fmt.Sprintf("-project=%v", "compute-import-test-pool-002"),
 			fmt.Sprintf("-zone=%v", "fake-zone"),
 			"-use-staging-install-media",
 		},

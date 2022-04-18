@@ -88,7 +88,7 @@ Notes:
    are executed. See [launcher.go](../../go/e2e_test_utils/launcher.go) for the filter's implementation. To find values
    for filtering, search for to `junitxml.NewTestSuite` and `junitxml.NewTestCase`. 
 5. The example uses your test project. You may find that thet tests depend on resources that were manually created in
-   the project `compute-image-test-pool-001`. If so, you'll need to re-create those resources in your test project. 
+   the project `compute-import-test-pool-001`. If so, you'll need to re-create those resources in your test project.
    
 Beyond these flags, some test suites have further customization via a `-variables` flag. Search for `-variables` in
 the [prow configuration](../../test-infra/prow/config.yaml) to see what's currently used.
