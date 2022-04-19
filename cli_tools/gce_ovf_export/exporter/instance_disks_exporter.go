@@ -143,7 +143,7 @@ func (ide *instanceDisksExporterImpl) addExportDisksSteps(w *daisy.Workflow, ins
 			"source_disk":                diskPath,
 			"destination":                exportedDiskGCSPath,
 			"format":                     params.DiskExportFormat,
-			"export_instance_disk_image": "projects/compute-image-import/global/images/family/debian-9-worker",
+			"export_instance_disk_image": "projects/compute-image-tools/global/images/family/debian-9-worker",
 			"export_instance_disk_size":  "200",
 			"export_instance_disk_type":  "pd-ssd",
 			"export_network":             params.Network,
