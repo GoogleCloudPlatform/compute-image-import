@@ -145,7 +145,7 @@ func populatePrepareSteps(u *upgrader, w *daisy.Workflow) error {
 				Name:        u.installMediaDiskName,
 				Zone:        u.instanceZone,
 				Type:        "pd-ssd",
-				SourceImage: "projects/compute-image-import/global/images/family/windows-install-media",
+				SourceImage: "projects/compute-image-tools/global/images/family/windows-install-media",
 			},
 			Resource: daisy.Resource{
 				ExactName: true,
