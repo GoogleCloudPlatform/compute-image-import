@@ -19,7 +19,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/validation"
 )
@@ -104,7 +103,6 @@ type ImageImportRequest struct {
 	Timeout               time.Duration   `name:"timeout" validate:"required"`
 	UefiCompatible        bool
 	Zone                  string `name:"zone" validate:"required"`
-	DataDisks             []domain.Disk
 }
 
 // FixBYOLAndOSArguments fixes the user's arguments for the --os and --byol flags

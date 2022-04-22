@@ -17,8 +17,6 @@
 
 import logging
 
-import utils
-
 from .common import AptGetInstall
 try:
   import guestfs
@@ -39,22 +37,7 @@ def log_key_value(key, value):
   print(_STATUS_PREFIX + "<serial-output key:'%s' value:'%s'>" % (key, value))
 
 
-def get_physical_drives():
-  rc, output = utils.Execute(['lsblk', '--noheadings', '--output=NAME',
-                  '--paths', '--list', '--nodeps', '-e7'], capture_output=True)
-  disks = []
-  if rc == 0:
-    disks = output.split('\n')
-    disks.remove('')
-  else:
-    logging.info('Warning: Failed to excute \'lsblk\' cmd, '
-                 'Continuing anyway assuming that there are only two disks.')
-    disks = ['/dev/sda', '/dev/sdb']
-
-  return disks
-
-
-def MountDisks(disks) -> guestfs.GuestFS:
+def MountDisk(disk) -> guestfs.GuestFS:
   # All new Python code should pass python_return_dict=True
   # to the constructor.  It indicates that your program wants
   # to receive Python dicts for methods in the API that return
@@ -70,8 +53,7 @@ def MountDisks(disks) -> guestfs.GuestFS:
   g.set_network(True)
 
   # Attach the disk image to libguestfs.
-  for disk in disks:
-    g.add_drive_opts(disk)
+  g.add_drive_opts(disk)
 
   # Run the libguestfs back-end.
   g.launch()
