@@ -8,12 +8,13 @@ import (
 	context "context"
 	reflect "reflect"
 
+	gomock "github.com/golang/mock/gomock"
+	ovf "github.com/vmware/govmomi/ovf"
+
 	domain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	importer "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
 	logging "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 	domain0 "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/domain"
-	gomock "github.com/golang/mock/gomock"
-	ovf "github.com/vmware/govmomi/ovf"
 )
 
 // MockOvfDescriptorValidatorInterface is a mock of OvfDescriptorValidatorInterface interface.
@@ -130,78 +131,77 @@ func (mr *MockMachineTypeProviderInterfaceMockRecorder) GetMachineType() *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMachineType", reflect.TypeOf((*MockMachineTypeProviderInterface)(nil).GetMachineType))
 }
 
-// MockDiskImporterInterface is a mock of DiskImporterInterface interface.
-type MockDiskImporterInterface struct {
+// MockImageImporterInterface is a mock of ImageImporterInterface interface.
+type MockImageImporterInterface struct {
 	ctrl     *gomock.Controller
-	recorder *MockDiskImporterInterfaceMockRecorder
+	recorder *MockImageImporterInterfaceMockRecorder
 }
 
-// MockDiskImporterInterfaceMockRecorder is the mock recorder for MockDiskImporterInterface.
-type MockDiskImporterInterfaceMockRecorder struct {
-	mock *MockDiskImporterInterface
+// MockImageImporterInterfaceMockRecorder is the mock recorder for MockImageImporterInterface.
+type MockImageImporterInterfaceMockRecorder struct {
+	mock *MockImageImporterInterface
 }
 
-// NewMockDiskImporterInterface creates a new mock instance.
-func NewMockDiskImporterInterface(ctrl *gomock.Controller) *MockDiskImporterInterface {
-	mock := &MockDiskImporterInterface{ctrl: ctrl}
-	mock.recorder = &MockDiskImporterInterfaceMockRecorder{mock}
+// NewMockImageImporterInterface creates a new mock instance.
+func NewMockImageImporterInterface(ctrl *gomock.Controller) *MockImageImporterInterface {
+	mock := &MockImageImporterInterface{ctrl: ctrl}
+	mock.recorder = &MockImageImporterInterfaceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDiskImporterInterface) EXPECT() *MockDiskImporterInterfaceMockRecorder {
+func (m *MockImageImporterInterface) EXPECT() *MockImageImporterInterfaceMockRecorder {
 	return m.recorder
 }
 
 // Import mocks base method.
-func (m *MockDiskImporterInterface) Import(arg0 context.Context, arg1 importer.ImageImportRequest, arg2 logging.Logger) (string, error) {
+func (m *MockImageImporterInterface) Import(arg0 context.Context, arg1 importer.ImageImportRequest, arg2 logging.Logger) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Import", arg0, arg1, arg2)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Import indicates an expected call of Import.
-func (mr *MockDiskImporterInterfaceMockRecorder) Import(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockImageImporterInterfaceMockRecorder) Import(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Import", reflect.TypeOf((*MockDiskImporterInterface)(nil).Import), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Import", reflect.TypeOf((*MockImageImporterInterface)(nil).Import), arg0, arg1, arg2)
 }
 
-// MockMultiDiskImporterInterface is a mock of MultiDiskImporterInterface interface.
-type MockMultiDiskImporterInterface struct {
+// MockMultiImageImporterInterface is a mock of MultiImageImporterInterface interface.
+type MockMultiImageImporterInterface struct {
 	ctrl     *gomock.Controller
-	recorder *MockMultiDiskImporterInterfaceMockRecorder
+	recorder *MockMultiImageImporterInterfaceMockRecorder
 }
 
-// MockMultiDiskImporterInterfaceMockRecorder is the mock recorder for MockMultiDiskImporterInterface.
-type MockMultiDiskImporterInterfaceMockRecorder struct {
-	mock *MockMultiDiskImporterInterface
+// MockMultiImageImporterInterfaceMockRecorder is the mock recorder for MockMultiImageImporterInterface.
+type MockMultiImageImporterInterfaceMockRecorder struct {
+	mock *MockMultiImageImporterInterface
 }
 
-// NewMockMultiDiskImporterInterface creates a new mock instance.
-func NewMockMultiDiskImporterInterface(ctrl *gomock.Controller) *MockMultiDiskImporterInterface {
-	mock := &MockMultiDiskImporterInterface{ctrl: ctrl}
-	mock.recorder = &MockMultiDiskImporterInterfaceMockRecorder{mock}
+// NewMockMultiImageImporterInterface creates a new mock instance.
+func NewMockMultiImageImporterInterface(ctrl *gomock.Controller) *MockMultiImageImporterInterface {
+	mock := &MockMultiImageImporterInterface{ctrl: ctrl}
+	mock.recorder = &MockMultiImageImporterInterfaceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockMultiDiskImporterInterface) EXPECT() *MockMultiDiskImporterInterfaceMockRecorder {
+func (m *MockMultiImageImporterInterface) EXPECT() *MockMultiImageImporterInterfaceMockRecorder {
 	return m.recorder
 }
 
 // Import mocks base method.
-func (m *MockMultiDiskImporterInterface) Import(ctx context.Context, params *domain0.OVFImportParams, fileURIs []string) ([]domain.Disk, error) {
+func (m *MockMultiImageImporterInterface) Import(ctx context.Context, params *domain0.OVFImportParams, fileURIs []string) ([]domain.Image, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Import", ctx, params, fileURIs)
-	ret0, _ := ret[0].([]domain.Disk)
+	ret0, _ := ret[0].([]domain.Image)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Import indicates an expected call of Import.
-func (mr *MockMultiDiskImporterInterfaceMockRecorder) Import(ctx, params, fileURIs interface{}) *gomock.Call {
+func (mr *MockMultiImageImporterInterfaceMockRecorder) Import(ctx, params, fileURIs interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Import", reflect.TypeOf((*MockMultiDiskImporterInterface)(nil).Import), ctx, params, fileURIs)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Import", reflect.TypeOf((*MockMultiImageImporterInterface)(nil).Import), ctx, params, fileURIs)
 }

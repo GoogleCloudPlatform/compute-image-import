@@ -19,8 +19,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"strings"
 	"testing"
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
@@ -29,10 +27,8 @@ import (
 	"github.com/vmware/govmomi/ovf"
 	"google.golang.org/api/compute/v1"
 
-	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/disk"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image"
-	imagemocks "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer/mocks"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
@@ -136,7 +132,7 @@ func TestDiskImport_ErrorUnpackingOVA(t *testing.T) {
 	oi := OVFImporter{workflowPath: instanceMode.wfPath,
 		tarGcsExtractor: mockMockTarGcsExtractorInterface, Logger: logging.NewToolLogger("test"),
 		params: params}
-	err := oi.importDisksFiles()
+	err := oi.importDiskFilesToImages()
 	assert.Equal(t, expectedError, err)
 }
 
@@ -159,64 +155,10 @@ func TestDiskImport_ErrorLoadingDescriptor(t *testing.T) {
 	oi := OVFImporter{workflowPath: instanceMode.wfPath,
 		ovfDescriptorLoader: mockOvfDescriptorLoader,
 		Logger:              logging.NewToolLogger("test"), params: params}
-	err := oi.importDisksFiles()
+	err := oi.importDiskFilesToImages()
 
 	assert.Equal(t, expectedError, err)
 	assert.Equal(t, "", oi.gcsPathToClean)
-}
-
-func TestBootDiskImageImport_buildBootDiskImageImportRequest(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	mockStorageObject := mocks.NewMockStorageObject(mockCtrl)
-	mockStorageObject.EXPECT().NewReader().Return(ioutil.NopCloser(strings.NewReader("file content")), nil)
-	mockStorageClient.EXPECT().GetObject(gomock.Any(), gomock.Any()).Return(mockStorageObject)
-	params := getAllInstanceImportParams()
-	project := defaultProject
-	params.Project = &project
-	params.OvfOvaGcsPath = "gs://ovfbucket/ovffolder/"
-	params.BYOL = true
-	params.OsID = ""
-	imageName := "img-1"
-
-	fileURIs := []string{"gs://bucket/disk1.vmdk", "gs://bucket/disk2.vmdk"}
-
-	disk1, disk1Err := disk.NewDisk("project1", "zone-1", "disk1")
-	disk2, disk2Err := disk.NewDisk("project1", "zone-1", "disk2")
-	assert.NoError(t, disk1Err)
-	assert.NoError(t, disk2Err)
-
-	oi := OVFImporter{
-		workflowPath:  instanceMode.wfPath,
-		Logger:        logging.NewToolLogger("test"),
-		params:        params,
-		disks:         []domain.Disk{disk1, disk2},
-		storageClient: mockStorageClient,
-	}
-
-	request, err := oi.buildBootDiskImageImportRequest(imageName, fileURIs[0])
-	assert.NoError(t, err)
-	assert.Equal(t, request.ImageName, imageName)
-	assert.Equal(t, request.ExecutionID, imageName)
-	assert.Equal(t, request.CloudLogsDisabled, params.CloudLogsDisabled)
-	assert.Equal(t, request.ComputeEndpoint, params.Ce)
-	assert.Equal(t, request.ComputeServiceAccount, params.ComputeServiceAccount)
-	assert.Equal(t, request.WorkflowDir, params.WorkflowDir)
-	assert.Equal(t, request.GcsLogsDisabled, params.GcsLogsDisabled)
-	assert.Equal(t, request.Network, params.Network)
-	assert.Equal(t, request.NoExternalIP, params.NoExternalIP)
-	assert.Equal(t, request.NoGuestEnvironment, params.NoGuestEnvironment)
-	assert.Equal(t, request.Oauth, params.Oauth)
-	assert.Equal(t, request.Project, *params.Project)
-	assert.Equal(t, request.ScratchBucketGcsPath, path.JoinURL(params.ScratchBucketGcsPath, imageName))
-	assert.Equal(t, request.Source.Path(), fileURIs[0])
-	assert.Equal(t, request.StdoutLogsDisabled, params.StdoutLogsDisabled)
-	assert.Equal(t, request.Subnet, params.Subnet)
-	assert.Equal(t, request.Tool, params.GetTool())
-	assert.Equal(t, request.UefiCompatible, params.UefiCompatible)
-	assert.Equal(t, request.Zone, params.Zone)
-	assert.Equal(t, request.DataDisks, oi.disks)
-	assert.True(t, request.BYOL)
 }
 
 func TestSetUpWork_OSIDs(t *testing.T) {
@@ -477,17 +419,6 @@ func TestToWorkingDir(t *testing.T) {
 func runImportAndVerify(t *testing.T, params *ovfdomain.OVFImportParams, mode *importTarget) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
-
-	instanceName := "instance1"
-	if mode == gmiMode {
-		instanceName = "machineimage1"
-	}
-
-	disk1, disk1Err := disk.NewDisk("project-name", params.Zone, fmt.Sprintf("disk-%s-0", instanceName))
-	disk2, disk2Err := disk.NewDisk("project-name", params.Zone, fmt.Sprintf("disk-%s-1", instanceName))
-	assert.NoError(t, disk1Err)
-	assert.NoError(t, disk2Err)
-
 	testCase := mockConfiguration{
 		descriptorFilenames: []string{
 			"Ubuntu_for_Horizon71_1_1.0-disk1.vmdk",
@@ -500,9 +431,10 @@ func runImportAndVerify(t *testing.T, params *ovfdomain.OVFImportParams, mode *i
 			"gs://bucket/folder/ovf/Ubuntu_for_Horizon71_1_1.0-disk3.vmdk",
 		},
 		images: []domain.Image{
-			image.NewImage("project-name", fmt.Sprintf("%s-boot-image", instanceName)),
+			image.NewImage("project", "boot-disk"),
+			image.NewImage("project", "data-disk-1"),
+			image.NewImage("project", "data-disk-2"),
 		},
-		disks:             []domain.Disk{disk1, disk2},
 		expectedOS:        params.OsID,
 		expectImportToRun: true,
 	}
@@ -556,14 +488,17 @@ func runImportAndVerify(t *testing.T, params *ovfdomain.OVFImportParams, mode *i
 		assert.True(t, bootDisk.AutoDelete, "Delete boot disk when instance is deleted.")
 		assert.True(t, bootDisk.Boot, "Boot disk is configured to boot.")
 		assert.Contains(t, cleanup.Images, "${boot_disk_image_uri}", "Delete the boot disk image after instance creation.")
-		assert.Len(t, cleanup.Images, len(testCase.images))
 
 		// Data Disks
 		assert.Len(t, instance.Disks, len(descriptor.Disk.Disks))
-		for i, disk := range instance.Disks[1:] {
-			assert.Equal(t, disk.Source, testCase.disks[i].GetURI())
-			assert.True(t, disk.AutoDelete, "Delete the disk when the instance is deleted.")
-			assert.False(t, disk.Boot, "Data disk are not configured to boot.")
+		assert.Len(t, cleanup.Images, len(testCase.images))
+		for i, images := range testCase.images[1:] {
+			dataDisk := instance.Disks[i+1]
+			assert.Equal(t, images.GetURI(), dataDisk.InitializeParams.SourceImage, "Include data disk on final instance.")
+			assert.Regexp(t, "^[a-z].*", dataDisk.InitializeParams.DiskName, "Disk name should start with letter.")
+			assert.True(t, dataDisk.AutoDelete, "Delete the disk when the instance is deleted.")
+			assert.False(t, dataDisk.Boot, "Data disk are not configured to boot.")
+			assert.Contains(t, cleanup.Images, testCase.images[i+1].GetURI(), "Delete the data disk image after instance creation.")
 		}
 
 		// Instance
@@ -614,29 +549,14 @@ type mockConfiguration struct {
 	descriptorFilenames []string
 	fileURIs            []string
 	images              []domain.Image
-	disks               []domain.Disk
 }
 
 func setupMocksAndRun(mockCtrl *gomock.Controller, params *ovfdomain.OVFImportParams, wfPath string, descriptor *ovf.Envelope, mockConfig mockConfiguration) (daisyutils.DaisyWorker, error) {
-	params.InstanceNames = strings.ToLower(strings.TrimSpace(params.InstanceNames))
-	params.MachineImageName = strings.ToLower(strings.TrimSpace(params.MachineImageName))
 	expectedParams := *params
 	expectedParams.OsID = mockConfig.expectedOS
 	expectedParams.Deadline = params.Deadline.Add(-1 * instanceConstructionTime)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
 	mockComputeClient := mocks.NewMockClient(mockCtrl)
-	mockStorageObject := mocks.NewMockStorageObject(mockCtrl)
-
-	mockComputeClient.EXPECT().CreateDisk(*params.Project, params.Zone, gomock.Any()).Return(nil).AnyTimes()
-
-	var imageName string
-	if params.InstanceNames == "" {
-		imageName = params.MachineImageName
-	} else {
-		imageName = params.InstanceNames
-	}
-	imageName += "-boot-image"
-
 	if params.MachineType == "" {
 		mockComputeClient.EXPECT().ListMachineTypes(*params.Project, params.Zone).Return(machineTypes, nil)
 	}
@@ -647,27 +567,18 @@ func setupMocksAndRun(mockCtrl *gomock.Controller, params *ovfdomain.OVFImportPa
 	mockMockTarGcsExtractorInterface.EXPECT().ExtractTarToGcs(
 		params.OvfOvaGcsPath, params.ScratchBucketGcsPath+"/ovf").
 		Return(nil).Times(1)
-
-	mockImporter := imagemocks.NewMockImporter(mockCtrl)
-	mockMultiDiskImporter := ovfdomainmocks.NewMockMultiDiskImporterInterface(mockCtrl)
-
-	oi := OVFImporter{ctx: context.Background(), workflowPath: wfPath,
+	mockMultiDiskImporter := ovfdomainmocks.NewMockMultiImageImporterInterface(mockCtrl)
+	if mockConfig.expectImportToRun {
+		mockMultiDiskImporter.EXPECT().Import(
+			gomock.Any(),
+			&expectedParams,
+			mockConfig.fileURIs).Return(mockConfig.images, nil)
+	}
+	oi := OVFImporter{ctx: context.Background(), workflowPath: wfPath, multiImageImporter: mockMultiDiskImporter,
 		storageClient: mockStorageClient, computeClient: mockComputeClient,
 		ovfDescriptorLoader: mockOvfDescriptorLoader, tarGcsExtractor: mockMockTarGcsExtractorInterface,
-		imageImporter:     mockImporter,
-		multiDiskImporter: mockMultiDiskImporter,
-		Logger:            logging.NewToolLogger("test"), params: params}
-
-	if mockConfig.expectImportToRun {
-		mockImporter.EXPECT().Run(oi.ctx)
-		mockStorageObject.EXPECT().NewReader().Return(ioutil.NopCloser(strings.NewReader("file content")), nil)
-		mockStorageClient.EXPECT().GetObject(gomock.Any(), gomock.Any()).Return(mockStorageObject)
-		if len(mockConfig.descriptorFilenames) > 1 {
-			mockMultiDiskImporter.EXPECT().Import(gomock.Any(), gomock.Any(), gomock.Any()).Return(mockConfig.disks, nil)
-		}
-	}
-
-	err := oi.importDisksFiles()
+		Logger: logging.NewToolLogger("test"), params: params}
+	err := oi.importDiskFilesToImages()
 	if err != nil {
 		return nil, err
 	}
