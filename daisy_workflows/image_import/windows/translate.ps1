@@ -286,7 +286,7 @@ function Install-Packages {
     Run-Command 'C:\ProgramData\GooGet\googet.exe' -root 'C:\ProgramData\GooGet' -noconfirm install google-compute-engine-driver-balloon -ErrorAction SilentlyContinue
     Run-Command 'C:\ProgramData\GooGet\googet.exe' -root 'C:\ProgramData\GooGet' -noconfirm install google-compute-engine-driver-pvpanic -ErrorAction SilentlyContinue
     Run-Command 'C:\ProgramData\GooGet\googet.exe' -root 'C:\ProgramData\GooGet' -noconfirm install google-compute-engine-vss -ErrorAction SilentlyContinue
-    if (([System.Environment]::OSVersion.Version) -ge 6.2) {
+    if (([System.Environment]::OSVersion.Version) -ge "6.2") {
       Run-Command 'C:\ProgramData\GooGet\googet.exe' -root 'C:\ProgramData\GooGet' -noconfirm install google-osconfig-agent
     } else {
       Write-Output 'Skipping installation of OS Config agent. Requires Windows 2012 or newer.'
@@ -301,7 +301,9 @@ function Install-32bitPackages {
   & C:\ProgramData\GooGet\googet.exe -root C:\ProgramData\GooGet -noconfirm install C:\ProgramData\GooGet\components\google-compute-engine-powershell.noarch.1.1.1@4.goo
   & C:\ProgramData\GooGet\googet.exe -root C:\ProgramData\GooGet -noconfirm install C:\ProgramData\GooGet\components\certgen-x86.x86_32.1.0.0@2.goo
   & C:\ProgramData\GooGet\googet.exe -root C:\ProgramData\GooGet -noconfirm install C:\ProgramData\GooGet\components\google-compute-engine-sysprep.noarch.3.10.1@1.goo
-  & C:\ProgramData\GooGet\googet.exe -root C:\ProgramData\GooGet -noconfirm install -reinstall C:\ProgramData\GooGet\components\google-compute-engine-metadata-scripts-x86.x86_32.4.2.1@1.goo
+  if (([System.Environment]::OSVersion.Version) -ge "10.0") {
+    & C:\ProgramData\GooGet\googet.exe -root C:\ProgramData\GooGet -noconfirm install -reinstall C:\ProgramData\GooGet\components\google-compute-engine-metadata-scripts-x86.x86_32.4.2.1@1.goo
+  }
   if ($script:install_packages.ToLower() -eq 'true') {
     Write-Output 'Translate: Installing GCE packages...'
     # Install each individually in order to catch individual errors
