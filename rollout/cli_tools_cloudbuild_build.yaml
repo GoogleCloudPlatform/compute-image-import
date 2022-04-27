@@ -17,6 +17,7 @@ substitutions:
   _RELEASE: 'release'
   _PREV_RELEASE: 'prev-release'
 
+steps:
 # Build import_precheck.
 - name: 'golang'
   dir: 'cli_tools/import_precheck'
