@@ -227,7 +227,7 @@ try {
   }
 
   # Turn off startup animation which breaks headless installation.
-  # See http://support.microsoft.com/kb/2955372/en-us
+  # See MS KB2955372 for details (KB archived): https://mskb.pkisolutions.com/kb/2955372#kb-applies-to
   Run-Command reg load 'HKLM\MountedSoftware' "${script:os_drive}\Windows\System32\config\SOFTWARE"
   Run-Command reg add 'HKLM\MountedSoftware\Microsoft\Windows\CurrentVersion\Authentication\LogonUI' /v 'AnimationDisabled' /t 'REG_DWORD' /d 1 /f
 
