@@ -55,6 +55,8 @@ type onestepImportAWSTestProperties struct {
 	startupScript         string
 	skipOSConfig          string
 	computeServiceAccount string
+	network               string
+	subnet                string
 }
 
 // setAWSAuth downloads AWS credentials and sets access keys.

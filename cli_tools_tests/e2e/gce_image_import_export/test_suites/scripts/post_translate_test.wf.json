@@ -19,6 +19,14 @@
     "compute_service_account": {
       "Value": "default",
       "Description": "Service account that will be used by the created worker instance"
+    },
+    "network": {
+      "Value": "global/networks/default",
+      "Description": "Specifies the network that the instance is a part of."
+    },
+    "subnetwork": {
+      "Value": "",
+      "Description": "Specifies the subnet that the instance is a part of."
     }
   },
   "Steps": {
@@ -44,6 +52,12 @@
               "Scopes": [
                 "https://www.googleapis.com/auth/devstorage.read_write"
               ]
+            }
+          ],
+          "networkInterfaces": [
+            {
+              "Network": "${network}",
+              "Subnetwork": "${subnetwork}"
             }
           ]
         }
