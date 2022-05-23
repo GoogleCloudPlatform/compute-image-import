@@ -60,12 +60,15 @@ func OnestepImageImportSuite(
 	for _, testType := range testTypes {
 		onestepImageImportFromAWSUbuntuAMI := junitxml.NewTestCase(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "From AWS Ubuntu-1804 AMI"))
+		onestepImageImportFromAWSUbuntuAMIWithCustomNetwork := junitxml.NewTestCase(
+			testSuiteName, fmt.Sprintf("[%v] %v", testType, "From AWS Ubuntu-1804 AMI with custom network/subnet"))
 		onestepImageImportFromAWSUbuntuVMDK := junitxml.NewTestCase(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "From AWS Ubuntu-1804 VMDK"))
 
 		testsMap[testType] = map[*junitxml.TestCase]func(
 			context.Context, *junitxml.TestCase, *log.Logger, *testconfig.Project, e2e.CLITestType){}
 		testsMap[testType][onestepImageImportFromAWSUbuntuAMI] = runOnestepImageImportFromAWSLinuxAMI
+		testsMap[testType][onestepImageImportFromAWSUbuntuAMIWithCustomNetwork] = runOnestepImageImportFromAWSLinuxAMIWithCustomNetwork
 		testsMap[testType][onestepImageImportFromAWSUbuntuVMDK] = runOnestepImageImportFromAWSLinuxVMDK
 	}
 
@@ -128,6 +131,25 @@ func runOnestepImageImportFromAWSLinuxAMI(ctx context.Context, testCase *junitxm
 		os:            "ubuntu-1804",
 		startupScript: "post_translate_test.sh",
 		skipOSConfig:  "true",
+	}
+
+	runOnestepImportTest(ctx, props, testProjectConfig.TestProjectID, testProjectConfig.TestZone, testType, logger, testCase)
+}
+
+func runOnestepImageImportFromAWSLinuxAMIWithCustomNetwork(ctx context.Context, testCase *junitxml.TestCase, logger *log.Logger,
+	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
+
+	imageName := "e2e-test-onestep-image-import" + path.RandString(5)
+	testProjectConfig.TestProjectID = "compute-image-test-custom-vpc"
+
+	props := &onestepImportAWSTestProperties{
+		imageName:     imageName,
+		amiID:         ubuntuAMIID,
+		os:            "ubuntu-1804",
+		startupScript: "post_translate_test.sh",
+		skipOSConfig:  "true",
+		network:       "projects/compute-image-test-custom-vpc/global/networks/unrestricted-egress",
+		subnet:        "projects/compute-image-test-custom-vpc/regions/us-central1/subnetworks/unrestricted-egress",
 	}
 
 	runOnestepImportTest(ctx, props, testProjectConfig.TestProjectID, testProjectConfig.TestZone, testType, logger, testCase)
@@ -283,6 +305,16 @@ func buildTestArgs(props *onestepImportAWSTestProperties, testProjectID string, 
 		wrapperArgs = append(wrapperArgs, fmt.Sprintf("-timeout=%v", props.timeout))
 	}
 
+	if props.network != "" {
+		gcloudArgs = append(gcloudArgs, fmt.Sprintf("--network=%v", props.network))
+		wrapperArgs = append(wrapperArgs, fmt.Sprintf("-network=%v", props.network))
+	}
+
+	if props.subnet != "" {
+		gcloudArgs = append(gcloudArgs, fmt.Sprintf("--subnet=%v", props.subnet))
+		wrapperArgs = append(wrapperArgs, fmt.Sprintf("-subnet=%v", props.subnet))
+	}
+
 	argsMap := map[e2e.CLITestType][]string{
 		e2e.Wrapper:                       wrapperArgs,
 		e2e.GcloudBetaProdWrapperLatest:   gcloudArgs,
@@ -313,6 +345,12 @@ func verifyImportedImageFile(ctx context.Context, testCase *junitxml.TestCase, p
 		},
 		"compute_service_account": {
 			Value: props.computeServiceAccount,
+		},
+		"network": {
+			Value: props.network,
+		},
+		"subnetwork": {
+			Value: props.subnet,
 		},
 	}
 
