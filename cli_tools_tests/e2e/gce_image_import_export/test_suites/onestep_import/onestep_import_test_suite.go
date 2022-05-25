@@ -140,7 +140,7 @@ func runOnestepImageImportFromAWSLinuxAMIWithCustomNetwork(ctx context.Context, 
 	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
 
 	imageName := "e2e-test-onestep-image-import" + path.RandString(5)
-	testProjectConfig.TestProjectID = "compute-image-test-custom-vpc"
+	testProjectID := "compute-image-test-custom-vpc"
 
 	props := &onestepImportAWSTestProperties{
 		imageName:     imageName,
@@ -152,7 +152,7 @@ func runOnestepImageImportFromAWSLinuxAMIWithCustomNetwork(ctx context.Context, 
 		subnet:        "projects/compute-image-test-custom-vpc/regions/us-central1/subnetworks/unrestricted-egress",
 	}
 
-	runOnestepImportTest(ctx, props, testProjectConfig.TestProjectID, testProjectConfig.TestZone, testType, logger, testCase)
+	runOnestepImportTest(ctx, props, testProjectID, testProjectConfig.TestZone, testType, logger, testCase)
 }
 
 func runOnestepImageImportFromAWSLinuxVMDK(ctx context.Context, testCase *junitxml.TestCase, logger *log.Logger,
