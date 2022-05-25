@@ -136,10 +136,12 @@ func (inflater *apiInflater) inflateForShadowTest() (persistentDisk, inflationIn
 }
 
 func (inflater *apiInflater) createDisk(diskName string) (compute.Disk, error) {
+	diskType := fmt.Sprintf("projects/%s/zones/%s/diskTypes/pd-ssd", inflater.request.Project, inflater.request.Zone)
 	cd := compute.Disk{
 		Name:                diskName,
 		SourceStorageObject: inflater.request.Source.Path(),
 		GuestOsFeatures:     inflater.guestOsFeatures,
+		Type:                diskType,
 	}
 	err := inflater.computeClient.CreateDisk(inflater.request.Project, inflater.request.Zone, &cd)
 	return cd, err
