@@ -500,7 +500,7 @@ func runImportAndVerify(t *testing.T, params *ovfdomain.OVFImportParams, mode *i
 			"gs://bucket/folder/ovf/Ubuntu_for_Horizon71_1_1.0-disk3.vmdk",
 		},
 		images: []domain.Image{
-			image.NewImage("project-name", fmt.Sprintf("%s-boot-image", instanceName)),
+			image.NewImage("project-name", fmt.Sprintf("boot-image-%s", instanceName)),
 		},
 		disks:             []domain.Disk{disk1, disk2},
 		expectedOS:        params.OsID,
@@ -628,14 +628,6 @@ func setupMocksAndRun(mockCtrl *gomock.Controller, params *ovfdomain.OVFImportPa
 	mockStorageObject := mocks.NewMockStorageObject(mockCtrl)
 
 	mockComputeClient.EXPECT().CreateDisk(*params.Project, params.Zone, gomock.Any()).Return(nil).AnyTimes()
-
-	var imageName string
-	if params.InstanceNames == "" {
-		imageName = params.MachineImageName
-	} else {
-		imageName = params.InstanceNames
-	}
-	imageName += "-boot-image"
 
 	if params.MachineType == "" {
 		mockComputeClient.EXPECT().ListMachineTypes(*params.Project, params.Zone).Return(machineTypes, nil)

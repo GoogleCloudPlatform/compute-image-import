@@ -19,8 +19,8 @@ import (
 	"time"
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
-	daisyovfutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/daisy_utils"
 	ovfdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/domain"
 )
 
@@ -38,7 +38,7 @@ func (r *requestBuilder) buildRequests(params *ovfdomain.OVFImportParams, dataDi
 			return nil, err
 		}
 		imageNamePrefix := getDisksPrefixName(params)
-		imageName := daisyovfutils.GenerateDataDiskName(imageNamePrefix, i+1)
+		imageName := daisyutils.GenerateValidDisksImagesName("", fmt.Sprintf("%s-%d", imageNamePrefix, i+1))
 		request := importer.ImageImportRequest{
 			ExecutionID:           imageName,
 			ImageName:             imageName,

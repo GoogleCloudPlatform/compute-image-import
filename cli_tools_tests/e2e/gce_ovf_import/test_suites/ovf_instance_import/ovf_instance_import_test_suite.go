@@ -26,9 +26,9 @@ import (
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
 	"google.golang.org/api/compute/v1"
 
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/paramhelper"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
-	daisyovfutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/daisy_utils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e"
 	ovfimporttestsuite "github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e/gce_ovf_import/test_suites"
 	"github.com/GoogleCloudPlatform/compute-image-import/common/gcp"
@@ -180,7 +180,7 @@ func deleteResourcesIfInstanceCreationFails(ctx context.Context, testCase *junit
 	e2e.RunTestCommandAssertErrorMessage(cmds[testType], buildTestArgs(props, testProjectConfig)[testType], "not-a-machine-type' was not found", logger, testCase)
 
 	// check if boot image is deleted
-	imgName := fmt.Sprintf("%s-boot-image", props.instanceName)
+	imgName := daisyutils.GenerateValidDisksImagesName("boot-image-%s", props.instanceName)
 	image, _ := client.GetImage(testProjectConfig.TestProjectID, imgName)
 	if image != nil {
 		e2e.Failure(testCase, logger, fmt.Sprintf("Expected image %s to be removed", imgName))
@@ -188,7 +188,7 @@ func deleteResourcesIfInstanceCreationFails(ctx context.Context, testCase *junit
 
 	// check if data disks are deleted
 	for i := 0; i < 2; i++ {
-		diskName := daisyovfutils.GenerateDataDiskName(props.instanceName, i+1)
+		diskName := daisyutils.GenerateValidDisksImagesName("", fmt.Sprintf("%s-%d", props.instanceName, i+1))
 		disk, _ := client.GetDisk(testProjectConfig.TestProjectID, testProjectConfig.TestZone, diskName)
 		if disk != nil {
 			e2e.Failure(testCase, logger, fmt.Sprintf("Expected disk %s to be removed", diskName))

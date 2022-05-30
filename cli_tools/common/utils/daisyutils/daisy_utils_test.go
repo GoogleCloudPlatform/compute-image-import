@@ -15,6 +15,8 @@
 package daisyutils
 
 import (
+	"fmt"
+	"math/rand"
 	"os"
 	"path"
 	"reflect"
@@ -501,6 +503,49 @@ func Test_ParseWorkflow_RaisesErrorWhenInvalidPath(t *testing.T) {
 	assert.Contains(t, err.Error(), "/file/not/found: no such file or directory")
 }
 
+func Test_GenerateValidDisksImagesName_LongNameWithSuffixId(t *testing.T) {
+	prefixName := "disk-"
+	randomSuffixName := randomString(63)
+	diskId := "-03"
+	suffixName := randomSuffixName + diskId
+
+	charsToBeRemoved := len(prefixName) + len(randomSuffixName) + len(diskId) - 63
+
+	generatedDiskName := GenerateValidDisksImagesName(prefixName, suffixName)
+	assert.Equal(t, len(generatedDiskName), 63)
+	assert.Contains(t, generatedDiskName, "-03")
+
+	expectedGeneratedDiskName := fmt.Sprintf("%s%s%s", prefixName, randomSuffixName[0:len(randomSuffixName)-charsToBeRemoved], diskId)
+
+	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
+}
+
+func Test_GenerateValidDisksImagesName_LongNameWithOutSuffixId(t *testing.T) {
+	prefixName := "disk-"
+	suffixName := randomString(63)
+
+	charsToBeRemoved := len(prefixName) + len(suffixName) - 63
+
+	generatedDiskName := GenerateValidDisksImagesName(prefixName, suffixName)
+	assert.Equal(t, len(generatedDiskName), 63)
+
+	expectedGeneratedDiskName := fmt.Sprintf("%s%s", prefixName, suffixName[0:len(suffixName)-charsToBeRemoved])
+
+	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
+}
+
+func Test_GenerateValidDisksImagesName_ShortName(t *testing.T) {
+	prefixName := "disk-"
+	suffixName := randomString(50)
+
+	generatedDiskName := GenerateValidDisksImagesName(prefixName, suffixName)
+	assert.Equal(t, len(generatedDiskName), len(suffixName)+len(prefixName))
+
+	expectedGeneratedDiskName := fmt.Sprintf("%s%s", prefixName, suffixName)
+
+	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
+}
+
 func assertWorkflow(t *testing.T, w *daisy.Workflow, project string, zone string, gcsPath string,
 	oauth string, dTimeout string, endpoint string, varMap map[string]string) {
 	t.Helper()
@@ -529,4 +574,14 @@ func assertEqualWorkflowVars(t *testing.T, wf *daisy.Workflow, expectedVars map[
 		actualVars[k] = v.Value
 	}
 	assert.Equal(t, expectedVars, actualVars)
+}
+
+func randomString(n int) string {
+	var letter = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letter[rand.Intn(len(letter))]
+	}
+	return string(b)
 }

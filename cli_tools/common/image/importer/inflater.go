@@ -23,6 +23,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/imagefile"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
@@ -309,7 +310,7 @@ func (facade *shadowTestInflaterFacade) compareWithShadowInflater(mainPd, shadow
 }
 
 func getDiskName(executionID string) string {
-	return fmt.Sprintf("disk-%v", executionID)
+	return daisyutils.GenerateValidDisksImagesName("disk-", executionID)
 }
 
 // GetDiskURI return the URI of a PD disk
