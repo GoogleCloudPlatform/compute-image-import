@@ -506,16 +506,16 @@ func Test_ParseWorkflow_RaisesErrorWhenInvalidPath(t *testing.T) {
 func Test_GenerateValidDisksImagesName_LongNameWithSuffixId(t *testing.T) {
 	prefixName := "disk-"
 	randomSuffixName := randomString(63)
-	diskId := "-03"
-	suffixName := randomSuffixName + diskId
+	diskID := "-03"
+	suffixName := randomSuffixName + diskID
 
-	charsToBeRemoved := len(prefixName) + len(randomSuffixName) + len(diskId) - 63
+	charsToBeRemoved := len(prefixName) + len(randomSuffixName) + len(diskID) - 63
 
 	generatedDiskName := GenerateValidDisksImagesName(prefixName, suffixName)
 	assert.Equal(t, len(generatedDiskName), 63)
 	assert.Contains(t, generatedDiskName, "-03")
 
-	expectedGeneratedDiskName := fmt.Sprintf("%s%s%s", prefixName, randomSuffixName[0:len(randomSuffixName)-charsToBeRemoved], diskId)
+	expectedGeneratedDiskName := fmt.Sprintf("%s%s%s", prefixName, randomSuffixName[0:len(randomSuffixName)-charsToBeRemoved], diskID)
 
 	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
 }
