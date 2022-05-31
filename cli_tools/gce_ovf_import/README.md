@@ -19,7 +19,7 @@ install the `gce_ovf_import` tool, this should place the binary in the
 [Go bin directory](https://golang.org/doc/code.html#GOPATH):
 
 ```
-go get github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_ovf_import
+go get github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import
 ```
 
 ### Flags
@@ -121,7 +121,7 @@ Exactly one of these must be specified:
 
 Import into a VM instance:
 ```
-gce_ovf_import -instance-names=INSTANCE_NAME -source-uri=OVF_GCS_FILE_PATH
+gce_ovf_import -instance-names=INSTANCE_NAME -ovf-gcs-path=OVF_GCS_FILE_PATH
 [-client-id=CLIENT_ID]
 [-can-ip-forward] [-custom-cpu=CUSTOM_CPU -custom-memory=CUSTOM_MEMORY]
 [-deletion-protection] [-description=DESCRIPTION]
@@ -144,7 +144,7 @@ gce_ovf_import -instance-names=INSTANCE_NAME -source-uri=OVF_GCS_FILE_PATH
 
 Import into a machine image:
 ```
-gce_ovf_import -machine-image-name=MACHINE_IMAGE_NAME -source-uri=OVF_GCS_FILE_PATH
+gce_ovf_import -machine-image-name=MACHINE_IMAGE_NAME -ovf-gcs-path=OVF_GCS_FILE_PATH
 [-client-id=CLIENT_ID]
 [-can-ip-forward] [-custom-cpu=CUSTOM_CPU -custom-memory=CUSTOM_MEMORY]
 [-deletion-protection] [-description=DESCRIPTION]
