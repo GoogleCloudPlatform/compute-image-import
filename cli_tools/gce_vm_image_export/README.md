@@ -10,7 +10,7 @@ install the `gce_vm_image_export` tool, this should place the binary in the
 [Go bin directory](https://golang.org/doc/code.html#GOPATH):
 
 ```
-go get github.com/GoogleCloudPlatform/compute-image-tools/cli_tools/gce_vm_image_export
+go get github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_vm_image_export
 ```
 
 ### Flags
