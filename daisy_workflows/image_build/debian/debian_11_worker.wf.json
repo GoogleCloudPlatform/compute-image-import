@@ -1,0 +1,87 @@
+{
+  "Name": "build-debian-11-worker",
+  "Vars": {
+    "build_date": {
+      "Value": "${DATE}",
+      "Description": "Build datestamp used to version the image."
+    },
+    "family-tag": {
+      "Value": "debian-11",
+      "Description": "Image family name used as a base image."
+    },
+    "image_prefix": {
+      "Value": "debian-11-worker",
+      "Description": "Image family name used as a base image."
+    }
+  },
+  "Sources": {
+      "debian_worker.sh": "./debian_worker.sh"
+  },
+  "Steps": {
+    "create-worker-disk": {
+      "CreateDisks": [
+        {
+          "Name": "disk-worker",
+          "SourceImage": "projects/debian-cloud/global/images/family/debian-11",
+          "Type": "pd-ssd",
+          "NoCleanup": true
+        }
+      ]
+    },
+    "create-worker-instance": {
+      "CreateInstances": [
+        {
+          "Name": "inst-worker",
+          "Disks": [{"Source": "disk-worker"}],
+          "MachineType": "e2-standard-4",
+          "StartupScript": "debian_worker.sh",
+          "MetaData": {
+            "block-project-ssh-keys": "TRUE"
+          }
+        }
+      ]
+    },
+    "wait-for-stop": {
+      "TimeOut": "30m",
+      "WaitForInstancesSignal": [
+        {
+          "Name": "inst-worker",
+          "SerialOutput": {
+            "Port": 1,
+            "FailureMatch": "BuildFailed:",
+            "SuccessMatch": "BuildSuccess:",
+            "StatusMatch": "BuildStatus:"
+          }
+        }
+      ]
+    },
+    "remove-worker-instance": {
+      "DeleteResources": {
+        "Instances": ["inst-worker"]
+      }
+    },
+    "create-images": {
+      "CreateImages": [{
+        "Name": "${image_prefix}-v${build_date}",
+        "SourceDisk": "disk-worker",
+        "Description": "A debian-11 based worker image for import/export tools.",
+        "Family": "${family-tag}",
+        "NoCleanup": true,
+        "ExactName": true,
+        "OverWrite": true
+      }]
+    },
+    "cleanup-resources": {
+      "DeleteResources": {
+        "Disks": ["disk-worker"]
+      }
+    }
+  },
+  "Dependencies": {
+    "create-worker-instance": ["create-worker-disk"],
+    "wait-for-stop": ["create-worker-instance"],
+    "remove-worker-instance": ["wait-for-stop"],
+    "create-images": ["remove-worker-instance"],
+    "cleanup-resources": ["create-images"]
+  }
+}

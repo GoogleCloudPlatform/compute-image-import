@@ -1,0 +1,22 @@
+timeout: 4500s
+
+substitutions:
+  _IMAGE_PROJECT: 'debian-worker-ks'
+  _GCS_PATH: 'gs://debian-worker-ks'
+  _DAISY_WORKFLOW: '/workspace/daisy_workflows/image_build/debian/debian_11_worker.wf.json'
+  _DAISY_TEST_WORKFLOW: '/workspace/daisy_integration_tests/debian_11_worker.wf.json'
+
+steps:
+#Build debian 11 worker.
+- name: 'gcr.io/compute-image-tools/daisy:latest'
+  args: [
+        '-gcs_path=${_GCS_PATH}',
+        '-project=${_IMAGE_PROJECT}',
+        '${_DAISY_WORKFLOW}'
+        ]
+- name: 'gcr.io/compute-image-tools/daisy:latest'
+  args: [
+        '-gcs_path=${_GCS_PATH}',
+        '-project=${_IMAGE_PROJECT}',
+        '${_DAISY_TEST_WORKFLOW}'
+        ]
