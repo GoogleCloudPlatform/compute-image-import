@@ -84,7 +84,10 @@ func NewDaisyInflater(request ImageImportRequest, fileMetadata imagefile.Metadat
 }
 
 func newDaisyInflater(request ImageImportRequest, fileMetadata imagefile.Metadata, logger logging.Logger) (*daisyInflater, error) {
-	diskName := getDiskName(request.ExecutionID)
+	diskName, err := getDiskName(request.ExecutionID)
+	if err != nil {
+		return nil, daisy.Errf("Failed to create disk by daisk inflater: %v", err)
+	}
 	var wfPath string
 	var vars map[string]string
 	var inflationDiskIndex int

@@ -145,8 +145,13 @@ func (facade *inflaterFacade) Inflate() (persistentDisk, inflationInfo, error) {
 				return pd, ii, err
 			}
 
+			diskName, err := getDiskName(facade.request.ExecutionID)
+			if err != nil {
+				return pd, ii, daisy.Errf("Failed in Inflater: %v", err)
+			}
+
 			// If checksum mismatches , delete the corrupted disk.
-			err = facade.computeClient.DeleteDisk(facade.request.Project, facade.request.Zone, getDiskName(facade.request.ExecutionID))
+			err = facade.computeClient.DeleteDisk(facade.request.Project, facade.request.Zone, diskName)
 			if err != nil {
 				return pd, ii, daisy.Errf("Tried to delete the disk after checksum mismatch is detected, but failed on: %v", err)
 			}
@@ -309,7 +314,7 @@ func (facade *shadowTestInflaterFacade) compareWithShadowInflater(mainPd, shadow
 	return result
 }
 
-func getDiskName(executionID string) string {
+func getDiskName(executionID string) (string, error) {
 	return daisyutils.GenerateValidDisksImagesName("disk-", executionID)
 }
 

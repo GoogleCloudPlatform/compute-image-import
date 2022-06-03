@@ -531,22 +531,29 @@ func UpdateAllInstanceNoExternalIP(workflow *daisy.Workflow, noExternalIP bool) 
 	(&RemoveExternalIPHook{}).PreRunHook(workflow)
 }
 
-// GenerateValidDisksImagesName generates a valid name for disks/images based on some prefix and suffix-Name
+// GenerateValidDisksImagesName generates a valid name for disks/images based on some constant prefix (e.g. "disk-") and suffix-Name
 // It removes characters from the suffixName if the tot. length will be more than 63
-func GenerateValidDisksImagesName(PrefixName string, suffixName string) string {
-	totalLen := len(PrefixName) + len(suffixName)
+func GenerateValidDisksImagesName(prefixName string, suffixName string) (string, error) {
+	totalLen := len(prefixName) + len(suffixName)
+
 	if totalLen > 63 {
 		// if suffixName has ID number at the end (e.g "suffixName-id") remove chars before the id
 		hasID, idx := hasIDAtTheEnd(suffixName)
 		charsToBeRemoved := totalLen - 63
-		if hasID {
+		if !hasID && len(suffixName) >= charsToBeRemoved {
+			suffixName = suffixName[0 : len(suffixName)-charsToBeRemoved]
+		} else if hasID && idx >= charsToBeRemoved {
 			suffixNameWithoutID := suffixName[0 : idx-charsToBeRemoved]
-			return fmt.Sprintf("%v%v%v", PrefixName, suffixNameWithoutID, suffixName[idx:])
+			suffixName = fmt.Sprintf("%s%s", suffixNameWithoutID, suffixName[idx:])
 		}
-
-		suffixName = suffixName[0 : len(suffixName)-charsToBeRemoved]
 	}
-	return fmt.Sprintf("%v%v", PrefixName, suffixName)
+
+	// in case of the total length is > 63 AND number of charsToBeRemoved > non-ID chars in suffixName
+	if len(prefixName)+len(suffixName) > 63 {
+		return "", fmt.Errorf("Can't shorten disk/image name \"%s\" into a valid name", fmt.Sprintf("%s%s", prefixName, suffixName))
+	}
+
+	return fmt.Sprintf("%v%v", prefixName, suffixName), nil
 }
 
 // hasIDAtTheEnd uses regexp to check if name has id at the end and return its indx,

@@ -84,7 +84,11 @@ func (inflater *apiInflater) Inflate() (persistentDisk, inflationInfo, error) {
 
 	ctx := context.Background()
 	startTime := time.Now()
-	diskName := getDiskName(inflater.request.ExecutionID)
+
+	diskName, err := getDiskName(inflater.request.ExecutionID)
+	if err != nil {
+		return persistentDisk{}, inflationInfo{}, daisy.Errf("Failed to create disk by api inflater: %v", err)
+	}
 
 	cd, err := inflater.createDisk(diskName)
 	if err != nil {

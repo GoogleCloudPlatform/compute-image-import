@@ -82,7 +82,11 @@ func (p *metadataProcessor) stageRequestForNewDisk(pd persistentDisk) (newDisk *
 		return nil, false, daisy.Errf("Failed to get disk: %v", err)
 	}
 
-	newDiskName := daisyutils.GenerateValidDisksImagesName("", fmt.Sprintf("%v-1", diskName))
+	newDiskName, err := daisyutils.GenerateValidDisksImagesName("", fmt.Sprintf("%v-1", diskName))
+	if err != nil {
+		return nil, false, daisy.Errf("Failed to get  Name: %v", err)
+	}
+
 	newDisk = &compute.Disk{
 		Name:       newDiskName,
 		SourceDisk: pd.uri,

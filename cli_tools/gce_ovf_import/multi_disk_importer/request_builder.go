@@ -38,7 +38,12 @@ func (r *requestBuilder) buildRequests(params *ovfdomain.OVFImportParams, dataDi
 			return nil, err
 		}
 		imageNamePrefix := getDisksPrefixName(params)
-		imageName := daisyutils.GenerateValidDisksImagesName("", fmt.Sprintf("%s-%d", imageNamePrefix, i+1))
+
+		var imageName string
+		if imageName, err = daisyutils.GenerateValidDisksImagesName("", fmt.Sprintf("%s-%d", imageNamePrefix, i+1)); err != nil {
+			return nil, err
+		}
+
 		request := importer.ImageImportRequest{
 			ExecutionID:           imageName,
 			ImageName:             imageName,
