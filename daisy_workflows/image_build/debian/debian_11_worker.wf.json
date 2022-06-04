@@ -11,7 +11,7 @@
     },
     "image_prefix": {
       "Value": "debian-11-worker",
-      "Description": "Image family name used as a base image."
+      "Description": "Prefix for the created image."
     }
   },
   "Sources": {

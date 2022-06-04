@@ -5,9 +5,9 @@
       "Value": "${DATE}",
       "Description": "Build datestamp used to version the image."
     },
-    "source_image": {
-      "Value": "projects/debian-worker-ks/global/images/debian-11-worker-v${DATE}",
-      "Description": "Image to be tested"
+    "project_id": {
+      "Value": "debian-worker-ks",
+      "Description": "Project of Debian 11 worker image"
     }
   },
   "Sources": {
@@ -18,7 +18,7 @@
       "CreateDisks": [
         {
           "Name": "disk-worker",
-          "SourceImage": "${source_image}",
+          "SourceImage": "projects/${project_id}/global/images/debian-11-worker-v${DATE}",
           "Type": "pd-ssd",
           "NoCleanup": true
         }
