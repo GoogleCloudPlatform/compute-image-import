@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Builds a Debian based image for import, export, and build tasks. Preloads
-# dependencies and binaries for these workflows.
+# Runs validation tests for Debian 11 worker image. Script is executed in
+# workflow debian_11_worker.wf.json
 
 echo "BuildStatus: Test if apt packages have been installed"
 APT_PACKAGES="

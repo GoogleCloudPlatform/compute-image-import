@@ -11,7 +11,7 @@ Variables:
 
 Example Daisy invocation:
 ```shell
-# Example importing a VMDK (using a credentials file)
+# Example of building Debian 11 worker
 daisy -project my-project \
       -gcs_path gs://bucket/daisyscratch \
       debian_11_worker.wf.json
