@@ -6,7 +6,7 @@ Compute Engine.
 ## Docs
 
 The main documentation for the tools in this repository can be found on our
-[GitHub.io page](https://googlecloudplatform.github.io/compute-image-tools/).
+[GitHub.io page](https://googlecloudplatform.github.io/compute-image-import/image-import.html).
 
 ## [Daisy](daisy)
 
