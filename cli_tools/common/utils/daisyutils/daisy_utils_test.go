@@ -513,7 +513,7 @@ func Test_GenerateValidDisksImagesName_LongNameWithSuffixId(t *testing.T) {
 	assert.Equal(t, len(generatedDiskName), 63)
 	assert.Contains(t, generatedDiskName, "-03")
 
-	expectedGeneratedDiskName := fmt.Sprintf("%s%s", nameWithoutID[0:len(name)-charsToBeRemoved], diskID)
+	expectedGeneratedDiskName := fmt.Sprintf("%s%s", nameWithoutID[0:len(nameWithoutID)-charsToBeRemoved], diskID)
 
 	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
 }
