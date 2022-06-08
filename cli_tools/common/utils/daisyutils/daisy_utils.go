@@ -531,29 +531,24 @@ func UpdateAllInstanceNoExternalIP(workflow *daisy.Workflow, noExternalIP bool) 
 	(&RemoveExternalIPHook{}).PreRunHook(workflow)
 }
 
-// GenerateValidDisksImagesName generates a valid name for disks/images based on some constant prefix (e.g. "disk-") and suffix-Name
-// It removes characters from the suffixName if the tot. length will be more than 63
-func GenerateValidDisksImagesName(prefixName string, suffixName string) (string, error) {
-	totalLen := len(prefixName) + len(suffixName)
+// GenerateValidDisksImagesName generates a valid name for disks/images , It ensures that the generated name
+// length is not greater than 63 by removing characters from the end of the name
+// if the name has ID number at the end (e.g "diskName-id") remove chars before the id
+func GenerateValidDisksImagesName(name string) string {
+	totalLen := len(name)
 
 	if totalLen > 63 {
-		// if suffixName has ID number at the end (e.g "suffixName-id") remove chars before the id
-		hasID, idx := hasIDAtTheEnd(suffixName)
+		hasID, idx := hasIDAtTheEnd(name)
 		charsToBeRemoved := totalLen - 63
-		if !hasID && len(suffixName) >= charsToBeRemoved {
-			suffixName = suffixName[0 : len(suffixName)-charsToBeRemoved]
-		} else if hasID && idx >= charsToBeRemoved {
-			suffixNameWithoutID := suffixName[0 : idx-charsToBeRemoved]
-			suffixName = fmt.Sprintf("%s%s", suffixNameWithoutID, suffixName[idx:])
+		if !hasID {
+			name = name[0 : len(name)-charsToBeRemoved]
+		} else {
+			nameWithoutID := name[0 : idx-charsToBeRemoved]
+			name = fmt.Sprintf("%s%s", nameWithoutID, name[idx:])
 		}
 	}
 
-	// in case of the total length is > 63 AND number of charsToBeRemoved > non-ID chars in suffixName
-	if len(prefixName)+len(suffixName) > 63 {
-		return "", fmt.Errorf("Can't shorten disk/image name \"%s\" into a valid name", fmt.Sprintf("%s%s", prefixName, suffixName))
-	}
-
-	return fmt.Sprintf("%v%v", prefixName, suffixName), nil
+	return name
 }
 
 // hasIDAtTheEnd uses regexp to check if name has id at the end and return its indx,

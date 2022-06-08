@@ -364,10 +364,7 @@ func (oi *OVFImporter) importBootDiskImage(bootDiskInfos ovfutils.DiskInfo, disk
 
 	oi.Logger.User(fmt.Sprint("Importing boot Disk Image ..."))
 
-	imageName, err := daisyutils.GenerateValidDisksImagesName("boot-image-", disksNamesPrefix)
-	if err != nil {
-		return daisy.Errf("Failed to create disk by api inflater: %v", err)
-	}
+	imageName := daisyutils.GenerateValidDisksImagesName("boot-image-" + disksNamesPrefix)
 
 	request, err := oi.buildBootDiskImageImportRequest(imageName, bootDiskInfos.FilePath)
 

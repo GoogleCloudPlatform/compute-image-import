@@ -180,11 +180,7 @@ func deleteResourcesIfInstanceCreationFails(ctx context.Context, testCase *junit
 	e2e.RunTestCommandAssertErrorMessage(cmds[testType], buildTestArgs(props, testProjectConfig)[testType], "not-a-machine-type' was not found", logger, testCase)
 
 	// check if boot image is deleted
-	var imgName string
-	if imgName, err = daisyutils.GenerateValidDisksImagesName("boot-image-", props.instanceName); err != nil {
-		e2e.Failure(testCase, logger, fmt.Sprintf("Failed to get boot-image name: %v", err))
-		return
-	}
+	imgName := daisyutils.GenerateValidDisksImagesName("boot-image-" + props.instanceName)
 
 	image, _ := client.GetImage(testProjectConfig.TestProjectID, imgName)
 	if image != nil {
@@ -193,11 +189,7 @@ func deleteResourcesIfInstanceCreationFails(ctx context.Context, testCase *junit
 
 	// check if data disks are deleted
 	for i := 0; i < 2; i++ {
-		var diskName string
-		if diskName, err = daisyutils.GenerateValidDisksImagesName("", fmt.Sprintf("%s-%d", props.instanceName, i+1)); err != nil {
-			e2e.Failure(testCase, logger, fmt.Sprintf("Failed to get data disk name: %v", err))
-			return
-		}
+		diskName := daisyutils.GenerateValidDisksImagesName(fmt.Sprintf("disk-%s-%d", props.instanceName, i+1))
 
 		disk, _ := client.GetDisk(testProjectConfig.TestProjectID, testProjectConfig.TestZone, diskName)
 		if disk != nil {

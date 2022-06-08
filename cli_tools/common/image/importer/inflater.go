@@ -145,10 +145,7 @@ func (facade *inflaterFacade) Inflate() (persistentDisk, inflationInfo, error) {
 				return pd, ii, err
 			}
 
-			diskName, err := getDiskName(facade.request.ExecutionID)
-			if err != nil {
-				return pd, ii, daisy.Errf("Failed in Inflater: %v", err)
-			}
+			diskName := getDiskName(facade.request.ExecutionID)
 
 			// If checksum mismatches , delete the corrupted disk.
 			err = facade.computeClient.DeleteDisk(facade.request.Project, facade.request.Zone, diskName)
@@ -314,8 +311,8 @@ func (facade *shadowTestInflaterFacade) compareWithShadowInflater(mainPd, shadow
 	return result
 }
 
-func getDiskName(executionID string) (string, error) {
-	return daisyutils.GenerateValidDisksImagesName("disk-", executionID)
+func getDiskName(executionID string) string {
+	return daisyutils.GenerateValidDisksImagesName(fmt.Sprintf("disk-%s", executionID))
 }
 
 // GetDiskURI return the URI of a PD disk

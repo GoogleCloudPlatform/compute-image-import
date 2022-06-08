@@ -15,7 +15,6 @@
 package daisyutils
 
 import (
-	"errors"
 	"fmt"
 	"math/rand"
 	"os"
@@ -505,76 +504,40 @@ func Test_ParseWorkflow_RaisesErrorWhenInvalidPath(t *testing.T) {
 }
 
 func Test_GenerateValidDisksImagesName_LongNameWithSuffixId(t *testing.T) {
-	prefixName := "disk-"
-	randomSuffixName := randomString(63)
+	nameWithoutID := fmt.Sprintf("disk-%s", randomString(63))
 	diskID := "-03"
-	suffixName := randomSuffixName + diskID
-
-	charsToBeRemoved := len(prefixName) + len(randomSuffixName) + len(diskID) - 63
-
-	generatedDiskName, err := GenerateValidDisksImagesName(prefixName, suffixName)
-	assert.NoError(t, err)
+	name := nameWithoutID + diskID
+	charsToBeRemoved := len(name) - 63
+	generatedDiskName := GenerateValidDisksImagesName(name)
 
 	assert.Equal(t, len(generatedDiskName), 63)
 	assert.Contains(t, generatedDiskName, "-03")
 
-	expectedGeneratedDiskName := fmt.Sprintf("%s%s%s", prefixName, randomSuffixName[0:len(randomSuffixName)-charsToBeRemoved], diskID)
+	expectedGeneratedDiskName := fmt.Sprintf("%s%s", nameWithoutID[0:len(name)-charsToBeRemoved], diskID)
 
 	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
-
-	// test remove all suffixName characters except ID
-	prefixName = randomString(60)
-	suffixName = "aaaa-02"
-
-	generatedDiskName, err = GenerateValidDisksImagesName(prefixName, suffixName)
-	assert.NoError(t, err)
-	assert.Equal(t, generatedDiskName, fmt.Sprintf("%s-02", prefixName))
 }
 
 func Test_GenerateValidDisksImagesName_LongNameWithOutSuffixId(t *testing.T) {
-	prefixName := "disk-"
-	suffixName := randomString(63)
+	name := "disk-" + randomString(63)
 
-	charsToBeRemoved := len(prefixName) + len(suffixName) - 63
+	charsToBeRemoved := len(name) - 63
 
-	generatedDiskName, err := GenerateValidDisksImagesName(prefixName, suffixName)
-	assert.NoError(t, err)
+	generatedDiskName := GenerateValidDisksImagesName(name)
 
 	assert.Equal(t, len(generatedDiskName), 63)
 
-	expectedGeneratedDiskName := fmt.Sprintf("%s%s", prefixName, suffixName[0:len(suffixName)-charsToBeRemoved])
+	expectedGeneratedDiskName := name[0 : len(name)-charsToBeRemoved]
 
 	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
 }
 
 func Test_GenerateValidDisksImagesName_ShortName(t *testing.T) {
-	prefixName := "disk-"
-	suffixName := randomString(50)
+	name := "disk-" + randomString(50)
 
-	generatedDiskName, err := GenerateValidDisksImagesName(prefixName, suffixName)
-	assert.NoError(t, err)
+	generatedDiskName := GenerateValidDisksImagesName(name)
 
-	assert.Equal(t, len(generatedDiskName), len(suffixName)+len(prefixName))
-
-	expectedGeneratedDiskName := fmt.Sprintf("%s%s", prefixName, suffixName)
-
-	assert.Equal(t, generatedDiskName, expectedGeneratedDiskName)
-}
-
-func Test_GenerateValidDisksImagesName_LongNameWithError(t *testing.T) {
-	// can not remove any chars from the suffixName
-	prefixName := randomString(60)
-	suffixName := "-002"
-
-	_, err := GenerateValidDisksImagesName(prefixName, suffixName)
-	assert.Error(t, err, errors.New("Can't shorten disk/image name into a valid name"))
-
-	// test with empty suffixName
-	prefixName = randomString(65)
-	suffixName = ""
-
-	_, err = GenerateValidDisksImagesName(prefixName, suffixName)
-	assert.Error(t, err, errors.New("Can't shorten disk/image name into a valid name"))
+	assert.Equal(t, generatedDiskName, name)
 }
 
 func assertWorkflow(t *testing.T, w *daisy.Workflow, project string, zone string, gcsPath string,
