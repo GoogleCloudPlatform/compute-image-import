@@ -22,9 +22,9 @@
 timeout: 4500s
 
 substitutions:
-  _IMAGE_PROJECT: 'debian-worker-ks'
-  _GCS_PATH: 'gs://debian-worker-ks'
-  _SOURCE_DISK_FILE: 'gs://debian-worker-ks/xenial-server-cloudimg-amd64-disk1.vmdk'
+  _IMAGE_PROJECT: 'compute-image-import-test'
+  _GCS_PATH: 'gs://compute-image-import-test'
+  _SOURCE_DISK_FILE: 'gs://compute-image-import-test-resources/xenial-server-cloudimg-amd64-disk1.vmdk'
   _DAISY_WORKFLOW: '/workspace/daisy_workflows/image_build/debian/debian_worker.wf.json'
 
 steps:
@@ -33,8 +33,8 @@ steps:
   args: [
         '-gcs_path=${_GCS_PATH}',
         '-project=${_IMAGE_PROJECT}',
-        '-var:family-tag=debian-10',
-        '-var:image-prefix=debian-10-worker',
+        '-var:family_tag=debian-10',
+        '-var:image_prefix=debian-10-worker',
         '${_DAISY_WORKFLOW}'
         ]
 
@@ -43,27 +43,27 @@ steps:
   args: [
         '-gcs_path=${_GCS_PATH}',
         '-project=${_IMAGE_PROJECT}',
-        '-var:family-tag=debian-11',
-        '-var:image-prefix=debian-11-worker',
+        '-var:family_tag=debian-11',
+        '-var:image_prefix=debian-11-worker',
         '${_DAISY_WORKFLOW}'
         ]
 
-# Run integration tests for Debian 10 worker.
-- name: 'gcr.io/compute-image-tools/daisy:latest'
-  args: [
-        '-gcs_path=${_GCS_PATH}',
-        '-project=${_IMAGE_PROJECT}',
-        '-var:project_id=${_IMAGE_PROJECT}',
-        '-var:source_disk_file=${_SOURCE_DISK_FILE}',
-        '/workspace/daisy_integration_tests/debian_11_worker.wf.json'
-        ]
-
-# Run integration tests for Debian 11 worker.
-- name: 'gcr.io/compute-image-tools/daisy:latest'
-  args: [
-        '-gcs_path=${_GCS_PATH}',
-        '-project=${_IMAGE_PROJECT}',
-        '-var:project_id=${_IMAGE_PROJECT}',
-        '-var:source_disk_file=${_SOURCE_DISK_FILE}',
-        '/workspace/daisy_integration_tests/debian_11_worker.wf.json'
-        ]
+## Run integration tests for Debian 10 worker.
+#- name: 'gcr.io/compute-image-tools/daisy:latest'
+#  args: [
+#        '-gcs_path=${_GCS_PATH}',
+#        '-project=${_IMAGE_PROJECT}',
+#        '-var:project_id=${_IMAGE_PROJECT}',
+#        '-var:source_disk_file=${_SOURCE_DISK_FILE}',
+#        '/workspace/daisy_integration_tests/debian_11_worker.wf.json'
+#        ]
+#
+## Run integration tests for Debian 11 worker.
+#- name: 'gcr.io/compute-image-tools/daisy:latest'
+#  args: [
+#        '-gcs_path=${_GCS_PATH}',
+#        '-project=${_IMAGE_PROJECT}',
+#        '-var:project_id=${_IMAGE_PROJECT}',
+#        '-var:source_disk_file=${_SOURCE_DISK_FILE}',
+#        '/workspace/daisy_integration_tests/debian_11_worker.wf.json'
+#        ]

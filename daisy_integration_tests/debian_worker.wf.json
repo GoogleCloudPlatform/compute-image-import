@@ -7,12 +7,12 @@
     "source_disk_file": {
       "Value": "gs://compute-image-import-test-resources/xenial-server-cloudimg-amd64-disk1.vmdk"
     },
-    "image-prefix": {
+    "image_prefix": {
       "Value": "debian-11-worker",
       "Description": "Prefix for the created image."
     },
     "project_id": {
-      "Value": "debian-worker-ks",
+      "Value": "compute-image-import-test",
       "Description": "Project of Debian worker image"
     },
     "build_date": {
@@ -36,7 +36,7 @@
           "image_name": "${image_name}",
           "importer_instance_disk_size": "200",
           "source_disk_file": "${source_disk_file}",
-          "import_instance_disk_image": "projects/${project_id}/global/images/${image-prefix}-v${DATE}"
+          "import_instance_disk_image": "projects/${project_id}/global/images/${image_prefix}-v${DATE}"
         }
       }
     }
