@@ -2,7 +2,7 @@
   "Name": "debian-worker-import-test",
   "Vars": {
     "image_name": {
-      "Value": "debian-11-worker-import-test-${ID}"
+      "Value": "debian-worker-import-test-${ID}"
     },
     "source_disk_file": {
       "Value": "gs://compute-image-import-test-resources/xenial-server-cloudimg-amd64-disk1.vmdk"

@@ -1,5 +1,5 @@
 {
-  "Name": "build-debian-11-worker",
+  "Name": "build-debian-worker",
   "Vars": {
     "build_date": {
       "Value": "${DATE}",
@@ -9,7 +9,7 @@
       "Value": "debian-11",
       "Description": "Image family name used as a base image."
     },
-    "image_prefix": {
+    "image-prefix": {
       "Value": "debian-11-worker",
       "Description": "Prefix for the created image."
     }
@@ -22,7 +22,7 @@
       "CreateDisks": [
         {
           "Name": "disk-worker",
-          "SourceImage": "projects/debian-cloud/global/images/family/debian-11",
+          "SourceImage": "projects/debian-cloud/global/images/family/${family-tag}",
           "Type": "pd-ssd",
           "NoCleanup": true
         }
@@ -62,9 +62,9 @@
     },
     "create-images": {
       "CreateImages": [{
-        "Name": "${image_prefix}-v${build_date}",
+        "Name": "${image-prefix}-v${build_date}",
         "SourceDisk": "disk-worker",
-        "Description": "A debian-11 based worker image for import/export tools.",
+        "Description": "A ${family-tag} based worker image for import/export tools.",
         "Family": "${family-tag}",
         "NoCleanup": true,
         "ExactName": true,
