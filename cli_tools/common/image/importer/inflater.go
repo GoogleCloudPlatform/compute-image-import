@@ -23,6 +23,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/imagefile"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
@@ -48,7 +49,9 @@ type inflationInfo struct {
 	inflationType string
 }
 
-func newInflater(request ImageImportRequest, computeClient daisyCompute.Client, storageClient domain.StorageClientInterface,
+// NewInflater returns an Inflater object that uses either PD API or Daisy workflow to create a 1:1 data copy
+// of disk file into GCP disk
+func NewInflater(request ImageImportRequest, computeClient daisyCompute.Client, storageClient domain.StorageClientInterface,
 	inspector imagefile.Inspector, logger logging.Logger) (Inflater, error) {
 
 	var fileMetadata = imagefile.Metadata{}
@@ -142,8 +145,10 @@ func (facade *inflaterFacade) Inflate() (persistentDisk, inflationInfo, error) {
 				return pd, ii, err
 			}
 
+			diskName := getDiskName(facade.request.ExecutionID)
+
 			// If checksum mismatches , delete the corrupted disk.
-			err = facade.computeClient.DeleteDisk(facade.request.Project, facade.request.Zone, getDiskName(facade.request.ExecutionID))
+			err = facade.computeClient.DeleteDisk(facade.request.Project, facade.request.Zone, diskName)
 			if err != nil {
 				return pd, ii, daisy.Errf("Tried to delete the disk after checksum mismatch is detected, but failed on: %v", err)
 			}
@@ -307,7 +312,12 @@ func (facade *shadowTestInflaterFacade) compareWithShadowInflater(mainPd, shadow
 }
 
 func getDiskName(executionID string) string {
-	return fmt.Sprintf("disk-%v", executionID)
+	return daisyutils.GenerateValidDisksImagesName(fmt.Sprintf("disk-%s", executionID))
+}
+
+// GetDiskURI return the URI of a PD disk
+func GetDiskURI(pd persistentDisk) string {
+	return pd.uri
 }
 
 // isChecksumMatch verifies whether checksum matches, excluded useless characters.

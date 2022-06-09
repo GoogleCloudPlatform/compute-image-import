@@ -530,3 +530,34 @@ func UpdateAllInstanceNoExternalIP(workflow *daisy.Workflow, noExternalIP bool) 
 	}
 	(&RemoveExternalIPHook{}).PreRunHook(workflow)
 }
+
+// GenerateValidDisksImagesName generates a valid name for disks/images , It ensures that the generated name
+// length is not greater than 63 by removing characters from the end of the name
+// if the name has ID number at the end (e.g "diskName-id") remove chars before the id
+func GenerateValidDisksImagesName(name string) string {
+	totalLen := len(name)
+
+	if totalLen > 63 {
+		hasID, idx := hasIDAtTheEnd(name)
+		charsToBeRemoved := totalLen - 63
+		if !hasID {
+			name = name[0 : len(name)-charsToBeRemoved]
+		} else {
+			nameWithoutID := name[0 : idx-charsToBeRemoved]
+			name = fmt.Sprintf("%s%s", nameWithoutID, name[idx:])
+		}
+	}
+
+	return name
+}
+
+// hasIDAtTheEnd uses regexp to check if name has id at the end and return its indx,
+// e.g. for name = "XYZ-123", it should return (true, 3)
+func hasIDAtTheEnd(name string) (bool, int) {
+	re := regexp.MustCompile("-[0-9]+")
+	allIndices := re.FindAllStringIndex(name, -1)
+	if len(allIndices) > 0 && allIndices[len(allIndices)-1][1] == len(name) {
+		return true, allIndices[len(allIndices)-1][0]
+	}
+	return false, 0
+}
