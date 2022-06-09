@@ -90,6 +90,22 @@ function Setup-ScriptRunner {
   Run-Command reg unload 'HKLM\MountedSoftware'
 }
 
+function SlipstreamDrivers {
+  if ($script:is_x86.ToLower() -ne 'true') {
+    try {
+      Add-WindowsDriver -Path "${script:os_drive}\" -Driver $driver_dir -Recurse -Verbose
+    } catch {
+      Write-Output 'Exception caught when slipstreaming drivers:'
+      Write-Output $_.InvocationInfo.PositionMessage
+      Write-Output 'Falling back to DISM /Add-Driver.'
+      Run-Command DISM /Image:$script:os_drive /Add-Driver /Driver:$script:driver_dir
+    }
+  }
+  else {
+    Run-Command DISM /Image:$script:os_drive /Add-Driver /Driver:$script:driver_dir
+  }
+}
+
 function Test-ProductName {
   Run-Command reg load 'HKLM\MountedSoftware' "${script:os_drive}\Windows\System32\config\SOFTWARE"
   $pn_path = 'HKLM:\MountedSoftware\Microsoft\Windows NT\CurrentVersion'
@@ -199,12 +215,7 @@ try {
   Copy-Item "${driver_dir}\netkvmco.dll" "${script:os_drive}\Windows\System32\netkvmco.dll" -Verbose
 
   Write-Output 'TranslateBootstrap: Slipstreaming drivers.'
-  if ($script:is_x86.ToLower() -ne 'true') {
-    Add-WindowsDriver -Path "${script:os_drive}\" -Driver $driver_dir -Recurse -Verbose
-  }
-  else {
-    Run-Command DISM /Image:$script:os_drive /Add-Driver /Driver:$script:driver_dir
-  }
+  SlipstreamDrivers
 
   Write-Output 'TranslateBootstrap: Setting up script runner.'
   Setup-ScriptRunner
