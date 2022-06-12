@@ -74,6 +74,6 @@ steps:
         '-var:source_disk_file=gs://compute-image-import-test-resources/xenial-server-cloudimg-amd64-disk1.vmdk',
         '/workspace/daisy_integration_tests/debian_11_worker.wf.json'
         ]
-  waitFor: ['build-debian-11-worker']
+#  waitFor: ['build-debian-11-worker']
 options:
   logging: CLOUD_LOGGING_ONLY
