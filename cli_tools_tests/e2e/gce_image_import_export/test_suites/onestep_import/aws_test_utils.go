@@ -116,7 +116,7 @@ func getAWSTestArgs() bool {
 	}
 
 	if awsCredFilePath == "" || awsRegion == "" || awsBucket == "" ||
-		ubuntuAMIID == "" || debianAMIID == "" || ubuntuVMDKFilePath == "" ||
+		ubuntuAMIID == "" || ubuntuVMDKFilePath == "" ||
 		windowsVMDKFilePath == "" {
 		return false
 	}
