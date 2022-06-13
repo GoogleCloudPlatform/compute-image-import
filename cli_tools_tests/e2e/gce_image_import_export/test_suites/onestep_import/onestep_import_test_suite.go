@@ -61,7 +61,7 @@ func OnestepImageImportSuite(
 		onestepImageImportFromAWSUbuntuAMI := junitxml.NewTestCase(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "From AWS Ubuntu-1804 AMI"))
 		onestepImageImportFromAWSUbuntuAMIWithCustomNetwork := junitxml.NewTestCase(
-			testSuiteName, fmt.Sprintf("[%v] %v", testType, "From AWS Ubuntu-1804 AMI with custom network/subnet"))
+			testSuiteName, fmt.Sprintf("[%v] %v", testType, "From AWS Debian-10 AMI with custom network/subnet"))
 		onestepImageImportFromAWSUbuntuVMDK := junitxml.NewTestCase(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "From AWS Ubuntu-1804 VMDK"))
 
@@ -75,11 +75,8 @@ func OnestepImageImportSuite(
 	// Only test windows for wrapper to reduce the test time. The aws-related code
 	// logic for windows are exactly the same as for linux, so no need to
 	// duplicate them too much.
-	onestepImageImportFromAWSWindowsAMI := junitxml.NewTestCase(
-		testSuiteName, fmt.Sprintf("[%v] %v", e2e.Wrapper, "From AWS Windows-2019 AMI"))
 	onestepImageImportFromAWSWindowsVMDK := junitxml.NewTestCase(
 		testSuiteName, fmt.Sprintf("[%v] %v", e2e.Wrapper, "From AWS Windows-2019 VMDK"))
-	testsMap[e2e.Wrapper][onestepImageImportFromAWSWindowsAMI] = runOnestepImageImportFromAWSWindowsAMI
 	testsMap[e2e.Wrapper][onestepImageImportFromAWSWindowsVMDK] = runOnestepImageImportFromAWSWindowsVMDK
 
 	// Only test service account scenario for wrapper, till gcloud support it.
@@ -144,8 +141,8 @@ func runOnestepImageImportFromAWSLinuxAMIWithCustomNetwork(ctx context.Context, 
 
 	props := &onestepImportAWSTestProperties{
 		imageName:     imageName,
-		amiID:         ubuntuAMIID,
-		os:            "ubuntu-1804",
+		amiID:         debianAMIID,
+		os:            "debian-10",
 		startupScript: "post_translate_test.sh",
 		skipOSConfig:  "true",
 		network:       "projects/compute-image-test-custom-vpc/global/networks/unrestricted-egress",
@@ -165,21 +162,6 @@ func runOnestepImageImportFromAWSLinuxVMDK(ctx context.Context, testCase *junitx
 		os:                "ubuntu-1804",
 		startupScript:     "post_translate_test.sh",
 		skipOSConfig:      "true",
-	}
-
-	runOnestepImportTest(ctx, props, testProjectConfig.TestProjectID, testProjectConfig.TestZone, testType, logger, testCase)
-}
-
-func runOnestepImageImportFromAWSWindowsAMI(ctx context.Context, testCase *junitxml.TestCase, logger *log.Logger,
-	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
-	imageName := "e2e-test-onestep-image-import" + path.RandString(5)
-
-	props := &onestepImportAWSTestProperties{
-		imageName:     imageName,
-		amiID:         windowsAMIID,
-		os:            "windows-2019",
-		timeout:       "4h",
-		startupScript: "post_translate_test.ps1",
 	}
 
 	runOnestepImportTest(ctx, props, testProjectConfig.TestProjectID, testProjectConfig.TestZone, testType, logger, testCase)

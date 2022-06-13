@@ -36,14 +36,14 @@ const (
 	awsRegionFlag   = "aws_region"
 	awsBucketFlag   = "aws_bucket"
 	ubuntuAMIFlag   = "ubuntu_ami_id"
-	windowsAMIFlag  = "windows_ami_id"
+	debianAMIFlag   = "debian_ami_id"
 	ubuntuVMDKFlag  = "ubuntu_vmdk"
 	windowsVMDKFlag = "windows_vmdk"
 )
 
 var (
 	awsCredFilePath, awsAccessKeyID, awsSecretAccessKey, awsSessionToken, awsRegion, awsBucket,
-	ubuntuAMIID, windowsAMIID, ubuntuVMDKFilePath, windowsVMDKFilePath string
+	ubuntuAMIID, debianAMIID, ubuntuVMDKFilePath, windowsVMDKFilePath string
 )
 
 type onestepImportAWSTestProperties struct {
@@ -104,8 +104,8 @@ func getAWSTestArgs() bool {
 			awsBucket = val
 		case ubuntuAMIFlag:
 			ubuntuAMIID = val
-		case windowsAMIFlag:
-			windowsAMIID = val
+		case debianAMIFlag:
+			debianAMIID = val
 		case ubuntuVMDKFlag:
 			ubuntuVMDKFilePath = val
 		case windowsVMDKFlag:
@@ -116,7 +116,7 @@ func getAWSTestArgs() bool {
 	}
 
 	if awsCredFilePath == "" || awsRegion == "" || awsBucket == "" ||
-		ubuntuAMIID == "" || windowsAMIID == "" || ubuntuVMDKFilePath == "" ||
+		ubuntuAMIID == "" || ubuntuVMDKFilePath == "" ||
 		windowsVMDKFilePath == "" {
 		return false
 	}
