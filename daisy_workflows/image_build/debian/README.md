@@ -9,6 +9,7 @@ Variables:
 * `build_tag`: Build tag used to version the image. Default: Current date in format YYYYMMDD.
 * `family_tag`: Image family name used as a base image. Default: debian-11
 * `image_prefix`: Prefix for the created image. Default: debian-11-worker
+* `source_image`: Source image for Debian worker. Default: projects/debian-cloud/global/images/family/debian-11
 
 Example Daisy invocation:
 ```shell

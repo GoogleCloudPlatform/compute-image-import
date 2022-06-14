@@ -10,7 +10,7 @@
       "Description": "Prefix for the created image."
     },
     "build_tag": {
-      "Value": "-inttest-${ID}",
+      "Value": "-test-${ID}",
       "Description": "Build tag used to version the image."
     }
   },
@@ -22,7 +22,8 @@
         "Vars": {
           "build_tag": "${build_tag}",
           "family_tag": "${family_tag}",
-          "image_prefix": "${image_prefix}"
+          "image_prefix": "${image_prefix}",
+          "source_image": "projects/debian-cloud/global/images/family/debian-11"
         }
       }
     },

@@ -14,6 +14,11 @@
       "Required": true,
       "Value": "debian-11-worker",
       "Description": "Prefix for the created image."
+    },
+    "source_image": {
+      "Required": true,
+      "Value": "projects/debian-cloud/global/images/family/debian-11",
+      "Description": "Source image for Debian worker"
     }
   },
   "Sources": {
@@ -24,7 +29,7 @@
       "CreateDisks": [
         {
           "Name": "disk-worker",
-          "SourceImage": "projects/debian-cloud/global/images/family/${family_tag}",
+          "SourceImage": "${source_image}",
           "Type": "pd-ssd",
           "NoCleanup": true
         }

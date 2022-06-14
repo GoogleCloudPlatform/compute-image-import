@@ -36,6 +36,7 @@ steps:
         '-project=${_IMAGE_PROJECT}',
         '-var:family_tag=debian-10',
         '-var:image_prefix=debian-10-worker',
+        '-var:source_image=projects/debian-cloud/global/images/family/debian-10',
         '${_DAISY_WORKFLOW}'
         ]
 
@@ -47,8 +48,6 @@ steps:
         '-project=${_IMAGE_PROJECT}',
         '-var:family_tag=debian-11',
         '-var:image_prefix=debian-11-worker',
+        '-var:source_image=projects/debian-cloud/global/images/family/debian-11',
         '${_DAISY_WORKFLOW}'
         ]
-
-options:
-  logging: CLOUD_LOGGING_ONLY
