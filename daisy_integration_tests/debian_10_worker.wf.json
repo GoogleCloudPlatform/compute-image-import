@@ -2,7 +2,7 @@
   "Name": "debian-10-worker-import-test",
   "Vars": {
     "family_tag": {
-      "Value": "debian-10",
+      "Value": "debian-10-worker",
       "Description": "Image family name used as a base image."
     },
     "image_prefix": {
