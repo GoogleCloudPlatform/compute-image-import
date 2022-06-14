@@ -1,5 +1,5 @@
 {
-  "Name": "debian-11-worker-import-test",
+  "Name": "debian-11-worker-test",
   "Vars": {
     "family_tag": {
       "Value": "debian-11-worker",
