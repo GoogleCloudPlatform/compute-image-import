@@ -1,12 +1,6 @@
 {
   "Name": "debian-10-worker-import-test",
   "Vars": {
-    "image_name": {
-      "Value": "debian-10-worker-import-test-${ID}"
-    },
-    "source_disk_file": {
-      "Value": "gs://compute-image-import-test-resources/xenial-server-cloudimg-amd64-disk1.vmdk"
-    },
     "family_tag": {
       "Value": "debian-10",
       "Description": "Image family name used as a base image."
@@ -15,12 +9,8 @@
       "Value": "debian-10-worker",
       "Description": "Prefix for the created image."
     },
-    "project_id": {
-      "Value": "compute-image-import-test",
-      "Description": "Project of Debian worker image"
-    },
     "build_tag": {
-      "Value": "test",
+      "Value": "-inttest-${ID}",
       "Description": "Build tag used to version the image."
     }
   },
@@ -36,44 +26,17 @@
         }
       }
     },
-    "import-image": {
-      "Timeout": "30m",
-      "IncludeWorkflow": {
-        "Path": "../daisy_workflows/image_import/import_image.wf.json",
-        "Vars": {
-          "image_name": "${image_name}",
-          "importer_instance_disk_size": "200",
-          "source_disk_file": "${source_disk_file}",
-          "import_instance_disk_image": "projects/${project_id}/global/images/${image_prefix}-v${build_tag}"
-        }
-      }
-    },
     "delete-image": {
       "DeleteResources": {
         "Images": [
-          "${image_name}"
+          "${image_prefix}-v${build_tag}"
         ]
-      }
-    },
-    "translate-debian-worker": {
-      "Timeout": "30m",
-      "IncludeWorkflow": {
-        "Path": "./debian_10_translate.wf.json",
-        "Vars": {
-          "source_image": "projects/${project_id}/global/images/${image_prefix}-v${build_tag}"
-        }
       }
     }
   },
   "Dependencies": {
-    "import-image": [
-      "build-debian-worker"
-    ],
-    "translate-debian-worker": [
-      "import-image"
-    ],
     "delete-image": [
-      "translate-debian-worker"
+      "build-debian-worker"
     ]
   }
 }

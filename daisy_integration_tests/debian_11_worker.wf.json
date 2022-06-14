@@ -1,12 +1,6 @@
 {
   "Name": "debian-11-worker-import-test",
-  "Sources": {
-    "post_translate_test.sh": "./scripts/post_translate_test.sh"
-  },
   "Vars": {
-    "source_disk_file": {
-      "Value": "gs://debian-worker-ks/rhel.tar.gz"
-    },
     "family_tag": {
       "Value": "debian-11",
       "Description": "Image family name used as a base image."
@@ -15,16 +9,9 @@
       "Value": "debian-11-worker",
       "Description": "Prefix for the created image."
     },
-    "project_id": {
-      "Value": "debian-worker-ks",
-      "Description": "Project of Debian worker image"
-    },
     "build_tag": {
-      "Value": "test",
+      "Value": "-inttest-${ID}",
       "Description": "Build tag used to version the image."
-    },
-    "source_image": {
-      "Value": "projects/compute-image-import-test/global/images/rhel-8-2"
     }
   },
   "Steps": {
@@ -39,115 +26,17 @@
         }
       }
     },
-    "create-disk-from-image": {
-      "CreateDisks": [
-        {
-          "name": "rhel-disk",
-          "sourceImage": "${source_image}"
-        }
-      ]
-    },
-    "export-image-to-gcs": {
-      "Timeout": "30m",
-      "IncludeWorkflow": {
-        "Path": "../daisy_workflows/export/disk_export.wf.json",
-        "Vars": {
-          "source_disk": "rhel-disk",
-          "destination": "gs://debian-worker-ks/rhel.tar.gz_tag",
-          "export_instance_disk_image": "projects/${project_id}/global/images/${image_prefix}-v${build_tag}"
-        }
-      }
-    },
-    "import-image": {
-      "Timeout": "30m",
-      "IncludeWorkflow": {
-        "Path": "../daisy_workflows/image_import/import_image.wf.json",
-        "Vars": {
-          "image_name": "rhel-image-${ID}",
-          "importer_instance_disk_size": "200",
-          "source_disk_file": "${source_disk_file}",
-          "import_instance_disk_image": "projects/${project_id}/global/images/${image_prefix}-v${build_tag}"
-        }
-      }
-    },
     "delete-image": {
       "DeleteResources": {
         "Images": [
           "${image_prefix}-v${build_tag}"
         ]
       }
-    },
-    "create-disk-from-imported-rhel-image": {
-      "CreateDisks": [
-        {
-          "name": "rhel-disk-imported",
-          "sourceImage": "rhel-image-${ID}"
-        }
-      ]
-    },
-    "create-test-instance": {
-      "CreateInstances": [
-        {
-          "disks": [
-            {
-              "source": "rhel-disk-imported"
-            }
-          ],
-          "machineType": "n1-standard-4",
-          "name": "inst-import-test-${ID}",
-          "StartupScript": "post_translate_test.sh"
-        }
-      ]
-    },
-    "wait-for-test-instance": {
-      "Timeout": "30m",
-      "WaitForInstancesSignal": [
-        {
-          "Name": "inst-import-test-${ID}",
-          "SerialOutput": {
-            "Port": 1,
-            "SuccessMatch": "PASSED:",
-            "FailureMatch": "FAILED:",
-            "StatusMatch": "STATUS:"
-          }
-        }
-      ]
-    },
-    "cleanup": {
-      "DeleteResources": {
-        "Images": [
-          "rhel-image-${ID}"
-        ],
-        "Instances": [
-          "inst-import-test-${ID}"
-        ]
-      }
     }
   },
   "Dependencies": {
-    "create-disk-from-image": [
-      "build-debian-worker"
-    ],
-    "export-image-to-gcs": [
-      "create-disk-from-image"
-    ],
-    "import-image": [
-      "export-image-to-gcs"
-    ],
     "delete-image": [
-      "import-image"
-    ],
-    "create-disk-from-imported-rhel-image": [
-      "import-image"
-    ],
-    "create-test-instance": [
-      "create-disk-from-imported-rhel-image"
-    ],
-    "wait-for-test-instance": [
-      "create-test-instance"
-    ],
-    "cleanup": [
-      "wait-for-test-instance"
+      "build-debian-worker"
     ]
   }
 }
