@@ -7,7 +7,7 @@
     },
     "family_tag": {
       "Required": true,
-      "Value": "debian-11",
+      "Value": "debian-11-worker",
       "Description": "Image family name used as a base image."
     },
     "image_prefix": {
