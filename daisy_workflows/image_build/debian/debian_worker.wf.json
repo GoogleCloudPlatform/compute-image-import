@@ -1,0 +1,94 @@
+{
+  "Name": "build-debian-worker",
+  "Vars": {
+    "build_tag": {
+      "Value": "${DATE}",
+      "Description": "Build tag used to version the image."
+    },
+    "family_tag": {
+      "Required": true,
+      "Value": "debian-11-worker",
+      "Description": "Image family name used as a base image."
+    },
+    "image_prefix": {
+      "Required": true,
+      "Value": "debian-11-worker",
+      "Description": "Prefix for the created image."
+    },
+    "source_image": {
+      "Required": true,
+      "Value": "projects/debian-cloud/global/images/family/debian-11",
+      "Description": "Source image for Debian worker"
+    }
+  },
+  "Sources": {
+      "debian_worker.sh": "./debian_worker.sh"
+  },
+  "Steps": {
+    "create-worker-disk": {
+      "CreateDisks": [
+        {
+          "Name": "disk-worker",
+          "SourceImage": "${source_image}",
+          "Type": "pd-ssd",
+          "NoCleanup": true
+        }
+      ]
+    },
+    "create-worker-instance": {
+      "CreateInstances": [
+        {
+          "Name": "inst-worker",
+          "Disks": [{"Source": "disk-worker"}],
+          "MachineType": "e2-standard-4",
+          "StartupScript": "debian_worker.sh",
+          "MetaData": {
+            "block-project-ssh-keys": "TRUE"
+          }
+        }
+      ]
+    },
+    "wait-for-stop": {
+      "TimeOut": "30m",
+      "WaitForInstancesSignal": [
+        {
+          "Name": "inst-worker",
+          "SerialOutput": {
+            "Port": 1,
+            "FailureMatch": "BuildFailed:",
+            "SuccessMatch": "BuildSuccess:",
+            "StatusMatch": "BuildStatus:"
+          }
+        }
+      ]
+    },
+    "remove-worker-instance": {
+      "DeleteResources": {
+        "Instances": ["inst-worker"]
+      }
+    },
+    "create-images": {
+      "CreateImages": [{
+        "Name": "${image_prefix}-v${build_tag}",
+        "SourceDisk": "disk-worker",
+        "Description": "A ${family_tag} based worker image for import/export tools.",
+        "Family": "${family_tag}",
+        "NoCleanup": true,
+        "ExactName": true,
+        "OverWrite": true
+      }]
+    },
+    "cleanup-resources": {
+      "DeleteResources": {
+        "Disks": ["disk-worker"]
+      }
+    }
+  },
+  "Dependencies": {
+    "create-worker-instance": ["create-worker-disk"],
+    "wait-for-stop": ["create-worker-instance"],
+    "remove-worker-instance": ["wait-for-stop"],
+    "create-images": ["remove-worker-instance"],
+    "cleanup-resources": ["create-images"]
+  }
+}

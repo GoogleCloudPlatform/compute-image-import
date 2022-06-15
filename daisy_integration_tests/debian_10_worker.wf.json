@@ -1,0 +1,43 @@
+{
+  "Name": "debian-10-worker-test",
+  "Vars": {
+    "family_tag": {
+      "Value": "debian-10-worker",
+      "Description": "Image family name used as a base image."
+    },
+    "image_prefix": {
+      "Value": "debian-10-worker",
+      "Description": "Prefix for the created image."
+    },
+    "build_tag": {
+      "Value": "-test-${ID}",
+      "Description": "Build tag used to version the image."
+    }
+  },
+  "Steps": {
+    "build-debian-worker": {
+      "Timeout": "30m",
+      "IncludeWorkflow": {
+        "Path": "../daisy_workflows/image_build/debian/debian_worker.wf.json",
+        "Vars": {
+          "build_tag": "${build_tag}",
+          "family_tag": "${family_tag}",
+          "image_prefix": "${image_prefix}",
+          "source_image": "projects/debian-cloud/global/images/family/debian-10"
+        }
+      }
+    },
+    "delete-image": {
+      "DeleteResources": {
+        "Images": [
+          "${image_prefix}-v${build_tag}"
+        ]
+      }
+    }
+  },
+  "Dependencies": {
+    "delete-image": [
+      "build-debian-worker"
+    ]
+  }
+}
