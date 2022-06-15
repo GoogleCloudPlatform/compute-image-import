@@ -156,9 +156,9 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
   </tr>
   <tr>
-    <td>Windows Server 2008 R2
+    <td>Windows Server 2022
     </td>
-    <td>/daisy/windows/translate_windows_2008_r2.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2022.wf.json
     </td>
   </tr>
   <tr>
@@ -171,6 +171,12 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     <td>Windows Server 2016
     </td>
     <td>/daisy/windows/translate_windows_2016.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Windows Server 2008 R2
+    </td>
+    <td>/daisy/windows/translate_windows_2008_r2.wf.json
     </td>
   </tr>
 </table>
@@ -197,9 +203,9 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
   </tr>
   <tr>
-    <td>Windows Server 2008 R2 BYOL
+    <td>Windows Server 2022 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_2008_r2_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2022_byol.wf.json
     </td>
   </tr>
   <tr>
@@ -225,6 +231,12 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
     <td>/daisy/windows/translate_windows_2019_byol.wf.json
     </td>
+  <tr>
+    <td>Windows Server 2008 R2 BYOL
+    </td>
+    <td>/daisy/windows/translate_windows_2008_r2_byol.wf.json
+    </td>
+  </tr>
   </tr>
   <tr>
     <td>Windows 7 x64 BYOL
@@ -263,8 +275,8 @@ import. Below is a list of known compatibility requirements and issues:
 
 | Name | Severity | Description |
 |---|---|---|
-| OS Version | Required | We support the following OS versions: Windows Server 2008 R2, 2012 R2, 2016, or 2019 and Windows 7, 8, or 10. |
-| OS Disk | Required | The disk containing the OS must be bootable and must be MBR. |
+| OS Version | Required | We support the following OS versions: Windows Server 2022, 2012 R2, 2019, 2016, or 2008 R2, and Windows 7, 8, or 10. See [supported operating systems](https://cloud.google.com/compute/docs/images/os-details#import).|
+| OS Disk | Required | The disk containing the OS must be bootable and must be MBR or GPT. |
 | Multiple Disks | Warning  | Image import cannot directly handle multiple disk scenarios. Additional disks must be imported and attached separately. |
 | Powershell (Windows) | Warning | Warn if Powershell Version < 3. Powershell versions older than 3.0 can cause issues with GCE startup and shutdown scripts. |
 
@@ -272,7 +284,7 @@ import. Below is a list of known compatibility requirements and issues:
 
 | Name | Severity | Description |
 |---|---|---|
-| OS Version | Required | We support the following OS versions: RHEL/CentOS/OEL 6 or 7; Debian 9; Ubuntu 14.04 or 16.04. |
+| OS Version | Required | We support the following OS versions: RHEL 6, 7, 8, or 9; CentOS/OEL 7; Debian 8, 9, 10, or 11; Rocky Linux 8; SLES 12 or 15; Ubuntu 14.04, 16.04 or 18.04. See [supported operating systems](https://cloud.google.com/compute/docs/images/os-details#import)|
 | OS Disk | Required | The disk containing the OS must be bootable. The disk must be MBR and have GRUB installed. |
 | Multiple Disks | Warning  | Image import cannot directly handle multiple disk scenarios. Additional disks must be imported and attached separately. |
 | SSH | Warning | Warn if SSH is not running on port 22. GCE provides SSH clients via the Cloud Console and the gcloud CLI. These clients connect on port 22 and will not work if you have a different SSH configuration. |
