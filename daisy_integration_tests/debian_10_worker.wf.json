@@ -10,7 +10,7 @@
       "Description": "Prefix for the created image."
     },
     "build_tag": {
-      "Value": "-inttest-${ID}",
+      "Value": "-test-${ID}",
       "Description": "Build tag used to version the image."
     }
   },
