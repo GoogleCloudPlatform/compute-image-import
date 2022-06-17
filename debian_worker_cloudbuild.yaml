@@ -22,8 +22,8 @@
 timeout: 4500s
 
 substitutions:
-  _IMAGE_PROJECT: 'debian-worker-ks'
-  _GCS_PATH: 'gs://debian-worker-ks'
+  _IMAGE_PROJECT: 'compute-image-import'
+  _GCS_PATH: 'gs://compute-image-import'
   _DAISY_WORKFLOW: '/workspace/daisy_workflows/image_build/debian/debian_worker.wf.json'
   _DAISY_DOCKER_TAG: 'latest'
 
