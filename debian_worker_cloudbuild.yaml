@@ -35,7 +35,7 @@ steps:
         '-gcs_path=${_GCS_PATH}',
         '-project=${_IMAGE_PROJECT}',
         '-var:commit_sha=$COMMIT_SHA',
-        '-var:family_tag=debian-10',
+        '-var:family_tag=debian-10-worker',
         '-var:image_prefix=debian-10-worker',
         '-var:source_image=projects/debian-cloud/global/images/family/debian-10',
         '${_DAISY_WORKFLOW}'
@@ -48,7 +48,7 @@ steps:
         '-gcs_path=${_GCS_PATH}',
         '-project=${_IMAGE_PROJECT}',
         '-var:commit_sha=$COMMIT_SHA',
-        '-var:family_tag=debian-11',
+        '-var:family_tag=debian-11-worker',
         '-var:image_prefix=debian-11-worker',
         '-var:source_image=projects/debian-cloud/global/images/family/debian-11',
         '${_DAISY_WORKFLOW}'
