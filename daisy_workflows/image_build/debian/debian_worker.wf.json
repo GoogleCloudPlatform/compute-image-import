@@ -5,9 +5,9 @@
       "Value": "${DATE}",
       "Description": "Build tag used to version the image."
     },
-    "commit_short_sha": {
+    "commit_sha": {
       "Value": "",
-      "Description": "Git commit hash (SHORT_SHA in Cloud Build) to link the worker build to its commit."
+      "Description": "Git commit hash ($COMMIT_SHA in Cloud Build) to link the worker build to its commit."
     },
     "family_tag": {
       "Required": true,
@@ -75,7 +75,7 @@
       "CreateImages": [{
         "Name": "${image_prefix}-v${build_tag}",
         "SourceDisk": "disk-worker",
-        "Description": "A ${family_tag} image for import/export tools. Built on commit: ${commit_short_sha}",
+        "Description": "A ${family_tag} image for import/export tools. Built on commit: ${commit_sha}",
         "Family": "${family_tag}",
         "NoCleanup": true,
         "ExactName": true,

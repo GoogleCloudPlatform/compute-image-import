@@ -22,8 +22,8 @@
 timeout: 4500s
 
 substitutions:
-  _IMAGE_PROJECT: 'compute-image-import'
-  _GCS_PATH: 'gs://compute-image-import'
+  _IMAGE_PROJECT: 'debian-worker-ks'
+  _GCS_PATH: 'gs://debian-worker-ks'
   _DAISY_WORKFLOW: '/workspace/daisy_workflows/image_build/debian/debian_worker.wf.json'
   _DAISY_DOCKER_TAG: 'latest'
 
@@ -34,7 +34,7 @@ steps:
   args: [
         '-gcs_path=${_GCS_PATH}',
         '-project=${_IMAGE_PROJECT}',
-        '-var:commit_short_sha=$SHORT_SHA',
+        '-var:commit_sha=$COMMIT_SHA',
         '-var:family_tag=debian-10',
         '-var:image_prefix=debian-10-worker',
         '-var:source_image=projects/debian-cloud/global/images/family/debian-10',
@@ -47,7 +47,7 @@ steps:
   args: [
         '-gcs_path=${_GCS_PATH}',
         '-project=${_IMAGE_PROJECT}',
-        '-var:commit_short_sha=$SHORT_SHA',
+        '-var:commit_sha=$COMMIT_SHA',
         '-var:family_tag=debian-11',
         '-var:image_prefix=debian-11-worker',
         '-var:source_image=projects/debian-cloud/global/images/family/debian-11',
