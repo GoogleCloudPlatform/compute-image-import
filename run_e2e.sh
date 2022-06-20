@@ -36,7 +36,7 @@
 #
 # Examples:
 #  Run ubuntu import tests:
-#    ./run_e2e.sh gce_vm_image_import.Dockerfile \
+#    ./run_e2e.sh gce_image_import_export_tests.Dockerfile \
 #         -test_suite_filter=^ImageImport$ -test_case_filter=ubuntu
 #
 # Notes:
