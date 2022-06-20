@@ -108,51 +108,105 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
   </tr>
   <tr>
-    <td>Debian 8
+    <td>CentOS 8
     </td>
-    <td>/daisy/debian/translate_debian_8.wf.json
-    </td>
-  </tr>
-  <tr>
-    <td>Debian 9
-    </td>
-    <td>/daisy/debian/translate_debian_9.wf.json
-    </td>
-  </tr>
-  <tr>
-    <td>CentOS 6
-    </td>
-    <td>/daisy/enterprise_linux//translate_centos_6.wf.json
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_centos_8.wf.json
     </td>
   </tr>
   <tr>
     <td>CentOS 7
     </td>
-    <td>/daisy/enterprise_linux//translate_centos_7.wf.json
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_centos_7.wf.json
     </td>
   </tr>
   <tr>
-    <td>RHEL 6
+    <td>Debian 11
     </td>
-    <td>/daisy/enterprise_linux/translate_rhel_6_licensed.wf.json
+    <td>/ddaisy_workflows/image_import/debian/translate_debian_11.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Debian 10
+    </td>
+    <td>/daisy_workflows/image_import/debian/translate_debian_10.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Debian 9
+    </td>
+    <td>/ddaisy_workflows/image_import/debiann/translate_debian_9.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Debian 8
+    </td>
+    <td>/daisy_workflows/image_import/debian/translate_debian_8.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>RHEL 8
+    </td>
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_rhel_8_licensed.wf.json
     </td>
   </tr>
   <tr>
     <td>RHEL 7
     </td>
-    <td>/daisy/enterprise_linux/translate_rhel_7_licensed.wf.json
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_rhel_7_licensed.wf.json
     </td>
   </tr>
   <tr>
-    <td>Ubuntu 14.04
+    <td>RHEL 6
     </td>
-    <td>/daisy/ubuntu/translate_ubuntu_1404.wf.json
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_rhel_6_licensed.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 15 SP1 & SLES 15 SP2
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_15.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 12 SP4 & SLES 12 SP5
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_12.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 15 SP1, SP2, SP3 for SAP
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_sap_15.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 12 SP4, SP5 for SAP
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_sap_12.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Ubuntu 20.04
+    </td>
+    <td>/daisy_workflows/image_import/ubuntu/translate_ubuntu_2004.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Ubuntu 18.04
+    </td>
+    <td>/daisy_workflows/image_import/ubuntu/translate_ubuntu_1804.wf.json
     </td>
   </tr>
   <tr>
     <td>Ubuntu 16.04
     </td>
-    <td>/daisy/ubuntu/translate_ubuntu_1604.wf.json
+    <td>/daisy_workflows/image_import/ubuntu/translate_ubuntu_1604.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Ubuntu 14.04
+    </td>
+    <td>/daisy_workflows/image_import/ubuntu/translate_ubuntu_1404.wf.json
     </td>
   </tr>
   <tr>
@@ -162,21 +216,33 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
   </tr>
   <tr>
-    <td>Windows Server 2012 R2
+    <td>Windows Server 2019
     </td>
-    <td>/daisy/windows/translate_windows_2012_r2.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2019.wf.json
     </td>
   </tr>
   <tr>
     <td>Windows Server 2016
     </td>
-    <td>/daisy/windows/translate_windows_2016.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2016.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Windows Server 2012 R2
+    </td>
+    <td>/daisy_workflows/image_import/windows/translate_windows_2012_r2.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>Windows Server 2012
+    </td>
+    <td>/daisy_workflows/image_import/windows/translate_windows_2012.wf.json
     </td>
   </tr>
   <tr>
     <td>Windows Server 2008 R2
     </td>
-    <td>/daisy/windows/translate_windows_2008_r2.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2008_r2.wf.json
     </td>
   </tr>
 </table>
@@ -191,15 +257,45 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
   </tr>
   <tr>
-    <td>RHEL 6 BYOL
+    <td>RHEL 8 BYOL
     </td>
-    <td>/daisy/enterprise_linux/translate_rhel_6_byol.wf.json
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_rhel_8_byol.wf.json
     </td>
   </tr>
   <tr>
     <td>RHEL 7 BYOL
     </td>
-    <td>/daisy/enterprise_linux/translate_rhel_7_byol.wf.json
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_rhel_7_byol.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>RHEL 6 BYOL
+    </td>
+    <td>/daisy_workflows/image_import/enterprise_linux/translate_rhel_6_byol.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 15 SP1 & SLES 15 SP2 BYOL
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_15_byol.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 12 SP4 & SLES 12 SP5 BYOL
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_12_byol.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 15 SP1, SP2, SP3 for SAP BYOL
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_sap_15_byol.wf.json
+    </td>
+  </tr>
+  <tr>
+    <td>SLES 12 SP4, SP5 for SAP BYOL
+    </td>
+    <td>/daisy_workflows/image_import/suse/translate_sles_sap_12_byol.wf.json
     </td>
   </tr>
   <tr>
@@ -209,51 +305,52 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
   </tr>
   <tr>
-    <td>Windows Server 2012 BYOL
+    <td>Windows Server 2019 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_2012_byol.wf.json
-    </td>
-  </tr>
-  <tr>
-    <td>Windows Server 2012 R2 BYOL
-    </td>
-    <td>/daisy/windows/translate_windows_2012_r2_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2019_byol.wf.json
     </td>
   </tr>
   <tr>
     <td>Windows Server 2016 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_2016_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2016_byol.wf.json
     </td>
   </tr>
   <tr>
-    <td>Windows Server 2019 BYOL
+    <td>Windows Server 2012 R2 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_2019_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2012_r2_byol.wf.json
     </td>
+  </tr>
+  <tr>
+    <td>Windows Server 2012 BYOL
+    </td>
+    <td>/daisy_workflows/image_import/windows/translate_windows_2012_byol.wf.json
+    </td>
+  </tr>
   <tr>
     <td>Windows Server 2008 R2 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_2008_r2_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_2008_r2_byol.wf.json
     </td>
   </tr>
   </tr>
   <tr>
-    <td>Windows 7 x64 BYOL
+    <td>Windows 10 x64 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_7_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_10_x64_byol.wf.json
     </td>
   </tr>
   <tr>
     <td>Windows 8.1 x64 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_81_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_8_x64_byol.wf.json
     </td>
   </tr>
   <tr>
-    <td>Windows 10 x64 BYOL
+    <td>Windows 7 x64 BYOL
     </td>
-    <td>/daisy/windows/translate_windows_10_byol.wf.json
+    <td>/daisy_workflows/image_import/windows/translate_windows_7_x64_byol.wf.json
     </td>
   </tr>
 </table>
