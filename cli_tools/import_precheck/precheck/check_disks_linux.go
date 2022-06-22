@@ -56,7 +56,7 @@ func (c *DisksCheck) Run() (r *Report, err error) {
 
 	mountInfo, err := getBootDiskMountInfo(r, c.inspector)
 
-	if err != nil || len(mountInfo.UnderlyingBlockDevices) > 1 {
+	if err != nil {
 		return r, nil
 	}
 
@@ -109,7 +109,7 @@ func getBootDiskMountInfo(r *Report, inspector mount.Inspector) (mount.Inspectio
 		format := "root filesystem spans multiple block devices (%s). Typically this occurs when an LVM logical " +
 			"volume spans multiple block devices. Image import only supports single block device."
 		r.Fatal(fmt.Sprintf(format, strings.Join(mountInfo.UnderlyingBlockDevices, ", ")))
-		return mountInfo, err
+		return mountInfo, fmt.Errorf("Root filesystem spans multiple block devices.")
 	}
 
 	r.Info(fmt.Sprintf("boot disk detected as %s", mountInfo.UnderlyingBlockDevices[0]))
