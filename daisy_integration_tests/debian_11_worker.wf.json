@@ -23,6 +23,7 @@
           "build_tag": "${build_tag}",
           "family_tag": "${family_tag}",
           "image_prefix": "${image_prefix}",
+          "image_project": "${PROJECT}",
           "source_image": "projects/debian-cloud/global/images/family/debian-11"
         }
       }

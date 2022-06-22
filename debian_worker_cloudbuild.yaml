@@ -22,8 +22,9 @@
 timeout: 4500s
 
 substitutions:
+  _BUILDER_PROJECT: 'compute-image-import-builder'
+  _GCS_PATH: 'gs://compute-image-import-builder'
   _IMAGE_PROJECT: 'compute-image-import'
-  _GCS_PATH: 'gs://compute-image-import'
   _DAISY_WORKFLOW: '/workspace/daisy_workflows/image_build/debian/debian_worker.wf.json'
   _DAISY_DOCKER_TAG: 'latest'
 
@@ -33,10 +34,11 @@ steps:
   name: 'gcr.io/compute-image-tools/daisy:${_DAISY_DOCKER_TAG}'
   args: [
         '-gcs_path=${_GCS_PATH}',
-        '-project=${_IMAGE_PROJECT}',
+        '-project=${_BUILDER_PROJECT}',
         '-var:commit_sha=$COMMIT_SHA',
         '-var:family_tag=debian-10-worker',
         '-var:image_prefix=debian-10-worker',
+        '-var:image_project=${_IMAGE_PROJECT}',
         '-var:source_image=projects/debian-cloud/global/images/family/debian-10',
         '${_DAISY_WORKFLOW}'
         ]
@@ -46,10 +48,11 @@ steps:
   name: 'gcr.io/compute-image-tools/daisy:${_DAISY_DOCKER_TAG}'
   args: [
         '-gcs_path=${_GCS_PATH}',
-        '-project=${_IMAGE_PROJECT}',
+        '-project=${_BUILDER_PROJECT}',
         '-var:commit_sha=$COMMIT_SHA',
         '-var:family_tag=debian-11-worker',
         '-var:image_prefix=debian-11-worker',
+        '-var:image_project=${_IMAGE_PROJECT}',
         '-var:source_image=projects/debian-cloud/global/images/family/debian-11',
         '${_DAISY_WORKFLOW}'
         ]
