@@ -18,9 +18,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/golang/mock/gomock"
-
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/mount"
+	"github.com/GoogleCloudPlatform/osconfig/packages"
+	"github.com/golang/mock/gomock"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -32,6 +32,12 @@ type disksCheckTest struct {
 	byteTrailer    []byte
 	expectAllLogs  []string
 	expectedStatus Result
+}
+
+type partitionTableInfoTest struct {
+	name               string
+	gdiskCommandResult string
+	expectInfo         string
 }
 
 func TestDisksCheck_Inspector(t *testing.T) {
@@ -82,84 +88,79 @@ func TestDisksCheck_Inspector(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			tc.byteTrailer = []byte{'G', 'R', 'U', 'B', 0x55, 0xAA}
-			runDisksCheck(t, tc)
+			var report Report
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+			mockMountInspector := mount.NewMockInspector(ctrl)
+			mockMountInspector.EXPECT().Inspect("/").Return(
+				tc.mountInfo, tc.inspectError)
+			getBootDiskMountInfo(&report, mockMountInspector)
+			for _, log := range tc.expectAllLogs {
+				assert.Contains(t, report.logs, log)
+			}
 		})
 	}
 }
 
-func TestDisksCheck_MBR(t *testing.T) {
-	for _, tc := range []disksCheckTest{
+func Test_addGrubInfo_GrubDetected_bytes(t *testing.T) {
+	pkgs := packages.Packages{}
+	bytes := []byte{'G', 'R', 'U', 'B', 0x55, 0xAA}
+	var report Report
+	addGrubInfo(&report, bytes, &pkgs)
+	assert.Contains(t, report.logs, "INFO: GRUB detected")
+}
+
+func Test_addGrubInfo_GrubDetected_Pkgs(t *testing.T) {
+	rpmPkgs := []packages.PkgInfo{{Name: "grub2-common", Arch: "all", Version: "1:2.02-0.87.el7_9.7"}}
+	pkgs := packages.Packages{Rpm: rpmPkgs}
+	bytes := []byte{0x55, 0xAA}
+	var report Report
+	addGrubInfo(&report, bytes, &pkgs)
+	assert.Contains(t, report.logs, "INFO: GRUB detected")
+}
+
+func Test_addGrubInfo_GrubNotDetected(t *testing.T) {
+	rpmPkgs := []packages.PkgInfo{{Name: "chkconfig", Arch: "x86_64", Version: "1.7.6-1.el7"}}
+	pkgs := packages.Packages{Rpm: rpmPkgs}
+	bytes := []byte{0x55, 0xAA}
+	var report Report
+	addGrubInfo(&report, bytes, &pkgs)
+	assert.Contains(t, report.logs, "WARN: GRUB not detected")
+}
+
+func Test_addPartitionTableInfo(t *testing.T) {
+
+	for _, tc := range []partitionTableInfoTest{
 		{
-			name: "happy case",
-			expectAllLogs: []string{
-				"INFO: boot disk has an MBR partition table",
-				"INFO: GRUB found in MBR",
-			},
-			expectedStatus: Passed,
-			byteTrailer:    []byte{'G', 'R', 'U', 'B', 0x55, 0xAA},
+			name:               "GPT With Protective MBR",
+			gdiskCommandResult: "Partition table scan:\n  MBR: protective\n  BSD: not present\n  APM: not present\n  GPT: present \n",
+			expectInfo:         "INFO: boot disk has valid GPT with protective MBR; using GPT.",
 		}, {
-			name: "fail if GRUB not in first 512 bytes",
-			expectAllLogs: []string{
-				"INFO: boot disk has an MBR partition table",
-				"FATAL: GRUB not detected in MBR",
-			},
-			expectedStatus: Failed,
-			byteTrailer:    []byte{0x55, 0xAA},
+			name:               "MBR Only",
+			gdiskCommandResult: "Partition table scan:\n  MBR: MBR only\n  BSD: not present\n  APM: not present\n  GPT: not present",
+			expectInfo:         "INFO: boot disk has MBR only.",
 		}, {
-			name: "fail if 0x55 not at 510",
-			expectAllLogs: []string{
-				"FATAL: boot disk does not have an MBR partition table",
-				"FATAL: GRUB not detected in MBR",
-			},
-			expectedStatus: Failed,
-			byteTrailer:    []byte{0xAA},
+			name:               "GPT Only",
+			gdiskCommandResult: "Partition table scan:\n  MBR: not present\n  BSD: not present\n  APM: not present\n  GPT: present\n",
+			expectInfo:         "INFO: boot disk has GPT only.",
 		}, {
-			name: "fail if 0xAA not at 511",
-			expectAllLogs: []string{
-				"FATAL: boot disk does not have an MBR partition table",
-				"FATAL: GRUB not detected in MBR",
-			},
-			expectedStatus: Failed,
-			byteTrailer:    []byte{0x55},
+			name:               "GPT With Hybrid MBR",
+			gdiskCommandResult: "Partition table scan:\n  MBR: hybrid\n  BSD: not present\n  APM: not present\n  GPT: present\n",
+			expectInfo:         "INFO: boot disk has valid GPT with hybrid MBR; using GPT.",
+		}, {
+			name:               "Unkown boot disk partition table",
+			gdiskCommandResult: "Partition table scan:\n  MBR: not present\n  BSD: not present\n  APM: not present\n  GPT: not present\n",
+			expectInfo:         "WARN: Unkown boot disk partition table.",
+		}, {
+			name:               "Unkown boot disk partition table2",
+			gdiskCommandResult: "Partition table scan:\n  MBR: corrupted-text\n  BSD: not present\n  APM: not present\n  GPT: present\n",
+			expectInfo:         "WARN: Unkown boot disk partition table.",
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			tc.mountInfo = mount.InspectionResults{
-				BlockDevicePath:        "/dev/mapper/vg-lv",
-				BlockDeviceIsVirtual:   true,
-				UnderlyingBlockDevices: []string{"/dev/sda"},
-			}
-			runDisksCheck(t, tc)
+			var report Report
+			addPartitionTableInfo(&report, tc.gdiskCommandResult)
+			assert.Contains(t, report.logs, tc.expectInfo)
 		})
 	}
-}
-
-func runDisksCheck(t *testing.T, tc disksCheckTest) {
-	t.Helper()
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	mockMountInspector := mount.NewMockInspector(ctrl)
-	mockMountInspector.EXPECT().Inspect("/").Return(
-		tc.mountInfo, tc.inspectError)
-	report, err := (&DisksCheck{
-		getMBROverride: func(devName string) ([]byte, error) {
-			assert.Len(t, tc.mountInfo.UnderlyingBlockDevices, 1, "Only check grub when there's a single block device")
-			assert.Equal(t, tc.mountInfo.UnderlyingBlockDevices[0], devName)
-			bytes := make([]byte, 512)
-			for i := range tc.byteTrailer {
-				bytes[len(bytes)-len(tc.byteTrailer)+i] = tc.byteTrailer[i]
-			}
-			return bytes, nil
-		},
-		inspector: mockMountInspector,
-	}).Run()
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, expectedLog := range tc.expectAllLogs {
-		assert.Contains(t, report.logs, expectedLog)
-	}
-
-	assert.Equal(t, tc.expectedStatus.String(), report.result.String())
 }

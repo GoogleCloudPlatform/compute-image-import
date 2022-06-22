@@ -16,11 +16,15 @@ package precheck
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"os"
+	"os/exec"
+	"regexp"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/mount"
+	"github.com/GoogleCloudPlatform/osconfig/packages"
 )
 
 // DisksCheck performs disk configuration checking:
@@ -50,13 +54,53 @@ func (c *DisksCheck) GetName() string {
 func (c *DisksCheck) Run() (r *Report, err error) {
 	r = &Report{name: c.GetName()}
 
-	mountInfo, err := c.inspector.Inspect("/")
+	mountInfo, err := getBootDiskMountInfo(r, c.inspector)
+
+	if err != nil {
+		return r, err
+	}
+
+	bootDisk := mountInfo.UnderlyingBlockDevices[0]
+
+	// check Partition Table
+	outBytes, err := exec.Command("gdisk", "-l", bootDisk).Output()
+	if err != nil {
+		r.Warn(fmt.Sprintf("Can not run gdisk cmd, %s", err.Error()))
+		return r, err
+	}
+	output := string(outBytes)
+
+	addPartitionTableInfo(r, output)
+
+	// GRUB checking.
+	var mbrData []byte
+	if c.getMBROverride != nil {
+		mbrData, err = c.getMBROverride(bootDisk)
+	} else {
+		mbrData, err = c.getMBR(bootDisk)
+	}
+
+	// get installed pkgs
+	ctx := context.Background()
+	pkgs, err := packages.GetInstalledPackages(ctx)
+	if err != nil {
+		return r, fmt.Errorf("GetInstalledPackages error: %s", err)
+	}
+
+	addGrubInfo(r, mbrData, pkgs)
+
+	return r, nil
+}
+
+func getBootDiskMountInfo(r *Report, inspector mount.Inspector) (mount.InspectionResults, error) {
+	mountInfo, err := inspector.Inspect("/")
+
 	if err != nil {
 		r.result = Unknown
 		r.Warn("Failed to inspect the boot disk. Prior to importing, verify that the boot disk " +
 			"contains the root filesystem, and that the root filesystem isn't virtualized over " +
 			"multiple disks (using LVM, for example).")
-		return r, nil
+		return mountInfo, err
 	}
 
 	r.Info(fmt.Sprintf("root filesystem mounted on %s", mountInfo.BlockDevicePath))
@@ -65,33 +109,48 @@ func (c *DisksCheck) Run() (r *Report, err error) {
 		format := "root filesystem spans multiple block devices (%s). Typically this occurs when an LVM logical " +
 			"volume spans multiple block devices. Image import only supports single block device."
 		r.Fatal(fmt.Sprintf(format, strings.Join(mountInfo.UnderlyingBlockDevices, ", ")))
-		return r, nil
+		return mountInfo, fmt.Errorf("Root filesystem spans multiple block devices")
 	}
 
-	bootDisk := mountInfo.UnderlyingBlockDevices[0]
-	r.Info(fmt.Sprintf("boot disk detected as %s", bootDisk))
-	// MBR checking.
-	var mbrData []byte
-	if c.getMBROverride != nil {
-		mbrData, err = c.getMBROverride(bootDisk)
-	} else {
-		mbrData, err = c.getMBR(bootDisk)
-	}
-	if err != nil {
-		return nil, err
-	}
-	if mbrData[510] != 0x55 || mbrData[511] != 0xAA {
-		r.Fatal("boot disk does not have an MBR partition table")
-	} else {
-		r.Info("boot disk has an MBR partition table")
-	}
-	if !bytes.Contains(mbrData, []byte("GRUB")) {
-		r.Fatal("GRUB not detected in MBR")
-	} else {
-		r.Info("GRUB found in MBR")
+	r.Info(fmt.Sprintf("boot disk detected as %s", mountInfo.UnderlyingBlockDevices[0]))
+
+	return mountInfo, err
+}
+
+func addGrubInfo(r *Report, mbrData []byte, pkgs *packages.Packages) {
+	if bytes.Contains(mbrData, []byte("GRUB")) || hasGrub2(pkgs.Rpm) || hasGrub2(pkgs.Deb) {
+		r.Info("GRUB detected")
+		return
 	}
 
-	return r, nil
+	r.Warn("GRUB not detected")
+}
+
+func hasGrub2(pkgs []packages.PkgInfo) bool {
+	for _, pkg := range pkgs {
+		if strings.Index(pkg.Name, "grub2-") != -1 {
+			return true
+		}
+	}
+	return false
+}
+
+func addPartitionTableInfo(r *Report, gdiskCommandResult string) {
+	if regexp.MustCompile("(.*)GPT:[\\s]*present(.*)").MatchString(gdiskCommandResult) {
+		if regexp.MustCompile("(.*)MBR:[\\s]*protective(.*)").MatchString(gdiskCommandResult) {
+			r.Info("boot disk has valid GPT with protective MBR; using GPT.")
+		} else if regexp.MustCompile("(.*)MBR:[\\s]*hybrid(.*)").MatchString(gdiskCommandResult) {
+			r.Info("boot disk has valid GPT with hybrid MBR; using GPT.")
+		} else if regexp.MustCompile("(.*)MBR:[\\s]*not present(.*)").MatchString(gdiskCommandResult) {
+			r.Info("boot disk has GPT only.")
+		} else {
+			r.Warn("Unkown boot disk partition table.")
+		}
+	} else if regexp.MustCompile("(.*)MBR:[\\s]*MBR only(.*)").MatchString(gdiskCommandResult) {
+		r.Info("boot disk has MBR only.")
+	} else {
+		r.Warn("Unkown boot disk partition table.")
+	}
 }
 
 func (c *DisksCheck) getMBR(devPath string) ([]byte, error) {
