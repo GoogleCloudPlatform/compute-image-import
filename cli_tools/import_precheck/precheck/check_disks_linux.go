@@ -57,7 +57,7 @@ func (c *DisksCheck) Run() (r *Report, err error) {
 	mountInfo, err := getBootDiskMountInfo(r, c.inspector)
 
 	if err != nil {
-		return r, nil
+		return r, err
 	}
 
 	bootDisk := mountInfo.UnderlyingBlockDevices[0]
