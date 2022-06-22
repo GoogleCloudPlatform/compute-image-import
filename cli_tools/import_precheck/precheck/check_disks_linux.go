@@ -54,9 +54,7 @@ func (c *DisksCheck) GetName() string {
 func (c *DisksCheck) Run() (r *Report, err error) {
 	r = &Report{name: c.GetName()}
 
-	mountInfo, err := c.inspector.Inspect("/")
-
-	addBootDiskMountInfo(r, mountInfo, err != nil)
+	mountInfo, err := getBootDiskMountInfo(r, c.inspector)
 
 	if err != nil || len(mountInfo.UnderlyingBlockDevices) > 1 {
 		return r, nil
@@ -94,13 +92,15 @@ func (c *DisksCheck) Run() (r *Report, err error) {
 	return r, nil
 }
 
-func addBootDiskMountInfo(r *Report, mountInfo mount.InspectionResults, failedToInspect bool) {
-	if failedToInspect {
+func getBootDiskMountInfo(r *Report, inspector mount.Inspector) (mount.InspectionResults, error) {
+	mountInfo, err := inspector.Inspect("/")
+
+	if err != nil {
 		r.result = Unknown
 		r.Warn("Failed to inspect the boot disk. Prior to importing, verify that the boot disk " +
 			"contains the root filesystem, and that the root filesystem isn't virtualized over " +
 			"multiple disks (using LVM, for example).")
-		return
+		return mountInfo, err
 	}
 
 	r.Info(fmt.Sprintf("root filesystem mounted on %s", mountInfo.BlockDevicePath))
@@ -109,12 +109,12 @@ func addBootDiskMountInfo(r *Report, mountInfo mount.InspectionResults, failedTo
 		format := "root filesystem spans multiple block devices (%s). Typically this occurs when an LVM logical " +
 			"volume spans multiple block devices. Image import only supports single block device."
 		r.Fatal(fmt.Sprintf(format, strings.Join(mountInfo.UnderlyingBlockDevices, ", ")))
-		return
+		return mountInfo, err
 	}
 
 	r.Info(fmt.Sprintf("boot disk detected as %s", mountInfo.UnderlyingBlockDevices[0]))
 
-	return
+	return mountInfo, err
 }
 
 func addGrubInfo(r *Report, mbrData []byte, pkgs *packages.Packages) {

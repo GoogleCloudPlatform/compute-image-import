@@ -20,6 +20,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/mount"
 	"github.com/GoogleCloudPlatform/osconfig/packages"
+	"github.com/golang/mock/gomock"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -88,7 +89,12 @@ func TestDisksCheck_Inspector(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var report Report
-			addBootDiskMountInfo(&report, tc.mountInfo, tc.inspectError != nil)
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+			mockMountInspector := mount.NewMockInspector(ctrl)
+			mockMountInspector.EXPECT().Inspect("/").Return(
+				tc.mountInfo, tc.inspectError)
+			getBootDiskMountInfo(&report, mockMountInspector)
 			for _, log := range tc.expectAllLogs {
 				assert.Contains(t, report.logs, log)
 			}
