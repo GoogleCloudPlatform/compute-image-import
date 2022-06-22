@@ -134,7 +134,7 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
   <tr>
     <td>Debian 9
     </td>
-    <td>/daisy_workflows/image_import/debiann/translate_debian_9.wf.json
+    <td>/daisy_workflows/image_import/debian/translate_debian_9.wf.json
     </td>
   </tr>
   <tr>
