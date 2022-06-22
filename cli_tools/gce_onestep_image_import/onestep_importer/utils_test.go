@@ -82,6 +82,7 @@ func TestUploaderCopiesFile(t *testing.T) {
 	uploader.readerChan <- r
 	close(uploader.readerChan)
 	uploader.Wait()
+	writerCloser.Close()
 	assert.Equal(t, output.String(), data)
 }
 

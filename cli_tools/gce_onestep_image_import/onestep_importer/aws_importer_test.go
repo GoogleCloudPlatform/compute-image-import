@@ -471,7 +471,7 @@ func TestTransferFileDownloadToReaderChan(t *testing.T) {
 	awsImporter := getAWSImporter(t, args)
 	awsImporter.transferFileFn = nil
 	getObjectResp.output = &s3.GetObjectOutput{
-		Body: ioutil.NopCloser(bytes.NewReader([]byte("file data"))),
+		Body: io.NopCloser(bytes.NewReader([]byte("file data"))),
 	}
 
 	awsImporter.getUploaderFn = func() *uploader {
@@ -488,6 +488,7 @@ func TestTransferFileDownloadToReaderChan(t *testing.T) {
 
 	reader := <-awsImporter.uploader.readerChan
 	io.Copy(writer, reader)
+	writer.Close()
 	assert.Contains(t, output.String(), "file data")
 }
 
