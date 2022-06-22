@@ -19,6 +19,11 @@
       "Value": "debian-11-worker",
       "Description": "Prefix for the created image."
     },
+    "image_project": {
+      "Required": true,
+      "Value": "compute-image-import",
+      "Description": "The project in which to create the worker image."
+    },
     "source_image": {
       "Required": true,
       "Value": "projects/debian-cloud/global/images/family/debian-11",
@@ -77,6 +82,7 @@
         "SourceDisk": "disk-worker",
         "Description": "A ${family_tag} image for import/export tools. Built on commit: ${commit_sha}",
         "Family": "${family_tag}",
+        "Project": "${image_project}",
         "NoCleanup": true,
         "ExactName": true,
         "OverWrite": true
