@@ -60,7 +60,7 @@ function assert_running {
       fail "$service not running."
     fi
   else
-    if ! service "$service" status; then
+    if ! service "$service" status | more; then
       fail "$service not running."
     fi
   fi
