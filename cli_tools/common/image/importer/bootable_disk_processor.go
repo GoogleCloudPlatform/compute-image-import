@@ -72,6 +72,9 @@ func newBootableDiskProcessor(request ImageImportRequest, wfPath string, logger 
 			request.Project, request.Zone, request.ScratchBucketGcsPath, request.Oauth, request.Timeout.String(),
 			request.ComputeEndpoint, request.GcsLogsDisabled, request.CloudLogsDisabled, request.StdoutLogsDisabled)
 
+		if err != nil {
+			return nil, err
+		}
 		updateWorkflowWithDataDisks(wfPath, wf, request)
 
 		return wf, err
