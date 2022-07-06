@@ -167,6 +167,10 @@ var (
 			GcloudOsFlag: "ubuntu-2004",
 			WorkflowPath: "ubuntu/translate_ubuntu_2004.wf.json",
 			LicenseURI:   "projects/ubuntu-os-cloud/global/licenses/ubuntu-2004-lts",
+		}, {
+			GcloudOsFlag: "ubuntu-2204",
+			WorkflowPath: "ubuntu/translate_ubuntu_2204.wf.json",
+			LicenseURI:   "projects/ubuntu-os-cloud/global/licenses/ubuntu-2204-lts",
 		},
 
 		// Windows

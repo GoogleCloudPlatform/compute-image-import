@@ -175,6 +175,21 @@ func TestInspectDisk(t *testing.T) {
 				OsCount:      1,
 			},
 		}, {
+			caseName: "ubuntu-2204",
+			imageURI: "projects/compute-image-import-test/global/images/ubuntu-2204",
+			expected: &pb.InspectionResults{
+				OsRelease: &pb.OsRelease{
+					CliFormatted: "ubuntu-2204",
+					Distro:       "ubuntu",
+					MajorVersion: "22",
+					MinorVersion: "04",
+					Architecture: pb.Architecture_X64,
+					DistroId:     pb.Distro_UBUNTU,
+				},
+				BiosBootable: true,
+				OsCount:      1,
+			},
+		}, {
 			caseName: "UEFI inspection test for MBR-only UEFI",
 			imageURI: "projects/compute-image-import-test/global/images/image-uefi-mbr-only",
 			expected: &pb.InspectionResults{

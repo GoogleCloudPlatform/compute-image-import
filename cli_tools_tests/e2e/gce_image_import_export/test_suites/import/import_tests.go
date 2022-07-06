@@ -142,6 +142,10 @@ var basicCases = []*testCase{
 		caseName: "ubuntu-2004-aws",
 		source:   "projects/compute-image-import-test/global/images/ubuntu-2004-aws",
 		os:       "ubuntu-2004",
+	}, {
+		caseName: "ubuntu-2204",
+		source:   "projects/compute-image-import-test/global/images/ubuntu-2204",
+		os:       "ubuntu-2204",
 	},
 
 	// OpenSUSE

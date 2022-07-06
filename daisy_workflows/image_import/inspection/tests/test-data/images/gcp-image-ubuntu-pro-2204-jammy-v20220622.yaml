@@ -1,11 +1,13 @@
-source: docker image ubuntu:latest
+# source: GCP image 'ubuntu-pro-2204-jammy-v20220622'
 expected:
   distro: ubuntu
   major: 22
-  minor: '04'
+  minor: "04"
 files:
   /etc/debian_version: |
     bookworm/sid
+  /etc/ec2_version: |
+    Ubuntu 22.04 LTS (Jammy Jellyfish)
   /etc/lsb-release: |
     DISTRIB_ID=Ubuntu
     DISTRIB_RELEASE=22.04
