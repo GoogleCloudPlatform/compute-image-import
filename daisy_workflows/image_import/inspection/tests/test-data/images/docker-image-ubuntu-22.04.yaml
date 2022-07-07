@@ -1,7 +1,7 @@
-source: docker image ubuntu:latest
+source: docker image ubuntu:22.04
 expected:
   distro: ubuntu
-  major: 22
+  major: '22'
   minor: '04'
 files:
   /etc/debian_version: |

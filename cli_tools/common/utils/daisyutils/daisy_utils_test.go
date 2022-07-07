@@ -58,6 +58,7 @@ func Test_GetTranslationSettings_ResolveSameWorkflowPathAsOldMap(t *testing.T) {
 		"ubuntu-1604":         "ubuntu/translate_ubuntu_1604.wf.json",
 		"ubuntu-1804":         "ubuntu/translate_ubuntu_1804.wf.json",
 		"ubuntu-2004":         "ubuntu/translate_ubuntu_2004.wf.json",
+		"ubuntu-2204":         "ubuntu/translate_ubuntu_2204.wf.json",
 		"windows-2008r2":      "windows/translate_windows_2008_r2.wf.json",
 		"windows-2008r2-byol": "windows/translate_windows_2008_r2_byol.wf.json",
 		"windows-2012":        "windows/translate_windows_2012.wf.json",
