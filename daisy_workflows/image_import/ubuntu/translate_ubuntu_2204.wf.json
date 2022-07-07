@@ -43,7 +43,7 @@
       "IncludeWorkflow": {
         "Path": "./translate_ubuntu.wf.json",
         "Vars": {
-          "ubuntu_release": "focal",
+          "ubuntu_release": "jammy",
           "install_gce_packages": "${install_gce_packages}",
           "imported_disk": "${source_disk}",
           "import_network": "${import_network}",

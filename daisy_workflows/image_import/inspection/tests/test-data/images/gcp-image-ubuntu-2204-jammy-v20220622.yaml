@@ -1,4 +1,4 @@
-# source: GCP image 'ubuntu-2204-jammy-v20220622'
+source: GCP image 'ubuntu-2204-jammy-v20220622'
 expected:
   distro: ubuntu
   major: 22
