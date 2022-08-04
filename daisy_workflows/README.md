@@ -1,7 +1,6 @@
-# Daisy Workflows
+# Daisy Workflows for Image Import and Export
 These are workflows used by the GCE team to automate common tasks associated
-with building images as well as workflows used to actually build GCE base
-images. There are also example workflows.
+with importing and exporting images. Example workflows are also included.
 
 # Import Userguide
 The [import
