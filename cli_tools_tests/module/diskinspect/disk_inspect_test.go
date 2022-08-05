@@ -67,7 +67,7 @@ func TestInspectDisk(t *testing.T) {
 		expected *pb.InspectionResults
 	}{
 		{
-			imageURI: "projects/opensuse-cloud/global/images/opensuse-leap-15-3-v20211011",
+			imageURI: "projects/opensuse-cloud/global/images/family/opensuse-leap-15-3",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "opensuse-15",
