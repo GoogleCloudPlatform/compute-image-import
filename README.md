@@ -1,4 +1,4 @@
-# Compute Engine Image Tools
+# Compute Engine Image Import
 
 This repository contains various tools for managing disk images on Google
 Compute Engine.
@@ -14,18 +14,13 @@ Daisy is a solution for running multi-step workflows on GCE.
 
 ### [Daisy Workflows](daisy_workflows)
 
-Full featured Daisy workflow examples, image builds, and image import
-workflows. A [user guide](daisy_workflows/import_userguide.md) for VM imports is
+Full featured Daisy workflow examples for image import
+workflows. A [user guide](https://googlecloudplatform.github.io/compute-image-import/image-import.html) for VM imports is
 also provided here.
 
-### [Daisy Tutorials](daisy_tutorials)
+## GCE Export tool
 
-Basic workflow examples and tutorials for getting started with Daisy.
-
-## [GCE Export tool](cli_tools/gce_export)
-
-The gce_export tool streams a local disk to a Google Compute Engine
-image file in a Google Cloud Storage bucket.
+The gce_ovf_export and gce_vm_image_export tools stream a local disk to a Google Compute Engine image file in a Google Cloud Storage bucket.
 
 ### Prebuilt binaries
 Prebuilt binaries are available for Windows, and Linux.
