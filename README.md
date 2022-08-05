@@ -8,7 +8,7 @@ Compute Engine.
 The main documentation for the tools in this repository can be found on our
 [GitHub.io page](https://googlecloudplatform.github.io/compute-image-import/image-import.html).
 
-## Daisy
+## [Daisy](daisy)
 
 Daisy is a solution for running multi-step workflows on GCE.
 
