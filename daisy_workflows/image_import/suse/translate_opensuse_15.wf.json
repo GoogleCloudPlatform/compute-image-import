@@ -63,7 +63,7 @@
             {"Source": "disk-translator"},
             {"Source": "${source_disk}"}
           ],
-          "MachineType": "n1-standard-2",
+          "MachineType": "n2-standard-2",
           "Metadata": {
             "files_gcs_dir": "${SOURCESPATH}/import_files",
             "script": "run-translate.sh",
