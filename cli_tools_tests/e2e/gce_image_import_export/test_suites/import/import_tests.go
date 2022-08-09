@@ -339,6 +339,12 @@ var basicCases = []*testCase{
 		source:               "projects/compute-image-import-test/global/images/windows-10-1909-ent-x86-nodrivers",
 		os:                   "windows-10-x86-byol",
 		osConfigNotSupported: true,
+	}, {
+		caseName:                "windows-11-x64-byol",
+		source:                  "projects/compute-image-import-test/global/images/windows-11-nodrivers",
+		os:                      "windows-11-x64-byol",
+		requiredGuestOsFeatures: []string{"WINDOWS", "UEFI_COMPATIBLE"},
+		osConfigNotSupported:    true,
 	},
 }
 

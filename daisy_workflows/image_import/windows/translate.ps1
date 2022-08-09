@@ -338,7 +338,14 @@ try {
   Write-Output "Scheduled restart aborted with return code $LASTEXITCODE. 0=Restart aborted 1116=No restart scheduled."
 
   $script:pn = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name ProductName).ProductName
-  Write-Host "Translate: OS is $script:pn, version $([System.Environment]::OSVersion.Version.ToString())"
+  
+  # As we're triggering the same process for windows 11 as windows 10.
+  $logsOsName = $script:pn
+  if ($logsOsName -like "*Windows 10*") {
+    $logsOsName = $logsOsName -replace 'Windows 10', 'Windows 10/11'
+  }
+  
+  Write-Host "Translate: OS is $logsOsName, version $([System.Environment]::OSVersion.Version.ToString())"
   Remove-VMWareTools
   Change-InstanceProperties
   Configure-Network

@@ -347,6 +347,20 @@ func TestInspectDisk(t *testing.T) {
 				OsCount: 1,
 			},
 		},
+		{
+			imageURI: "projects/compute-image-import-test/global/images/windows-11-nodrivers",
+			expected: &pb.InspectionResults{
+				OsRelease: &pb.OsRelease{
+					CliFormatted: "windows-10-x64",
+					Distro:       "windows",
+					MajorVersion: "10",
+					Architecture: pb.Architecture_X64,
+					DistroId:     pb.Distro_WINDOWS,
+				},
+				OsCount:      1,
+				UefiBootable: true,
+			},
+		},
 	} {
 		// Without this, each parallel test will reference the last tt instance.
 		// https://github.com/golang/go/wiki/CommonMistakes#using-goroutines-on-loop-iterator-variables
