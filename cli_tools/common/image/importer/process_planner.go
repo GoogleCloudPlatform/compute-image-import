@@ -135,7 +135,7 @@ func (p *defaultPlanner) inspectDisk(uri string) (*pb.InspectionResults, error) 
 	p.logger.User(fmt.Sprintf("Inspection result=%v", ir))
 
 	if ir.OsRelease != nil && strings.ToLower(ir.OsRelease.Distro) == "windows" && ir.OsRelease.MajorVersion == "10" {
-		p.logger.Debug("Windows-10 and Windows-11 share the same major NT version number, So they are determined " +
+		p.logger.Debug("Windows-10 and Windows-11 share the same major NT version number, so they are determined " +
 			"by our tools as Windows-10. For more details https://docs.microsoft.com/en-us/windows/win32/sysinfo/operating-system-version.")
 	}
 

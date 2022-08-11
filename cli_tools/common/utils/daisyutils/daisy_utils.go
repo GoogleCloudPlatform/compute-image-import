@@ -249,8 +249,8 @@ var (
 		},
 	}
 
-	// legacyIDs maps a legacy identifier to its replacement.
-	legacyIDs = map[string]string{
+	// osIDsReplacements maps operating systems versions identifier to an internal used namas.
+	osIDsReplacements = map[string]string{
 		"windows-7-byol":       "windows-7-x64-byol",
 		"windows-8-1-x64-byol": "windows-8-x64-byol",
 		"windows-10-byol":      "windows-10-x64-byol",
@@ -293,7 +293,7 @@ func GetTranslationSettings(osID string) (spec TranslationSettings, err error) {
 		return spec, errors.New("osID is empty")
 	}
 
-	if replacement := legacyIDs[osID]; replacement != "" {
+	if replacement := osIDsReplacements[osID]; replacement != "" {
 		osID = replacement
 	}
 	for _, choice := range supportedOS {
