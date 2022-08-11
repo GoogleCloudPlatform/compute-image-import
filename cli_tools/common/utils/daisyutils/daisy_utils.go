@@ -249,11 +249,17 @@ var (
 		},
 	}
 
-	// legacyIDs maps a legacy identifier to its replacement.
-	legacyIDs = map[string]string{
+	// osIDsReplacements maps operating systems versions identifier to an internal used namas.
+	osIDsReplacements = map[string]string{
 		"windows-7-byol":       "windows-7-x64-byol",
 		"windows-8-1-x64-byol": "windows-8-x64-byol",
 		"windows-10-byol":      "windows-10-x64-byol",
+
+		// Windows 11 is genuinely Windows 10 with a new explorer.exe,
+		// So, we're triggering the same process for windows 11 as windows 10.
+		"windows-11-byol":     "windows-10-x64-byol",
+		"windows-11-x64-byol": "windows-10-x64-byol",
+		"windows-11-x86-byol": "windows-10-x86-byol",
 	}
 
 	privacyRegex    = regexp.MustCompile(`\[Privacy\->.*?<\-Privacy\]`)
@@ -287,7 +293,7 @@ func GetTranslationSettings(osID string) (spec TranslationSettings, err error) {
 		return spec, errors.New("osID is empty")
 	}
 
-	if replacement := legacyIDs[osID]; replacement != "" {
+	if replacement := osIDsReplacements[osID]; replacement != "" {
 		osID = replacement
 	}
 	for _, choice := range supportedOS {
