@@ -150,6 +150,10 @@ def ClearEtcResolv(g):
 def _ClearImmutableAttr(g, fname):
   """Clears the immutable attr on the file associated with fname.
 
+  This function must be called prior to making network calls from the guest.
+  Otherwise, if /etc/resolv.conf is present, and has an immutable attribute,
+  guestfs will fail with the "Operation not permitted" error.
+
   Args:
     g (guestfs.GuestFS): A mounted GuestFS instance.
     fname (str): File to have its immutable attr cleared.
