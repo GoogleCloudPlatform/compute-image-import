@@ -329,6 +329,9 @@ def translate():
 
   pkgs = release.gce_packages if include_gce_packages else []
 
+  # Remove the immutable attr on the /etc/resolv.conf file if exist
+  utils.common.ClearEtcResolv(g)
+
   if subscription_model == 'gce':
     logging.info('Converting to on-demand')
     migrate.migrate(
