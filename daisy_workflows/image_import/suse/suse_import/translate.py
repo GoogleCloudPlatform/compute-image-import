@@ -329,6 +329,8 @@ def translate():
 
   pkgs = release.gce_packages if include_gce_packages else []
 
+  utils.common.ClearEtcResolv(g)
+
   if subscription_model == 'gce':
     logging.info('Converting to on-demand')
     migrate.migrate(

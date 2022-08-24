@@ -183,12 +183,7 @@ checks = [
 def DistroSpecific(spec: TranslateSpec):
   g = spec.g
   el_release = spec.el_release
-  # This must be performed prior to making network calls from the guest.
-  # Otherwise, if /etc/resolv.conf is present, and has an immutable attribute,
-  # guestfs will fail with:
-  #
-  #   rename: /sysroot/etc/resolv.conf to
-  #     /sysroot/etc/i9r7obu6: Operation not permitted
+
   utils.common.ClearEtcResolv(g)
 
   # Some imported images haven't contained `/etc/yum.repos.d`.

@@ -138,7 +138,13 @@ def Execute(cmd, cwd=None, capture_output=False, env=None, raise_errors=True):
 
 
 def ClearEtcResolv(g):
-  """Clear /etc/resolv.conf to allow DNS settings to come from GCP's DHCP server.
+  """Clear /etc/resolv.conf to allow DNS settings to come from GCP's DHCP
+    server.
+
+    This function must be called prior to making network calls from the guest.
+    Otherwise, if /etc/resolv.conf is present, and has an immutable attribute,
+    guestfs will fail with an error like  `rename: /sysroot/etc/resolv.conf to
+    /sysroot/etc/i9r7obu6: Operation not permitted`.
 
   Args:
     g (guestfs.GuestFS): A mounted GuestFS instance.
