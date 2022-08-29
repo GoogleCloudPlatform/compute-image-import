@@ -32,6 +32,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
+var centos7workflow string
 var opensuse15workflow string
 var ubuntu1804workflow string
 var windows2019workflow string
@@ -41,6 +42,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	centos7workflow = "../../../../daisy_workflows/image_import/enterprise_linux/translate_centos_7.wf.json"
 	opensuse15workflow = path.Join("../../../../daisy_workflows/image_import", settings.WorkflowPath)
 	ubuntu1804workflow = "../../../../daisy_workflows/image_import/ubuntu/translate_ubuntu_1804.wf.json"
 	windows2019workflow = "../../../../daisy_workflows/image_import/windows/translate_windows_2019.wf.json"
@@ -248,6 +250,36 @@ func TestBootableDiskProcessor_SupportsCancel(t *testing.T) {
 	realProcessor.cancel("timed-out")
 	err := realProcessor.worker.Run(map[string]string{})
 	assert.EqualError(t, err, "workflow canceled: timed-out")
+}
+
+func TestBootableDiskProcessor_AttachDataDisksWithEnterpriseLinux(t *testing.T) {
+	args := defaultImportArgs()
+	args.OS = "centos-7"
+
+	for i := 0; i < 3; i++ {
+		diskName := fmt.Sprintf("disk-%d", i+1)
+		disk, err := disk.NewDisk(args.Project, args.Zone, diskName)
+		assert.NoError(t, err)
+		args.DataDisks = append(args.DataDisks, disk)
+	}
+
+	processor := newBootableDiskProcessor(args, centos7workflow, logging.NewToolLogger(t.Name()),
+		distro.FromGcloudOSArgumentMustParse("centos-7"))
+
+	realProcessor := processor.(*bootableDiskProcessor)
+
+	daisyutils.CheckWorkflow(realProcessor.worker, func(wf *daisy.Workflow, err error) {
+		workerInstance := wf.Steps["translate-disk"].IncludeWorkflow.Workflow.Steps["translate-disk-inst"].CreateInstances.Instances[0]
+		assert.Equal(t, len(workerInstance.Disks), 1)
+		assert.Equal(t, workerInstance.Disks[0].Source, "${translator_disk}")
+
+		attachDisksStep := ([]*daisy.AttachDisk)(*wf.Steps["translate-disk"].IncludeWorkflow.Workflow.Steps["attach-input-disk-to-translate-inst"].AttachDisks)
+		assert.Equal(t, len(attachDisksStep), 4)
+		assert.Equal(t, attachDisksStep[0].Source, "${imported_disk}")
+		for i, disk := range attachDisksStep[1:] {
+			assert.Equal(t, disk.Source, args.DataDisks[i].GetURI())
+		}
+	})
 }
 
 func TestBootableDiskProcessor_AttachDataDisksWithLinux(t *testing.T) {

@@ -104,6 +104,38 @@ class TranslateSpec:
     self.el_release = el_release
 
 
+def get_input_disks():
+  input_disks_count = int(utils.GetMetadataAttribute('input_disks_count', 1))
+  logging.debug("Waiting for {} input disk(s) to be attached.".format(
+    input_disks_count,
+  ))
+
+  success = False
+  attached_disks = []
+  for i in range(4):
+    time.sleep(i * 10)
+
+    attached_disks = diskutils.get_physical_drives()
+    # attached_disks include the worker disk
+    if len(attached_disks) == input_disks_count + 1:
+      success = True
+      break
+
+  if not success:
+    msg = (
+      "Input disk(s) were not attached within the expected timeout; "
+      "expected {}, but attached {}."
+    ).format(
+      input_disks_count,
+      len(attached_disks) - 1
+    )
+    raise RuntimeError(msg)
+
+  # remove the worker disk
+  attached_disks.remove('/dev/sda')
+  return attached_disks
+
+
 def check_repos(spec: TranslateSpec) -> str:
   """Check for unreachable repos.
 
@@ -402,17 +434,18 @@ def cleanup(g: guestfs.GuestFS):
 
 
 def main():
-  disk = '/dev/sdb'
-  attached_disks = diskutils.get_physical_drives()
+  input_disks = get_input_disks()
 
-  # remove the boot disk of the worker instance
-  attached_disks.remove('/dev/sda')
-
-  g = diskutils.MountDisks(attached_disks)
+  g = diskutils.MountDisks(input_disks)
   run_translate(g)
   utils.CommonRoutines(g)
   cleanup(g)
-  utils.Execute(['virt-customize', '-a', disk, '--selinux-relabel'])
+
+  virt_customize_args = ['virt-customize', '--selinux-relabel']
+  for disk in input_disks:
+    virt_customize_args += ['-a', disk]
+
+  utils.Execute(virt_customize_args)
 
 
 if __name__ == '__main__':

@@ -32,6 +32,10 @@
     "compute_service_account": {
       "Value": "default",
       "Description": "Service account that will be used by the created worker instance"
+    },
+    "input_disks_count": {
+      "Value": "1",
+      "Description": "The number of disks on the input VM (always 1 for images import)."
     }
   },
   "Sources": {
@@ -45,8 +49,7 @@
         {
           "Name": "inst-translator",
           "Disks": [
-            {"Source": "${translator_disk}"},
-            {"Source": "${imported_disk}"}
+            {"Source": "${translator_disk}"}
           ],
           "MachineType": "n1-standard-2",
           "Metadata": {
@@ -56,7 +59,8 @@
             "prefix": "Translate",
             "el_release": "${el_release}",
             "install_gce_packages": "${install_gce_packages}",
-            "use_rhel_gce_license": "${use_rhel_gce_license}"
+            "use_rhel_gce_license": "${use_rhel_gce_license}",
+            "input_disks_count": "${input_disks_count}"
           },
           "networkInterfaces": [
             {
@@ -73,6 +77,24 @@
           ]
         }
       ]
+    },
+    "wait-for-translate-inst-bootstrap": {
+      "WaitForInstancesSignal": [
+        {
+          "Name": "inst-translator",
+          "SerialOutput": {
+            "Port": 1,
+            "SuccessMatch": "Status: Starting bootstrap.sh",
+            "FailureMatch": ["TranslateFailed:", "Failed to download GCS path"]
+          }
+        }
+      ]
+    },
+    "attach-input-disk-to-translate-inst": {
+      "AttachDisks": [{
+        "Source": "${imported_disk}",
+        "Instance": "inst-translator"
+      }]
     },
     "wait-for-translator": {
       "WaitForInstancesSignal": [
@@ -96,6 +118,8 @@
   },
   "Dependencies": {
     "wait-for-translator": ["translate-disk-inst"],
-    "delete-instance": ["wait-for-translator"]
+    "wait-for-translate-inst-bootstrap": ["translate-disk-inst"],
+    "attach-input-disk-to-translate-inst": ["wait-for-translate-inst-bootstrap"],
+    "delete-instance": ["attach-input-disk-to-translate-inst", "wait-for-translator"]
   }
 }

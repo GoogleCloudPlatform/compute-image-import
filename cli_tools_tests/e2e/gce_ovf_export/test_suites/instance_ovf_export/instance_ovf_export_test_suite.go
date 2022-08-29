@@ -94,20 +94,29 @@ func runInstanceOVFExportDebian3Disks(ctx context.Context, testCase *junitxml.Te
 
 	buildID := path.RandString(10)
 
+	script := loadScriptContent(
+		"scripts/ovf_import_test_3_disks.sh",
+		map[string]string{
+			"${FILE1_PATH}":    "/mnt/b/test_sdb.txt",
+			"${FILE2_PATH}":    "/mnt/c/test_sdc.txt",
+			"${FILE1_CONTENT}": "on_sdb",
+			"${FILE2_CONTENT}": "on_sdc",
+		},
+		logger,
+	)
 	exportBucket := fmt.Sprintf("%v-test-image", testProjectConfig.TestProjectID)
 	exportPath := fmt.Sprintf("ovf-export-%v", buildID)
 	props := &instanceOvfExportTestProperties{
-		instanceName: fmt.Sprintf("test-instance-ubuntu-3-disks-%v", buildID),
-		verificationStartupScript: loadScriptContent(
-			"scripts/ovf_import_test_3_disks.sh", logger),
-		zone:                  testProjectConfig.TestZone,
-		expectedStartupOutput: "All tests passed!",
-		failureMatches:        []string{"FAILED:", "TestFailed:"},
-		sourceGMI:             "projects/compute-import-test-pool-001/global/machineImages/debian-11-three-disks-do-not-delete",
-		destinationURI:        fmt.Sprintf("gs://%v/%v/", exportBucket, exportPath),
-		exportBucket:          exportBucket,
-		exportPath:            exportPath,
-		buildID:               buildID,
+		instanceName:              fmt.Sprintf("test-instance-ubuntu-3-disks-%v", buildID),
+		verificationStartupScript: script,
+		zone:                      testProjectConfig.TestZone,
+		expectedStartupOutput:     "All tests passed!",
+		failureMatches:            []string{"FAILED:", "TestFailed:"},
+		sourceGMI:                 "projects/compute-import-test-pool-001/global/machineImages/debian-11-three-disks-do-not-delete",
+		destinationURI:            fmt.Sprintf("gs://%v/%v/", exportBucket, exportPath),
+		exportBucket:              exportBucket,
+		exportPath:                exportPath,
+		buildID:                   buildID,
 	}
 
 	runOVFInstanceExportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
@@ -345,13 +354,22 @@ func verifyExportedOVFUsingOVFImport(
 	return true
 }
 
-func loadScriptContent(scriptPath string, logger *log.Logger) string {
-	scriptContent, err := ioutil.ReadFile(scriptPath)
+// TODO: merge these test utilities with import test utilities.
+// See LoadScriptContent from instance_ovf_export_test_suite.go for details.
+func loadScriptContent(scriptPath string, args map[string]string, logger *log.Logger) string {
+	scriptContentBytes, err := ioutil.ReadFile(scriptPath)
 	if err != nil {
 		logger.Printf("Error loading script `%v`: %v", scriptPath, err)
 		os.Exit(1)
 	}
-	return string(scriptContent)
+
+	scriptContent := string(scriptContentBytes)
+
+	for key, value := range args {
+		scriptContent = strings.ReplaceAll(scriptContent, key, value)
+	}
+
+	return scriptContent
 }
 
 func verifyFileInGCSExists(ctx context.Context, testCase *junitxml.TestCase, bucketName string,

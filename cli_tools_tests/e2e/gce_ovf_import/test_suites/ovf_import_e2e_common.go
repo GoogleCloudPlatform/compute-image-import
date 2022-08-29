@@ -155,13 +155,20 @@ func GetProject(props *OvfImportTestProperties, testProjectConfig *testconfig.Pr
 
 // LoadScriptContent loads script content from local file system. If it fails,
 // the whole program will exit with an error.
-func LoadScriptContent(scriptPath string, logger *log.Logger) string {
-	scriptContent, err := ioutil.ReadFile(scriptPath)
+func LoadScriptContent(scriptPath string, args map[string]string, logger *log.Logger) string {
+	scriptContentBytes, err := ioutil.ReadFile(scriptPath)
 	if err != nil {
 		logger.Printf("Error loading script `%v`: %v", scriptPath, err)
 		os.Exit(1)
 	}
-	return string(scriptContent)
+
+	scriptContent := string(scriptContentBytes)
+
+	for key, value := range args {
+		scriptContent = strings.ReplaceAll(scriptContent, key, value)
+	}
+
+	return scriptContent
 }
 
 // VerifyInstance verifies that imported instance is matching OvfImportTestProperties.

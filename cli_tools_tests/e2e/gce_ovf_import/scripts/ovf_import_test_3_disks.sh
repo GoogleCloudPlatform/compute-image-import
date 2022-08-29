@@ -206,11 +206,11 @@ function check_package_install {
 }
 
 function check_data_disk_content {
-  if [[ $(< /mnt/b/test_sdb.txt) != "on_sdb" ]]; then
-      fail "/mnt/b/test_sdb.txt not found or content doesn't match."
+  if [[ $(< ${FILE1_PATH}) != "${FILE1_CONTENT}" ]]; then
+      fail "${FILE1_PATH} not found or content doesn't match."
   fi
-  if [[ $(< /mnt/c/test_sdc.txt) != "on_sdc" ]]; then
-      fail "/mnt/c/test_sdc.txt not found or content doesn't match."
+  if [[ $(< ${FILE2_PATH}) != "${FILE2_CONTENT}" ]]; then
+      fail "${FILE2_PATH} not found or content doesn't match."
   fi
 }
 
