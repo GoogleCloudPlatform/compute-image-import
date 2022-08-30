@@ -75,7 +75,7 @@ func newBootableDiskProcessor(request ImageImportRequest, wfPath string, logger 
 		if err != nil {
 			return nil, err
 		}
-		updateWorkflowWithDataDisks(wfPath, wf, request)
+		updateWorkflowWithDataDisks(wf, request)
 
 		return wf, err
 	}
@@ -98,19 +98,56 @@ func newBootableDiskProcessor(request ImageImportRequest, wfPath string, logger 
 // This function is to attach the created data disks into the translation worker instance, to handle if part
 // of the OS data (e.g. /var) is mounted onto one of the data disks
 // currently it is supported for Linux only.
-func updateWorkflowWithDataDisks(wfPath string, wf *daisy.Workflow, request ImageImportRequest) {
-	if !strings.Contains(strings.ToLower(wfPath), "windows") {
-		var disks *[]*compute.AttachedDisk
-		if wf.Steps["translate-disk"] != nil {
-			disks = &wf.Steps["translate-disk"].IncludeWorkflow.Workflow.Steps["translate-disk-inst"].CreateInstances.Instances[0].Disks
-		} else if wf.Steps["translate-disk-inst"] != nil {
-			// case translation wf that doesn't include another workflow (e.g. opensuse_15)
-			disks = &wf.Steps["translate-disk-inst"].CreateInstances.Instances[0].Disks
-		}
+func updateWorkflowWithDataDisks(wf *daisy.Workflow, request ImageImportRequest) {
+	if isWindowsWorkflow(wf) {
+		return
+	}
 
-		for _, dataDisk := range request.DataDisks {
-			*disks = append(*disks, &compute.AttachedDisk{Source: dataDisk.GetURI()})
-		}
+	if isEnterpriseLinuxWorkflow((wf)) {
+		updateEnterpriseLinuxWorkflowWithDataDisks(wf.Steps["translate-disk"].IncludeWorkflow.Workflow, request)
+		return
+	}
+
+	updateLinuxWorkflowWithDataDisks(wf, request)
+}
+
+func isWindowsWorkflow(wf *daisy.Workflow) bool {
+	return strings.Contains(strings.ToLower(wf.Name), "windows")
+}
+
+func isEnterpriseLinuxWorkflow(wf *daisy.Workflow) bool {
+	return (wf.Steps["translate-disk"] != nil) &&
+		(wf.Steps["translate-disk"].IncludeWorkflow.Workflow.Name == "translate-el")
+}
+
+func updateEnterpriseLinuxWorkflowWithDataDisks(wf *daisy.Workflow, request ImageImportRequest) {
+	wf.Vars["input_disks_count"] = daisy.Var{
+		Value: strconv.Itoa(len(request.DataDisks) + 1),
+	}
+
+	attachDisks := ([]*daisy.AttachDisk)(*wf.Steps["attach-input-disk-to-translate-inst"].AttachDisks)
+
+	for _, dataDisk := range request.DataDisks {
+		attachDisks = append(attachDisks, &daisy.AttachDisk{
+			Instance:     wf.Steps["translate-disk-inst"].CreateInstances.Instances[0].Name,
+			AttachedDisk: compute.AttachedDisk{Source: dataDisk.GetURI()},
+		})
+	}
+
+	wf.Steps["attach-input-disk-to-translate-inst"].AttachDisks = (*daisy.AttachDisks)(&attachDisks)
+}
+
+func updateLinuxWorkflowWithDataDisks(wf *daisy.Workflow, request ImageImportRequest) {
+	var disks *[]*compute.AttachedDisk
+	if wf.Steps["translate-disk"] != nil {
+		disks = &wf.Steps["translate-disk"].IncludeWorkflow.Workflow.Steps["translate-disk-inst"].CreateInstances.Instances[0].Disks
+	} else if wf.Steps["translate-disk-inst"] != nil {
+		// case translation wf that doesn't include another workflow (e.g. opensuse_15)
+		disks = &wf.Steps["translate-disk-inst"].CreateInstances.Instances[0].Disks
+	}
+
+	for _, dataDisk := range request.DataDisks {
+		*disks = append(*disks, &compute.AttachedDisk{Source: dataDisk.GetURI()})
 	}
 }
 

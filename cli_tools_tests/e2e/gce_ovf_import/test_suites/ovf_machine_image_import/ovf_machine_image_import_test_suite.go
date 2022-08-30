@@ -124,21 +124,30 @@ func runOVFMachineImageImportDebian3DisksNetworkSettingsName(ctx context.Context
 	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
 
 	suffix := path.RandString(5)
+	script := ovfimporttestsuite.LoadScriptContent(
+		"scripts/ovf_import_test_3_disks.sh",
+		map[string]string{
+			"${FILE1_PATH}":    "/mnt/b/test_sdb.txt",
+			"${FILE2_PATH}":    "/mnt/c/test_sdc.txt",
+			"${FILE1_CONTENT}": "on_sdb",
+			"${FILE2_CONTENT}": "on_sdc",
+		},
+		logger,
+	)
 	props := &ovfMachineImageImportTestProperties{
 		machineImageName: fmt.Sprintf("test-machine-image-ubuntu-3-disks-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
-			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"scripts/ovf_import_test_3_disks.sh", logger),
-			Zone:                  testProjectConfig.TestZone,
-			ExpectedStartupOutput: "All tests passed!",
-			FailureMatches:        []string{"TestFailed:"},
-			SourceURI:             fmt.Sprintf("gs://%v/ova/debian-11-three-disks.ova", ovaBucket),
-			Os:                    "debian-11",
-			InstanceMetadata:      skipOSConfigMetadata,
-			MachineType:           "n1-standard-4",
-			Network:               fmt.Sprintf("%v-vpc-1", testProjectConfig.TestProjectID),
-			Subnet:                fmt.Sprintf("%v-subnet-1", testProjectConfig.TestProjectID),
-			Tags:                  []string{"tag1", "tag2", "tag3"},
+			VerificationStartupScript: script,
+			Zone:                      testProjectConfig.TestZone,
+			ExpectedStartupOutput:     "All tests passed!",
+			FailureMatches:            []string{"TestFailed:"},
+			SourceURI:                 fmt.Sprintf("gs://%v/ova/debian-11-three-disks.ova", ovaBucket),
+			Os:                        "debian-11",
+			InstanceMetadata:          skipOSConfigMetadata,
+			MachineType:               "n1-standard-4",
+			Network:                   fmt.Sprintf("%v-vpc-1", testProjectConfig.TestProjectID),
+			Subnet:                    fmt.Sprintf("%v-subnet-1", testProjectConfig.TestProjectID),
+			Tags:                      []string{"tag1", "tag2", "tag3"},
 		},
 	}
 
@@ -153,7 +162,7 @@ func runOVFMachineImageImportWindows2012R2TwoDisksNetworkSettingsPath(ctx contex
 	props := &ovfMachineImageImportTestProperties{
 		machineImageName: fmt.Sprintf("test-machine-image-w2k12-r2-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"scripts/ovf_import_test_windows_two_disks.ps1", logger),
+			"scripts/ovf_import_test_windows_two_disks.ps1", map[string]string{}, logger),
 			Zone:                  testProjectConfig.TestZone,
 			ExpectedStartupOutput: "All Tests Passed",
 			FailureMatches:        []string{"Test Failed:"},
@@ -178,7 +187,7 @@ func runOVFMachineImageImportCentos74StorageLocation(ctx context.Context, testCa
 		storageLocation:  "asia-northeast1",
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
 			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "asia-northeast1-a",
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -197,7 +206,7 @@ func runOVFMachineImageImportDebian10WithBootDiskSpanMultiplePhysicalDisks(ctx c
 		machineImageName: fmt.Sprintf("test-gmi-debian10-boot-disk-spans-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
 			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "us-west1-c",
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -217,7 +226,7 @@ func runOVFMachineImageImportUbuntu18WithBootDiskSpanMultiplePhysicalDisksWithLV
 		machineImageName: fmt.Sprintf("test-gmi-ubuntu18-lvm-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
 			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "us-west1-c",
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -240,7 +249,7 @@ func runMachineImageImportDisabledDefaultServiceAccountSuccessTest(ctx context.C
 	props := &ovfMachineImageImportTestProperties{
 		machineImageName: fmt.Sprintf("test-without-service-account-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                   "europe-west1-c",
 			ExpectedStartupOutput:  "All tests passed!",
 			FailureMatches:         []string{"FAILED:", "TestFailed:"},
@@ -267,7 +276,7 @@ func runMachineImageImportOSDefaultServiceAccountWithMissingPermissionsSuccessTe
 	props := &ovfMachineImageImportTestProperties{
 		machineImageName: fmt.Sprintf("test-missing-cse-permissions-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                   "us-west1-c",
 			ExpectedStartupOutput:  "All tests passed!",
 			FailureMatches:         []string{"FAILED:", "TestFailed:"},
@@ -293,7 +302,7 @@ func runMachineImageImportWithDisabledDefaultServiceAccountFailTest(ctx context.
 	props := &ovfMachineImageImportTestProperties{
 		machineImageName: fmt.Sprintf("test-missing-permn-on-default-csa-fail-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  testProjectConfig.TestZone,
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -317,7 +326,7 @@ func runMachineImageImportDefaultServiceAccountWithMissingPermissionsFailTest(ct
 	props := &ovfMachineImageImportTestProperties{
 		machineImageName: fmt.Sprintf("test-insufficient-perm-default-csa-fail-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  testProjectConfig.TestZone,
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -341,7 +350,7 @@ func runMachineImageImportDefaultServiceAccountCustomAccessScope(ctx context.Con
 	props := &ovfMachineImageImportTestProperties{
 		machineImageName: fmt.Sprintf("test-custom-sc-default-sa-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "asia-southeast1-c",
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},

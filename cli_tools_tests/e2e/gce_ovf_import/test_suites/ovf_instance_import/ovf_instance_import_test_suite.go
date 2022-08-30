@@ -97,6 +97,8 @@ func TestSuite(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "Debain 10 with boot disk spans"))
 		InstanceImportUbuntu18WithBootDiskSpanMultiplePhysicalDisksWithLVM := junitxml.NewTestCase(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "Ubuntu 18 with boot disk spans with LVM"))
+		instanceImportCentOS7With3Disks := junitxml.NewTestCase(
+			testSuiteName, fmt.Sprintf("[%v] %v", testType, "CentOS 7 with three disks"))
 
 		testsMap[testType] = map[*junitxml.TestCase]func(
 			context.Context, *junitxml.TestCase, *log.Logger, *testconfig.Project, e2e.CLITestType){}
@@ -107,6 +109,7 @@ func TestSuite(
 		testsMap[testType][instanceImportDebian9] = runOVFInstanceImportDebian9
 		testsMap[testType][InstanceImportDebian10WithBootDiskSpanMultiplePhysicalDisks] = runOVFInstanceImportDebian10WithBootDiskSpanMultiplePhysicalDisks
 		testsMap[testType][InstanceImportUbuntu18WithBootDiskSpanMultiplePhysicalDisksWithLVM] = runOVFInstanceImportUbuntu18WithBootDiskSpanMultiplePhysicalDisksWithLVM
+		testsMap[testType][instanceImportCentOS7With3Disks] = runOVFInstanceImportCentOS7With3Disks
 
 		testsMap[testType][instanceImportUbuntu16FromVirtualBox] = runOVFInstanceImportUbuntu16FromVirtualBox
 		testsMap[testType][instanceImportUbuntu16FromAWS] = runOVFInstanceImportUbuntu16FromAWS
@@ -227,7 +230,7 @@ func fallbackWhenSSDQuotaExhausted(ctx context.Context, testCase *junitxml.TestC
 		instanceName: fmt.Sprintf("insufficient-ssd-quota-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
 			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                      zone,
 			ExpectedStartupOutput:     "All tests passed!",
 			FailureMatches:            []string{"FAILED:", "TestFailed:"},
@@ -244,20 +247,29 @@ func runOVFInstanceImportDebian3DisksNetworkSettingsName(ctx context.Context, te
 	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
 
 	suffix := path.RandString(5)
+	script := ovfimporttestsuite.LoadScriptContent(
+		"scripts/ovf_import_test_3_disks.sh",
+		map[string]string{
+			"${FILE1_PATH}":    "/mnt/b/test_sdb.txt",
+			"${FILE2_PATH}":    "/mnt/c/test_sdc.txt",
+			"${FILE1_CONTENT}": "on_sdb",
+			"${FILE2_CONTENT}": "on_sdc",
+		},
+		logger,
+	)
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-instance-debian-3-disks-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
-			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"scripts/ovf_import_test_3_disks.sh", logger),
-			Zone:                  testProjectConfig.TestZone,
-			ExpectedStartupOutput: "All tests passed!",
-			FailureMatches:        []string{"FAILED:", "TestFailed:"},
-			SourceURI:             fmt.Sprintf("gs://%v/ova/debian-11-three-disks.ova", ovaBucket),
-			Os:                    "debian-11",
-			MachineType:           "n1-standard-4",
-			Network:               fmt.Sprintf("%v-vpc-1", testProjectConfig.TestProjectID),
-			Subnet:                fmt.Sprintf("%v-subnet-1", testProjectConfig.TestProjectID),
-			Tags:                  []string{"tag1", "tag2", "tag3"},
+			VerificationStartupScript: script,
+			Zone:                      testProjectConfig.TestZone,
+			ExpectedStartupOutput:     "All tests passed!",
+			FailureMatches:            []string{"FAILED:", "TestFailed:"},
+			SourceURI:                 fmt.Sprintf("gs://%v/ova/debian-11-three-disks.ova", ovaBucket),
+			Os:                        "debian-11",
+			MachineType:               "n1-standard-4",
+			Network:                   fmt.Sprintf("%v-vpc-1", testProjectConfig.TestProjectID),
+			Subnet:                    fmt.Sprintf("%v-subnet-1", testProjectConfig.TestProjectID),
+			Tags:                      []string{"tag1", "tag2", "tag3"},
 		}}
 
 	runOVFInstanceImportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
@@ -271,7 +283,7 @@ func runOVFInstanceImportWindows2012R2TwoDisksNetworkSettingsPath(ctx context.Co
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-instance-w2k12-r2-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"scripts/ovf_import_test_windows_two_disks.ps1", logger),
+			"scripts/ovf_import_test_windows_two_disks.ps1", map[string]string{}, logger),
 			Zone:                  testProjectConfig.TestZone,
 			ExpectedStartupOutput: "All Tests Passed",
 			FailureMatches:        []string{"Test Failed:"},
@@ -295,7 +307,7 @@ func runOVFInstanceImportWindows2016(ctx context.Context, testCase *junitxml.Tes
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-instance-w2k16-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.ps1", logger),
+			"daisy_integration_tests/scripts/post_translate_test.ps1", map[string]string{}, logger),
 			Zone:                  "asia-northeast1-a",
 			ExpectedStartupOutput: "All Tests Passed",
 			FailureMatches:        []string{"Test Failed:"},
@@ -315,7 +327,7 @@ func runOVFInstanceImportWindows2008R2FourNICs(ctx context.Context, testCase *ju
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-instance-w2k8r2-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.ps1", logger),
+			"daisy_integration_tests/scripts/post_translate_test.ps1", map[string]string{}, logger),
 			Zone:                  "europe-west2-c",
 			ExpectedStartupOutput: "All Tests Passed",
 			FailureMatches:        []string{"Test Failed:"},
@@ -353,7 +365,7 @@ func runOVFInstanceImportUbuntu16FromVirtualBox(ctx context.Context, testCase *j
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-instance-virtualbox-6-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "asia-southeast1-c",
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -391,7 +403,7 @@ func runOVFInstanceImportDebian10WithBootDiskSpanMultiplePhysicalDisks(ctx conte
 		instanceName: fmt.Sprintf("test-instance-debian10-boot-disk-spans-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
 			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "us-west1-c",
 			ExpectedStartupOutput: "All Tests Passed",
 			FailureMatches:        []string{"Test Failed:"},
@@ -411,13 +423,42 @@ func runOVFInstanceImportUbuntu18WithBootDiskSpanMultiplePhysicalDisksWithLVM(ct
 		instanceName: fmt.Sprintf("test-instance-ubuntu18-lvm-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
 			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "us-west1-c",
 			ExpectedStartupOutput: "All Tests Passed",
 			FailureMatches:        []string{"Test Failed:"},
 			SourceURI:             fmt.Sprintf("gs://%v/ova/ubuntu-18-instance-with-lvm", ovaBucket),
 			Os:                    "ubuntu-1804",
 			MachineType:           "n1-standard-4",
+		}}
+
+	runOVFInstanceImportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
+}
+
+func runOVFInstanceImportCentOS7With3Disks(ctx context.Context, testCase *junitxml.TestCase, logger *log.Logger,
+	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
+
+	suffix := path.RandString(5)
+	script := ovfimporttestsuite.LoadScriptContent(
+		"scripts/ovf_import_test_3_disks.sh",
+		map[string]string{
+			"${FILE1_PATH}":    "/media/disk1/some_data",
+			"${FILE2_PATH}":    "/media/disk2/some_data",
+			"${FILE1_CONTENT}": "SOME_DATA_1",
+			"${FILE2_CONTENT}": "SOME_DATA_2",
+		},
+		logger,
+	)
+	props := &ovfInstanceImportTestProperties{
+		instanceName: fmt.Sprintf("test-instance-centos7-3-disks-%v", suffix),
+		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
+			VerificationStartupScript: script,
+			Zone:                      "europe-west1-c",
+			ExpectedStartupOutput:     "All Tests Passed",
+			FailureMatches:            []string{"Test Failed:"},
+			SourceURI:                 fmt.Sprintf("gs://%v/ova/centos-7-three-disks.ova", ovaBucket),
+			Os:                        "centos-7",
+			MachineType:               "n1-standard-4",
 		}}
 
 	runOVFInstanceImportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
@@ -435,7 +476,7 @@ func runInstanceImportDisabledDefaultServiceAccountSuccessTest(ctx context.Conte
 		instanceName: fmt.Sprintf("test-without-service-account-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
 			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-				"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                   "asia-northeast1-c",
 			ExpectedStartupOutput:  "All tests passed!",
 			FailureMatches:         []string{"FAILED:", "TestFailed:"},
@@ -463,7 +504,7 @@ func runInstanceImportDefaultServiceAccountWithMissingPermissionsSuccessTest(ctx
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-missing-ce-permissions-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                   "europe-west3-c",
 			ExpectedStartupOutput:  "All tests passed!",
 			FailureMatches:         []string{"FAILED:", "TestFailed:"},
@@ -490,7 +531,7 @@ func runInstanceImportWithDisabledDefaultServiceAccountFailTest(ctx context.Cont
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-missing-permission-on-default-csa-fail-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  testProjectConfig.TestZone,
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -514,7 +555,7 @@ func runInstanceImportDefaultServiceAccountWithMissingPermissionsFailTest(ctx co
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-insufficient-permission-default-csa-fail-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  testProjectConfig.TestZone,
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -533,7 +574,7 @@ func runInstanceImportDefaultServiceAccountCustomAccessScope(ctx context.Context
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-scopes-on-default-cse-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                  "us-east1-c",
 			ExpectedStartupOutput: "All tests passed!",
 			FailureMatches:        []string{"FAILED:", "TestFailed:"},
@@ -553,7 +594,7 @@ func runInstanceImportDefaultServiceAccountNoAccessScope(ctx context.Context, te
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-default-sa-no-scopes-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                   "us-east4-c",
 			ExpectedStartupOutput:  "All tests passed!",
 			FailureMatches:         []string{"FAILED:", "TestFailed:"},
@@ -573,7 +614,7 @@ func runInstanceImportNoServiceAccount(ctx context.Context, testCase *junitxml.T
 	props := &ovfInstanceImportTestProperties{
 		instanceName: fmt.Sprintf("test-no-service-account-%v", suffix),
 		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
-			"daisy_integration_tests/scripts/post_translate_test.sh", logger),
+			"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
 			Zone:                     testProjectConfig.TestZone,
 			ExpectedStartupOutput:    "All tests passed!",
 			FailureMatches:           []string{"FAILED:", "TestFailed:"},
