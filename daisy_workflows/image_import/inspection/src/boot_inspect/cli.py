@@ -51,7 +51,7 @@ def wiat_for_boot_disk():
     time.sleep(i * 10)
 
     attached_disks = diskutils.get_physical_drives()
-    
+
     # attached_disks include the worker disk
     if len(attached_disks) == 2:
       success = True
@@ -61,6 +61,7 @@ def wiat_for_boot_disk():
     raise RuntimeError(msg)
   else:
     print("Input disk is attached successfully to the worker instance")
+
 
 def main():
   wiat_for_boot_disk()
