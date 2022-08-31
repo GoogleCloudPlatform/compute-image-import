@@ -44,6 +44,7 @@ def _output_daisy(results: inspect_pb2.InspectionResults):
 def _output_human(results: inspect_pb2.InspectionResults):
   print(MessageToJson(results, indent=4))
 
+
 def wiat_for_boot_disk():
   success = False
   attached_disks = []
