@@ -15,12 +15,14 @@
 """Perform inspection, and print results to stdout."""
 import argparse
 import base64
+import time
 
 from boot_inspect import inspection
 from compute_image_tools_proto import inspect_pb2
 from google.protobuf import text_format
 from google.protobuf.json_format import MessageToJson
 import guestfs
+import utils.diskutils as diskutils
 
 
 def _daisy_kv(key: str, value: str):
@@ -42,8 +44,27 @@ def _output_daisy(results: inspect_pb2.InspectionResults):
 def _output_human(results: inspect_pb2.InspectionResults):
   print(MessageToJson(results, indent=4))
 
+def wiat_for_boot_disk():
+  success = False
+  attached_disks = []
+  for i in range(4):
+    time.sleep(i * 10)
+
+    attached_disks = diskutils.get_physical_drives()
+    
+    # attached_disks include the worker disk
+    if len(attached_disks) == 2:
+      success = True
+      break
+  if not success:
+    msg = ("Input disk was not attached within the expected timeout")
+    raise RuntimeError(msg)
+  else:
+    print("Input disk is attached successfully to the worker instance")
 
 def main():
+  wiat_for_boot_disk()
+
   format_options_and_help = {
     'json': 'JSON without newlines. Suitable for consumption by '
             'another program.',
