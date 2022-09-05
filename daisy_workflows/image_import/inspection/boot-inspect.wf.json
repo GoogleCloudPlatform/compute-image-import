@@ -87,7 +87,7 @@
         {
           "Source": "${pd_uri}",
           "Instance": "run-inspection"
-        }  
+        }
       ]
     },
     "cleanup": {

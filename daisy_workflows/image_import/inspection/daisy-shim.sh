@@ -29,7 +29,7 @@ mkdir -p "$ROOT" && cd "$ROOT"
 gsutil cp -R "$SOURCE/*" .
 pip3 install ./compute_image_tools_proto ./boot_inspect
 
-if boot-inspect --format=daisy /dev/sdb; then
+if boot-inspect --format=daisy --device=/dev/sdb; then
   echo "Success:"
 else
   echo "Failed:"
