@@ -112,7 +112,7 @@ def main():
 
   disk_to_inspect = args.disk_file
 
-  if args.device != None:
+  if args.device is not None:
     disk_to_inspect = args.device
     wait_for_device(disk_to_inspect)
   elif file_exists(args.disk_file) is False:
