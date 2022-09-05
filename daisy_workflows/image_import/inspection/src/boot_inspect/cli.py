@@ -16,8 +16,8 @@
 import argparse
 import base64
 import os
-import time
 import sys
+import time
 
 from boot_inspect import inspection
 from compute_image_tools_proto import inspect_pb2
@@ -103,10 +103,10 @@ def main():
   )
 
   args = parser.parse_args()
-  if args.device == None and args.disk_file == None:
+  if args.device is None and args.disk_file is None:
     print('either --disk_file or --device has to be specified')
     sys.exit(1)
-  if args.device != None and args.disk_file != None:
+  if args.device is not None and args.disk_file is not None:
     print('either --disk_file or --device has to be specified, but not both')
     sys.exit(1)
 
@@ -115,7 +115,7 @@ def main():
   if args.device != None:
     disk_to_inspect = args.device
     wait_for_device(disk_to_inspect)
-  elif file_exists(args.disk_file) == False:
+  elif file_exists(args.disk_file) is False:
     sys.exit(1)
 
   results = inspect_pb2.InspectionResults()
