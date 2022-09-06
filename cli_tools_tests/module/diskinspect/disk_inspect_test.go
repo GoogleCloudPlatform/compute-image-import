@@ -67,22 +67,23 @@ func TestInspectDisk(t *testing.T) {
 		expected *pb.InspectionResults
 	}{
 		{
-			imageURI: "projects/opensuse-cloud/global/images/family/opensuse-leap-15-3",
+			imageURI: "projects/compute-image-import-test/global/images/opensuse-15-2",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "opensuse-15",
 					Distro:       "opensuse",
 					MajorVersion: "15",
-					MinorVersion: "3",
+					MinorVersion: "2",
 					Architecture: pb.Architecture_X64,
 					DistroId:     pb.Distro_OPENSUSE,
 				},
 				BiosBootable: true,
-				UefiBootable: true,
+				UefiBootable: false,
 				OsCount:      1,
 			},
-		}, {
-			imageURI: "projects/suse-sap-cloud/global/images/sles-15-sp3-sap-v20210812",
+		},
+		{
+			imageURI: "projects/suse-sap-cloud/global/images/family/sles-15-sp3-sap",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "sles-sap-15",
@@ -503,7 +504,7 @@ func TestInspectionDisk_SupportsNonDefaultNetwork(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			diskURI := createDisk(t, client, env, "projects/opensuse-cloud/global/images/opensuse-leap-15-2-v20200702")
+			diskURI := createDisk(t, client, env, "projects/compute-image-import-test/global/images/opensuse-15-2")
 			defer deleteDisk(t, client, env, diskURI)
 			actual, err := inspector.Inspect(diskURI)
 			if err != nil {
