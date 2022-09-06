@@ -64,15 +64,16 @@ def wait_for_device(device):
 
     attached_disks = diskutils.get_physical_drives()
 
-    # attached_disks include the worker disk
-    if len(attached_disks) >= 2 and device in attached_disks:
+    if device in attached_disks:
       success = True
       break
   if not success:
-    msg = ("Input disk was not attached within the expected timeout")
+    msg = ("Input disk '{}' was not attached within "
+           "the expected timeout").format(device)
     raise RuntimeError(msg)
   else:
-    print("Input disk is attached successfully to the worker instance")
+    print("Input disk '{}' is attached successfully to "
+          "the worker instance".format(device))
 
 
 def main():
