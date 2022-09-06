@@ -15,12 +15,16 @@
 """Perform inspection, and print results to stdout."""
 import argparse
 import base64
+import os
+import sys
+import time
 
 from boot_inspect import inspection
 from compute_image_tools_proto import inspect_pb2
 from google.protobuf import text_format
 from google.protobuf.json_format import MessageToJson
 import guestfs
+import utils.diskutils as diskutils
 
 
 def _daisy_kv(key: str, value: str):
@@ -43,6 +47,35 @@ def _output_human(results: inspect_pb2.InspectionResults):
   print(MessageToJson(results, indent=4))
 
 
+def file_exists(file_path):
+  if os.path.exists(file_path):
+    print('File "{path}" is found.'.format(path=file_path))
+    return True
+  else:
+    print('File "{path}" is not found.'.format(path=file_path))
+    return False
+
+
+def wait_for_device(device):
+  success = False
+  attached_disks = []
+  for i in range(4):
+    time.sleep(i * 10)
+
+    attached_disks = diskutils.get_physical_drives()
+
+    if device in attached_disks:
+      success = True
+      break
+  if not success:
+    msg = ("Input disk '{}' was not attached within "
+           "the expected timeout").format(device)
+    raise RuntimeError(msg)
+  else:
+    print("Input disk '{}' is attached successfully to "
+          "the worker instance".format(device))
+
+
 def main():
   format_options_and_help = {
     'json': 'JSON without newlines. Suitable for consumption by '
@@ -62,15 +95,34 @@ def main():
       for key, value in format_options_and_help.items()
     ]))
   parser.add_argument(
-    'device',
-    help='a block device or disk file.'
+    '--device',
+    help='a block device (e.g. /dev/sdb).'
+  )
+  parser.add_argument(
+    '--disk_file',
+    help='The local path of a virtual disk file to inspect.'
   )
 
   args = parser.parse_args()
+  if args.device is None and args.disk_file is None:
+    print('either --disk_file or --device has to be specified')
+    sys.exit(1)
+  if args.device is not None and args.disk_file is not None:
+    print('either --disk_file or --device has to be specified, but not both')
+    sys.exit(1)
+
+  disk_to_inspect = args.disk_file
+
+  if args.device is not None:
+    disk_to_inspect = args.device
+    wait_for_device(disk_to_inspect)
+  elif file_exists(args.disk_file) is False:
+    sys.exit(1)
+
   results = inspect_pb2.InspectionResults()
   try:
     g = guestfs.GuestFS(python_return_dict=True)
-    g.add_drive_opts(args.device, readonly=1)
+    g.add_drive_opts(disk_to_inspect, readonly=1)
     g.launch()
   except BaseException as e:
     print('Failed to mount guest: ', e)
@@ -86,7 +138,7 @@ def main():
     results.ErrorWhen = inspect_pb2.InspectionResults.ErrorWhen.INSPECTING_OS
 
   try:
-    boot_results = inspection.inspect_boot_loader(g, args.device)
+    boot_results = inspection.inspect_boot_loader(g, disk_to_inspect)
     results.bios_bootable = boot_results.bios_bootable
     results.uefi_bootable = boot_results.uefi_bootable
     results.root_fs = boot_results.root_fs

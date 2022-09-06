@@ -38,7 +38,7 @@ System-derived dependencies:
 
 ```shell script
 pip3 install .
-boot-inspect /images/ubuntu-16.04-server-cloudimg-amd64-disk1.vmdk 
+boot-inspect --disk_file=/images/ubuntu-16.04-server-cloudimg-amd64-disk1.vmdk
 {
     "device": "/images/ubuntu-16.04-server-cloudimg-amd64-disk1.vmdk",
     "os": {
