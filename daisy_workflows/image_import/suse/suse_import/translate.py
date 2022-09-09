@@ -339,7 +339,6 @@ def translate():
 
   pkgs = release.gce_packages if include_gce_packages else []
 
-  _update_zypper(g)
   utils.common.ClearEtcResolv(g)
 
   if subscription_model == 'gce':
@@ -351,6 +350,7 @@ def translate():
         post_convert_packages=pkgs
     )
   else:
+    _update_zypper(g)
     _install_product(g, release)
     _refresh_zypper(g)
     _install_packages(g, pkgs)
