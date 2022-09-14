@@ -19,7 +19,7 @@
 #  2. Installs the disk inspection library.
 #  3. Runs disk inspection against /dev/sdb
 
-echo “Status: inspection started.”
+echo "Status: inspection started."
 
 set -eufx -o pipefail
 
