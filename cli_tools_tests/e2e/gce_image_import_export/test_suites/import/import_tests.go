@@ -254,14 +254,6 @@ var basicCases = []*testCase{
 		source:   "projects/compute-image-import-test/global/images/centos-7-8",
 		os:       "centos-7",
 	}, {
-		caseName: "el-centos-8-0",
-		source:   "projects/compute-image-import-test/global/images/centos-8-import",
-		os:       "centos-8",
-	}, {
-		caseName: "el-centos-8-3",
-		source:   "projects/compute-image-import-test/global/images/centos-8-3",
-		os:       "centos-8",
-	}, {
 		caseName:  "el-rhel-7-uefi",
 		source:    "projects/compute-image-import-test/global/images/linux-uefi-no-guestosfeature-rhel7",
 		os:        "rhel-7",
