@@ -274,16 +274,6 @@ def _install_packages(g: guestfs.GuestFS, pkgs: typing.List[str]):
 
 
 @utils.RetryOnFailure(stop_after_seconds=5 * 60, initial_delay_seconds=1)
-def _update_zypper(g: guestfs.GuestFS):
-  """Updates the packages database with Zypper"""
-
-  try:
-    g.command(['zypper', 'update', '-y'])
-  except Exception as e:
-    raise ValueError('Failed to update the packages database: {}'.format(e))
-
-
-@utils.RetryOnFailure(stop_after_seconds=5 * 60, initial_delay_seconds=1)
 def _refresh_zypper(g: guestfs.GuestFS):
   try:
     g.command(['zypper', '--debug', 'refresh'])
@@ -350,7 +340,6 @@ def translate():
         post_convert_packages=pkgs
     )
   else:
-    _update_zypper(g)
     _install_product(g, release)
     _refresh_zypper(g)
     _install_packages(g, pkgs)
