@@ -259,7 +259,6 @@ var (
 		// So, we're triggering the same process for windows 11 as windows 10.
 		"windows-11-byol":     "windows-10-x64-byol",
 		"windows-11-x64-byol": "windows-10-x64-byol",
-		"windows-11-x86-byol": "windows-10-x86-byol",
 	}
 
 	privacyRegex    = regexp.MustCompile(`\[Privacy\->.*?<\-Privacy\]`)
