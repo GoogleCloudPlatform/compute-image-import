@@ -31,7 +31,6 @@ APT_PACKAGES="
 debootstrap
 dosfstools
 kpartx
-libguestfs-tools
 parted
 python3-guestfs
 python3-netaddr
@@ -50,6 +49,13 @@ if [[ $? -ne 0 ]]; then
   echo "BuildFailed: Package install failed."
   exit 1
 fi
+
+echo "BuildStatus: Installing libguestfs-tools."
+sed -i 's+http://deb.debian.org/debian bullseye+http://deb.debian.org/debian bookworm+g' /etc/apt/sources.list
+apt-get update
+apt-get -y install libguestfs-tools
+sed -i 's+http://deb.debian.org/debian bookworm+http://deb.debian.org/debian bullseye+g' /etc/apt/sources.list
+apt-get update
 
 echo "BuildStatus: Installing python3 libraries from pip."
 pip3 install -U ${PIP3_PACKAGES}
