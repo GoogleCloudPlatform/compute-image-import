@@ -50,6 +50,7 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
+# Install latest version of libguestFS available on Debian packages (but still not available on bullseye version)
 echo "BuildStatus: Installing libguestfs-tools."
 sed -i 's+http://deb.debian.org/debian bullseye+http://deb.debian.org/debian bookworm+g' /etc/apt/sources.list
 apt-get update
