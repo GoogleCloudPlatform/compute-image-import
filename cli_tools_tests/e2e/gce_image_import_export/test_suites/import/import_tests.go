@@ -271,6 +271,10 @@ var basicCases = []*testCase{
 		source:   "projects/compute-image-import-test/global/images/rhel-8-2",
 		os:       "rhel-8",
 	}, {
+		caseName: "el-rhel-9-0",
+		source:   "projects/compute-image-import-test/global/images/rhel-9-0",
+		os:       "rhel-9",
+	}, {
 		caseName: "el-rocky-8-4",
 		source:   "projects/compute-image-import-test/global/images/rocky-8-4",
 	},

@@ -150,7 +150,7 @@ var ovfOSIDToImporterOSID = map[int16]OsInfo{
 	77:  {description: "Microsoft Windows Server 2008 64-Bit", importerOSIDs: []string{}},
 	78:  {description: "FreeBSD 64-Bit", importerOSIDs: []string{}},
 	79:  {description: "RedHat Enterprise Linux", importerOSIDs: []string{}},
-	80:  {description: "RedHat Enterprise Linux 64-Bit", importerOSIDs: []string{"rhel-6", "rhel-6-byol", "rhel-7", "rhel-7-byol", "rhel-8", "rhel-8-byol"}},
+	80:  {description: "RedHat Enterprise Linux 64-Bit", importerOSIDs: []string{"rhel-6", "rhel-6-byol", "rhel-7", "rhel-7-byol", "rhel-8", "rhel-8-byol", "rhel-9", "rhel-9-byol"}},
 	81:  {description: "Solaris 64-Bit", importerOSIDs: []string{}},
 	82:  {description: "SUSE", importerOSIDs: []string{}},
 	83:  {description: "SUSE 64-Bit", importerOSIDs: []string{"opensuse-15"}, nonDeterministic: true},
