@@ -40,7 +40,7 @@ tinyproxy
 qemu-utils
 "
 
-PIP3_PACKAGES="google-api-python-client google-cloud-storage"
+PIP3_PACKAGES="google-api-python-client google-cloud-storage protobuf~=3.1"
 
 echo "BuildStatus: Installing packages."
 export DEBIAN_FRONTEND="noninteractive"
