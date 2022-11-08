@@ -457,6 +457,66 @@ func TestInspectDisk_SupportsNoExternalIP(t *testing.T) {
 	}
 }
 
+func TestInspectDisk_DontFailWithNoEnabledCloudNatAndNoExternalIP(t *testing.T) {
+	t.Parallel()
+
+	project := "compute-image-test-custom-vpc"
+	zone := "us-central1-a"
+	client, err := daisyCompute.NewClient(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	region, err := paramhelper.GetRegion(zone)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	network := "projects/compute-image-test-custom-vpc/global/networks/unrestricted-egress"
+	subnet := fmt.Sprintf("projects/compute-image-test-custom-vpc/regions/%s/subnetworks/unrestricted-egress", region)
+
+	env := daisyutils.EnvironmentSettings{
+		Project:           project,
+		Zone:              zone,
+		WorkflowDirectory: workflowDir,
+		NoExternalIP:      true,
+		Network:           network,
+		Subnet:            subnet,
+		Tool: daisyutils.Tool{
+			HumanReadableName: "module-tests",
+			ResourceLabelName: "module-tests",
+		},
+		ExecutionID: path.RandString(5),
+	}
+	inspector, err := disk.NewInspector(env, logging.NewToolLogger(t.Name()))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	diskURI := createDisk(t, client, env, "projects/compute-image-import-test/global/images/rhel-8-2")
+	defer deleteDisk(t, client, env, diskURI)
+
+	actual, err := inspector.Inspect(diskURI)
+	assert.NoError(t, err)
+	actual.ElapsedTimeMs = 0
+	expected := &pb.InspectionResults{
+		OsCount: 1,
+		OsRelease: &pb.OsRelease{
+			CliFormatted: "rhel-8",
+			Distro:       "rhel",
+			MajorVersion: "8",
+			MinorVersion: "2",
+			Architecture: pb.Architecture_X64,
+			DistroId:     pb.Distro_RHEL,
+		},
+		UefiBootable: true,
+		BiosBootable: true,
+	}
+	if diff := cmp.Diff(expected, actual, protocmp.Transform()); diff != "" {
+		t.Errorf("unexpected difference:\n%v", diff)
+	}
+}
+
 func TestInspectionDisk_SupportsNonDefaultNetwork(t *testing.T) {
 	t.Parallel()
 
