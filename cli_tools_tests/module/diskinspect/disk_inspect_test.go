@@ -472,8 +472,8 @@ func TestInspectDisk_DontFailWithNoEnabledCloudNatAndNoExternalIP(t *testing.T) 
 		t.Fatal(err)
 	}
 
-	network := "projects/compute-image-test-custom-vpc/global/networks/unrestricted-egress"
-	subnet := fmt.Sprintf("projects/compute-image-test-custom-vpc/regions/%s/subnetworks/unrestricted-egress", region)
+	network := fmt.Sprintf("projects/%s/global/networks/unrestricted-egress", project)
+	subnet := fmt.Sprintf("projects/%s/regions/%s/subnetworks/unrestricted-egress", project, region)
 
 	env := daisyutils.EnvironmentSettings{
 		Project:           project,
