@@ -203,6 +203,12 @@ func TestSysprepSettable(t *testing.T) {
 	assert.True(t, expectSuccessfulParse(t, "-sysprep_windows").SysprepWindows)
 }
 
+func TestNestedVirtualization(t *testing.T) {
+	assert.True(t, expectSuccessfulParse(t, "-enable_nested_virtualization").NestedVirtualizationEnabled)
+	assert.True(t, expectSuccessfulParse(t, "-enable_nested_virtualization=true").NestedVirtualizationEnabled)
+	assert.False(t, expectSuccessfulParse(t, "-enable_nested_virtualization=false").NestedVirtualizationEnabled)
+}
+
 func TestRunReturnErrorWhenInvalidArgs(t *testing.T) {
 	args := setUpArgs(osFlag)
 	importArgs, _ := NewOneStepImportArguments(args)

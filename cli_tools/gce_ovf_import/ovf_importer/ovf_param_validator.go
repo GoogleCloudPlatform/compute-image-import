@@ -57,6 +57,9 @@ const (
 
 	// Prefix for valid instance access config scopes
 	instanceAccessScopePrefix = "https://www.googleapis.com/auth/"
+
+	// EnableNestedVirtualizationFlagKey is key to enable nested virtualization on worker VMs
+	EnableNestedVirtualizationFlagKey = "enable-nested-virtualization"
 )
 
 // ParamValidatorAndPopulator validates parameters and infers missing values.

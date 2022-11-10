@@ -440,9 +440,14 @@ func (oi *OVFImporter) Import() error {
 }
 
 func (oi *OVFImporter) createWorkerForFinalInstance() daisyutils.DaisyWorker {
+	// We enable nested virtualization to only boost the performance of worker VMs,
+	// so we don't propagate it to the output VM instance or a machine image.
+	env := oi.params.EnvironmentSettings()
+	env.NestedVirtualizationEnabled = false
+
 	return daisyutils.NewDaisyWorker(func() (*daisy.Workflow, error) {
 		return oi.createWorkflowForFinalInstance()
-	}, oi.params.EnvironmentSettings(), oi.Logger,
+	}, env, oi.Logger,
 		&daisyutils.ResourceLabeler{
 			BuildID:         oi.params.BuildID,
 			UserLabels:      oi.params.UserLabels,
@@ -525,29 +530,30 @@ func (oi *OVFImporter) buildBootDiskImageImportRequest(imageName string, bootDis
 	}
 
 	request = importer.ImageImportRequest{
-		ExecutionID:           imageName,
-		CloudLogsDisabled:     oi.params.CloudLogsDisabled,
-		ComputeEndpoint:       oi.params.Ce,
-		ComputeServiceAccount: oi.params.ComputeServiceAccount,
-		WorkflowDir:           oi.params.WorkflowDir,
-		GcsLogsDisabled:       oi.params.GcsLogsDisabled,
-		ImageName:             imageName,
-		Network:               oi.params.Network,
-		NoExternalIP:          oi.params.NoExternalIP,
-		NoGuestEnvironment:    oi.params.NoGuestEnvironment,
-		Oauth:                 oi.params.Oauth,
-		Project:               *oi.params.Project,
-		ScratchBucketGcsPath:  pathutils.JoinURL(oi.params.ScratchBucketGcsPath, imageName),
-		Source:                bootDiskFilePathSource,
-		StdoutLogsDisabled:    oi.params.StdoutLogsDisabled,
-		Subnet:                oi.params.Subnet,
-		Timeout:               oi.params.Deadline.Sub(time.Now()),
-		Tool:                  oi.params.GetTool(),
-		UefiCompatible:        oi.params.UefiCompatible,
-		Zone:                  oi.params.Zone,
-		DataDisks:             oi.disks,
-		OS:                    oi.params.OsID,
-		BYOL:                  oi.params.BYOL,
+		ExecutionID:                 imageName,
+		CloudLogsDisabled:           oi.params.CloudLogsDisabled,
+		ComputeEndpoint:             oi.params.Ce,
+		ComputeServiceAccount:       oi.params.ComputeServiceAccount,
+		WorkflowDir:                 oi.params.WorkflowDir,
+		GcsLogsDisabled:             oi.params.GcsLogsDisabled,
+		ImageName:                   imageName,
+		Network:                     oi.params.Network,
+		NoExternalIP:                oi.params.NoExternalIP,
+		NoGuestEnvironment:          oi.params.NoGuestEnvironment,
+		Oauth:                       oi.params.Oauth,
+		Project:                     *oi.params.Project,
+		ScratchBucketGcsPath:        pathutils.JoinURL(oi.params.ScratchBucketGcsPath, imageName),
+		Source:                      bootDiskFilePathSource,
+		StdoutLogsDisabled:          oi.params.StdoutLogsDisabled,
+		Subnet:                      oi.params.Subnet,
+		Timeout:                     oi.params.Deadline.Sub(time.Now()),
+		Tool:                        oi.params.GetTool(),
+		UefiCompatible:              oi.params.UefiCompatible,
+		Zone:                        oi.params.Zone,
+		DataDisks:                   oi.disks,
+		OS:                          oi.params.OsID,
+		BYOL:                        oi.params.BYOL,
+		NestedVirtualizationEnabled: oi.params.NestedVirtualizationEnabled,
 	}
 
 	importer.FixBYOLAndOSArguments(&request.OS, &request.BYOL)

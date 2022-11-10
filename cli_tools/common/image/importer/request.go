@@ -73,38 +73,39 @@ func (args *ImageImportRequest) checkRequiredArguments() error {
 //
 // Tags define validations; see validation.ValidateStruct for more info.
 type ImageImportRequest struct {
-	ExecutionID           string `name:"execution_id" validate:"required"`
-	CloudLogsDisabled     bool
-	ComputeEndpoint       string
-	ComputeServiceAccount string
-	WorkflowDir           string `name:"workflow_dir" validate:"required"`
-	CustomWorkflow        string
-	DataDisk              bool
-	DaisyLogLinePrefix    string
-	Description           string
-	Family                string
-	GcsLogsDisabled       bool
-	ImageName             string `name:"image_name" validate:"required,gce_disk_image_name"`
-	Inspect               bool
-	Labels                map[string]string
-	Network               string
-	NoExternalIP          bool
-	NoGuestEnvironment    bool
-	Oauth                 string
-	BYOL                  bool
-	OS                    string
-	Project               string `name:"project" validate:"required"`
-	ScratchBucketGcsPath  string `name:"scratch_bucket_gcs_path" validate:"required"`
-	Source                Source `name:"source" validate:"required"`
-	StdoutLogsDisabled    bool
-	StorageLocation       string
-	Subnet                string
-	SysprepWindows        bool
-	Tool                  daisyutils.Tool `name:"tool" validate:"required"`
-	Timeout               time.Duration   `name:"timeout" validate:"required"`
-	UefiCompatible        bool
-	Zone                  string `name:"zone" validate:"required"`
-	DataDisks             []domain.Disk
+	ExecutionID                 string `name:"execution_id" validate:"required"`
+	CloudLogsDisabled           bool
+	ComputeEndpoint             string
+	ComputeServiceAccount       string
+	WorkflowDir                 string `name:"workflow_dir" validate:"required"`
+	CustomWorkflow              string
+	DataDisk                    bool
+	DaisyLogLinePrefix          string
+	Description                 string
+	Family                      string
+	GcsLogsDisabled             bool
+	ImageName                   string `name:"image_name" validate:"required,gce_disk_image_name"`
+	Inspect                     bool
+	Labels                      map[string]string
+	Network                     string
+	NoExternalIP                bool
+	NoGuestEnvironment          bool
+	Oauth                       string
+	BYOL                        bool
+	OS                          string
+	Project                     string `name:"project" validate:"required"`
+	ScratchBucketGcsPath        string `name:"scratch_bucket_gcs_path" validate:"required"`
+	Source                      Source `name:"source" validate:"required"`
+	StdoutLogsDisabled          bool
+	StorageLocation             string
+	Subnet                      string
+	SysprepWindows              bool
+	Tool                        daisyutils.Tool `name:"tool" validate:"required"`
+	Timeout                     time.Duration   `name:"timeout" validate:"required"`
+	UefiCompatible              bool
+	Zone                        string `name:"zone" validate:"required"`
+	DataDisks                   []domain.Disk
+	NestedVirtualizationEnabled bool
 }
 
 // FixBYOLAndOSArguments fixes the user's arguments for the --os and --byol flags
@@ -127,24 +128,25 @@ func FixBYOLAndOSArguments(osIDArgument *string, byolArgument *bool) {
 // a daisy workflow.
 func (args ImageImportRequest) EnvironmentSettings() daisyutils.EnvironmentSettings {
 	return daisyutils.EnvironmentSettings{
-		Project:               args.Project,
-		Zone:                  args.Zone,
-		GCSPath:               args.ScratchBucketGcsPath,
-		OAuth:                 args.Oauth,
-		Timeout:               args.Timeout.String(),
-		ComputeEndpoint:       args.ComputeEndpoint,
-		DaisyLogLinePrefix:    args.DaisyLogLinePrefix,
-		DisableGCSLogs:        args.GcsLogsDisabled,
-		DisableCloudLogs:      args.CloudLogsDisabled,
-		DisableStdoutLogs:     args.StdoutLogsDisabled,
-		Network:               args.Network,
-		Subnet:                args.Subnet,
-		ComputeServiceAccount: args.ComputeServiceAccount,
-		NoExternalIP:          args.NoExternalIP,
-		WorkflowDirectory:     args.WorkflowDir,
-		Labels:                args.Labels,
-		ExecutionID:           args.ExecutionID,
-		StorageLocation:       args.StorageLocation,
-		Tool:                  args.Tool,
+		Project:                     args.Project,
+		Zone:                        args.Zone,
+		GCSPath:                     args.ScratchBucketGcsPath,
+		OAuth:                       args.Oauth,
+		Timeout:                     args.Timeout.String(),
+		ComputeEndpoint:             args.ComputeEndpoint,
+		DaisyLogLinePrefix:          args.DaisyLogLinePrefix,
+		DisableGCSLogs:              args.GcsLogsDisabled,
+		DisableCloudLogs:            args.CloudLogsDisabled,
+		DisableStdoutLogs:           args.StdoutLogsDisabled,
+		Network:                     args.Network,
+		Subnet:                      args.Subnet,
+		ComputeServiceAccount:       args.ComputeServiceAccount,
+		NoExternalIP:                args.NoExternalIP,
+		WorkflowDirectory:           args.WorkflowDir,
+		Labels:                      args.Labels,
+		ExecutionID:                 args.ExecutionID,
+		StorageLocation:             args.StorageLocation,
+		Tool:                        args.Tool,
+		NestedVirtualizationEnabled: args.NestedVirtualizationEnabled,
 	}
 }

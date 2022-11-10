@@ -32,36 +32,37 @@ import (
 // OneStepImportArguments holds the structured results of parsing CLI arguments,
 // and optionally allows for validating and populating the arguments.
 type OneStepImportArguments struct {
-	ClientID              string
-	ClientVersion         string
-	CloudLogsDisabled     bool
-	ComputeEndpoint       string
-	ComputeServiceAccount string
-	CustomWorkflow        string
-	DataDisk              bool
-	Description           string
-	ExecutablePath        string
-	Family                string
-	GcsLogsDisabled       bool
-	ImageName             string
-	Labels                map[string]string
-	Network               string
-	NoExternalIP          bool
-	NoGuestEnvironment    bool
-	Oauth                 string
-	OS                    string
-	ProjectPtr            *string
-	Region                string
-	ScratchBucketGcsPath  string
-	SourceFile            string
-	StdoutLogsDisabled    bool
-	StorageLocation       string
-	Subnet                string
-	SysprepWindows        bool
-	Timeout               time.Duration
-	TimeoutChan           chan struct{}
-	UefiCompatible        bool
-	Zone                  string
+	ClientID                    string
+	ClientVersion               string
+	CloudLogsDisabled           bool
+	ComputeEndpoint             string
+	ComputeServiceAccount       string
+	CustomWorkflow              string
+	DataDisk                    bool
+	Description                 string
+	ExecutablePath              string
+	Family                      string
+	GcsLogsDisabled             bool
+	ImageName                   string
+	Labels                      map[string]string
+	Network                     string
+	NoExternalIP                bool
+	NoGuestEnvironment          bool
+	Oauth                       string
+	OS                          string
+	ProjectPtr                  *string
+	Region                      string
+	ScratchBucketGcsPath        string
+	SourceFile                  string
+	StdoutLogsDisabled          bool
+	StorageLocation             string
+	Subnet                      string
+	SysprepWindows              bool
+	NestedVirtualizationEnabled bool
+	Timeout                     time.Duration
+	TimeoutChan                 chan struct{}
+	UefiCompatible              bool
+	Zone                        string
 
 	AWSAccessKeyID       string
 	AWSSecretAccessKey   string
@@ -209,6 +210,10 @@ func (args *OneStepImportArguments) registerFlags(flagSet *flag.FlagSet) {
 
 	flagSet.BoolVar(&args.NoGuestEnvironment, "no_guest_environment", false,
 		"When enabled, the Google Guest Environment will not be installed.")
+
+	flagSet.BoolVar(&args.NestedVirtualizationEnabled, "enable_nested_virtualization", false,
+		"When enabled, temporary worker VMs will be created with enabled nested virtualization. "+
+			"See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 
 	flagSet.DurationVar(&args.Timeout, "timeout", time.Hour*2,
 		"Maximum time a build can last before it is failed as TIMEOUT. For example, "+

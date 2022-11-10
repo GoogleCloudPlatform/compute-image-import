@@ -451,6 +451,7 @@ func (t testCase) runImport(junit *junitxml.TestCase, logger *log.Logger,
 		"-project", testProjectConfig.TestProjectID,
 		"-zone", testProjectConfig.TestZone,
 		"-image_name", imageName,
+		"-enable_nested_virtualization",
 	}
 	if t.os != "" {
 		args = append(args, "-os", t.os)

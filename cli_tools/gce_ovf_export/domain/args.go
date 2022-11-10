@@ -70,26 +70,27 @@ type OVFExportArgs struct {
 	MachineImageName string
 
 	// Common args
-	ClientID              string
-	ClientVersion         string
-	DestinationURI        string
-	DiskExportFormat      string
-	OsID                  string
-	Network               string
-	Subnet                string
-	NoExternalIP          bool
-	Zone                  string
-	Timeout               time.Duration
-	Project               string
-	ScratchBucketGcsPath  string
-	Oauth                 string
-	Ce                    string
-	GcsLogsDisabled       bool
-	CloudLogsDisabled     bool
-	StdoutLogsDisabled    bool
-	ReleaseTrack          string
-	BuildID               string
-	ComputeServiceAccount string
+	ClientID                    string
+	ClientVersion               string
+	DestinationURI              string
+	DiskExportFormat            string
+	OsID                        string
+	Network                     string
+	Subnet                      string
+	NoExternalIP                bool
+	Zone                        string
+	Timeout                     time.Duration
+	Project                     string
+	ScratchBucketGcsPath        string
+	Oauth                       string
+	Ce                          string
+	GcsLogsDisabled             bool
+	CloudLogsDisabled           bool
+	StdoutLogsDisabled          bool
+	ReleaseTrack                string
+	BuildID                     string
+	ComputeServiceAccount       string
+	NestedVirtualizationEnabled bool
 
 	// Non-args
 	WorkflowDir string
@@ -141,7 +142,7 @@ func (args *OVFExportArgs) GetResourceName() string {
 	return args.MachineImageName
 }
 
-//TODO: consolidate with ovf_importer.toWorkingDir
+// TODO: consolidate with ovf_importer.toWorkingDir
 func toWorkingDir(currentDir, workflowDir string) string {
 	wd, err := filepath.Abs(filepath.Dir(currentDir))
 	if err == nil {
@@ -155,23 +156,24 @@ func toWorkingDir(currentDir, workflowDir string) string {
 func (args *OVFExportArgs) EnvironmentSettings(daisyLogLinePrefix string) daisyutils.EnvironmentSettings {
 	assert.NotEmpty(daisyLogLinePrefix)
 	return daisyutils.EnvironmentSettings{
-		Project:               args.Project,
-		Zone:                  args.Zone,
-		GCSPath:               args.ScratchBucketGcsPath,
-		OAuth:                 args.Oauth,
-		Timeout:               args.Timeout.String(),
-		ComputeEndpoint:       args.Ce,
-		DisableGCSLogs:        args.GcsLogsDisabled,
-		DisableCloudLogs:      args.CloudLogsDisabled,
-		DisableStdoutLogs:     args.StdoutLogsDisabled,
-		NoExternalIP:          args.NoExternalIP,
-		WorkflowDirectory:     args.WorkflowDir,
-		Network:               args.Network,
-		Subnet:                args.Subnet,
-		ComputeServiceAccount: args.ComputeServiceAccount,
-		Labels:                map[string]string{},
-		ExecutionID:           args.BuildID,
-		StorageLocation:       "",
+		Project:                     args.Project,
+		Zone:                        args.Zone,
+		GCSPath:                     args.ScratchBucketGcsPath,
+		OAuth:                       args.Oauth,
+		Timeout:                     args.Timeout.String(),
+		ComputeEndpoint:             args.Ce,
+		DisableGCSLogs:              args.GcsLogsDisabled,
+		DisableCloudLogs:            args.CloudLogsDisabled,
+		DisableStdoutLogs:           args.StdoutLogsDisabled,
+		NoExternalIP:                args.NoExternalIP,
+		WorkflowDirectory:           args.WorkflowDir,
+		Network:                     args.Network,
+		Subnet:                      args.Subnet,
+		ComputeServiceAccount:       args.ComputeServiceAccount,
+		Labels:                      map[string]string{},
+		ExecutionID:                 args.BuildID,
+		NestedVirtualizationEnabled: args.NestedVirtualizationEnabled,
+		StorageLocation:             "",
 		Tool: daisyutils.Tool{
 			HumanReadableName: "ovf export",
 			ResourceLabelName: "gce-ovf-export",
@@ -226,5 +228,6 @@ func (args *OVFExportArgs) registerFlags(cliArgs []string) error {
 	flagSet.Var((*flags.TrimmedString)(&args.BuildID), "build-id",
 		"Cloud Build ID override. This flag should be used if auto-generated or build ID provided by Cloud Build is not appropriate. For example, if running multiple exports in parallel in a single Cloud Build run, sharing build ID could cause premature temporary resource clean-up resulting in export failures.")
 	flagSet.Var((*flags.TrimmedString)(&args.ComputeServiceAccount), "compute-service-account", "Compute service account to be used by exporter Virtual Machine. When empty, the Compute Engine default service account is used.")
+	flagSet.BoolVar(&args.NestedVirtualizationEnabled, "enable-nested-virtualization", false, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	return flagSet.Parse(cliArgs)
 }

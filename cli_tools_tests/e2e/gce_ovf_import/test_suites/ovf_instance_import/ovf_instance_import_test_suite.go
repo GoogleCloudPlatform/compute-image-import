@@ -632,7 +632,7 @@ func buildTestArgs(props *ovfInstanceImportTestProperties, testProjectConfig *te
 		"beta", "compute", "instances", "import", props.instanceName, "--quiet",
 		"--docker-image-tag=latest"}
 	gcloudArgs := []string{"compute", "instances", "import", props.instanceName, "--quiet"}
-	wrapperArgs := []string{"-client-id=e2e", fmt.Sprintf("-instance-names=%s", props.instanceName)}
+	wrapperArgs := []string{"-client-id=e2e", fmt.Sprintf("-instance-names=%s", props.instanceName), "-enable-nested-virtualization"}
 	return ovfimporttestsuite.BuildArgsMap(&props.OvfImportTestProperties, testProjectConfig, gcloudBetaArgs, gcloudArgs, wrapperArgs)
 }
 

@@ -128,6 +128,7 @@ func buildTestArgs(props *instanceOvfExportTestProperties, testProjectConfig *te
 		fmt.Sprintf("-destination-uri=%v", props.destinationURI),
 		fmt.Sprintf("-zone=%v", testProjectConfig.TestZone),
 		fmt.Sprintf("-build-id=%v", props.buildID),
+		"-enable-nested-virtualization",
 	}
 	if props.os != "" {
 		wrapperArgs = append(wrapperArgs, fmt.Sprintf("-os=%v", props.os))
