@@ -28,7 +28,8 @@ import (
 //	https://cloud.google.com/compute/docs/instances/nested-virtualization/overview
 type EnableNestedVirtualizationHook struct{}
 
-// PreRunHook updates the CreateInstances steps so that they won't have an external IP.
+// PreRunHook updates the CreateInstances steps so that they will be created with
+// nested virtualization enabled.
 func (t *EnableNestedVirtualizationHook) PreRunHook(wf *daisy.Workflow) error {
 	wf.IterateWorkflowSteps(func(step *daisy.Step) {
 		if step.CreateInstances != nil {
