@@ -122,6 +122,7 @@ func runImageImport(args *OneStepImportArguments) error {
 		fmt.Sprintf("-disable_cloud_logging=%v", args.CloudLogsDisabled),
 		fmt.Sprintf("-disable_stdout_logging=%v", args.StdoutLogsDisabled),
 		fmt.Sprintf("-no_external_ip=%v", args.NoExternalIP),
+		fmt.Sprintf("-enable_nested_virtualization=%v", args.NestedVirtualizationEnabled),
 		fmt.Sprintf("-labels=%v", flags.KeyValueString(args.Labels).String()),
 		fmt.Sprintf("-storage_location=%v", args.StorageLocation)})
 	if err != nil {

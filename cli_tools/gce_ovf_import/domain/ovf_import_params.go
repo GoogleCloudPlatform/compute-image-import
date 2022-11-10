@@ -88,6 +88,7 @@ type OVFImportParams struct {
 	UefiCompatible              bool
 	Hostname                    string
 	BuildID                     string
+	NestedVirtualizationEnabled bool
 
 	// Non-flags
 
@@ -141,24 +142,25 @@ func (oip *OVFImportParams) GetTool() daisyutils.Tool {
 func (oip *OVFImportParams) EnvironmentSettings() daisyutils.EnvironmentSettings {
 	tool := oip.GetTool()
 	return daisyutils.EnvironmentSettings{
-		Project:               *oip.Project,
-		Zone:                  oip.Zone,
-		GCSPath:               oip.ScratchBucketGcsPath,
-		OAuth:                 oip.Oauth,
-		Timeout:               oip.Deadline.Sub(time.Now()).String(),
-		ComputeEndpoint:       oip.Ce,
-		DisableGCSLogs:        oip.GcsLogsDisabled,
-		DisableCloudLogs:      oip.CloudLogsDisabled,
-		DisableStdoutLogs:     oip.StdoutLogsDisabled,
-		NoExternalIP:          oip.NoExternalIP,
-		WorkflowDirectory:     oip.WorkflowDir,
-		Network:               oip.Network,
-		Subnet:                oip.Subnet,
-		ComputeServiceAccount: oip.ComputeServiceAccount,
-		Labels:                oip.UserLabels,
-		ExecutionID:           oip.BuildID,
-		StorageLocation:       oip.Region,
-		Tool:                  tool,
-		DaisyLogLinePrefix:    tool.ResourceLabelName,
+		Project:                     *oip.Project,
+		Zone:                        oip.Zone,
+		GCSPath:                     oip.ScratchBucketGcsPath,
+		OAuth:                       oip.Oauth,
+		Timeout:                     oip.Deadline.Sub(time.Now()).String(),
+		ComputeEndpoint:             oip.Ce,
+		DisableGCSLogs:              oip.GcsLogsDisabled,
+		DisableCloudLogs:            oip.CloudLogsDisabled,
+		DisableStdoutLogs:           oip.StdoutLogsDisabled,
+		NoExternalIP:                oip.NoExternalIP,
+		WorkflowDirectory:           oip.WorkflowDir,
+		Network:                     oip.Network,
+		Subnet:                      oip.Subnet,
+		ComputeServiceAccount:       oip.ComputeServiceAccount,
+		Labels:                      oip.UserLabels,
+		ExecutionID:                 oip.BuildID,
+		StorageLocation:             oip.Region,
+		NestedVirtualizationEnabled: oip.NestedVirtualizationEnabled,
+		Tool:                        tool,
+		DaisyLogLinePrefix:          tool.ResourceLabelName,
 	}
 }

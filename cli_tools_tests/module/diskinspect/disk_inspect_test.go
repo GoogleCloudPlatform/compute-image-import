@@ -49,7 +49,8 @@ func createEnvironment() daisyutils.EnvironmentSettings {
 			HumanReadableName: "module-tests",
 			ResourceLabelName: "module-tests",
 		},
-		ExecutionID: path.RandString(5),
+		ExecutionID:                 path.RandString(5),
+		NestedVirtualizationEnabled: true,
 	}
 }
 

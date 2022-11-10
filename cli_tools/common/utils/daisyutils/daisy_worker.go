@@ -54,6 +54,10 @@ func NewDaisyWorker(wf WorkflowProvider, env EnvironmentSettings,
 	if env.NoExternalIP {
 		hooks = append(hooks, &RemoveExternalIPHook{})
 	}
+	if env.NestedVirtualizationEnabled {
+		hooks = append(hooks, &EnableNestedVirtualizationHook{})
+	}
+
 	for _, hook := range hooks {
 		switch hook.(type) {
 		case WorkflowPreHook:

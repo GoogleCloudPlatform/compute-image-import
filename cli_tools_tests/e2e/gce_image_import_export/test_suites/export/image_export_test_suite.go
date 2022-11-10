@@ -28,7 +28,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e"
 	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
-	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
+	testconfig "github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
 )
 
 const (
@@ -100,6 +100,7 @@ func runImageExportRawTest(ctx context.Context, testCase *junitxml.TestCase, log
 		e2e.Wrapper: {"-client_id=e2e", fmt.Sprintf("-project=%v", testProjectConfig.TestProjectID),
 			"-source_image=global/images/e2e-test-image-10g-eu", fmt.Sprintf("-destination_uri=%v", fileURI),
 			fmt.Sprintf("-zone=%v", zone),
+			"-enable_nested_virtualization",
 		},
 		e2e.GcloudBetaProdWrapperLatest: {"beta", "compute", "images", "export", "--quiet",
 			"--docker-image-tag=latest", fmt.Sprintf("--project=%v", testProjectConfig.TestProjectID), "--image=e2e-test-image-10g-eu",
@@ -131,6 +132,7 @@ func runImageExportVMDKTest(ctx context.Context, testCase *junitxml.TestCase, lo
 		e2e.Wrapper: {"-client_id=e2e", fmt.Sprintf("-project=%v", testProjectConfig.TestProjectID),
 			"-source_image=global/images/e2e-test-image-10g-asia", fmt.Sprintf("-destination_uri=%v", fileURI), "-format=vmdk",
 			fmt.Sprintf("-zone=%v", zone),
+			"-enable_nested_virtualization",
 		},
 		e2e.GcloudBetaProdWrapperLatest: {"beta", "compute", "images", "export", "--quiet",
 			"--docker-image-tag=latest", fmt.Sprintf("--project=%v", testProjectConfig.TestProjectID), "--image=e2e-test-image-10g-asia",
@@ -167,6 +169,7 @@ func runImageExportWithRichParamsTest(ctx context.Context, testCase *junitxml.Te
 			fmt.Sprintf("-zone=%v", zone),
 			"-timeout=2h", "-disable_gcs_logging", "-disable_cloud_logging", "-disable_stdout_logging",
 			"-labels=key1=value1,key2=value",
+			"-enable_nested_virtualization",
 		},
 		e2e.GcloudBetaProdWrapperLatest: {"beta", "compute", "images", "export", "--quiet",
 			"--docker-image-tag=latest", fmt.Sprintf("--project=%v", testProjectConfig.TestProjectID),
@@ -211,6 +214,7 @@ func runImageExportWithDifferentNetworkParamStyles(ctx context.Context, testCase
 				testProjectConfig.TestProjectID, region, testProjectConfig.TestProjectID),
 			"-source_image=global/images/e2e-test-image-10g", fmt.Sprintf("-destination_uri=%v", fileURI),
 			fmt.Sprintf("-zone=%v", zone),
+			"-enable_nested_virtualization",
 		},
 		e2e.GcloudBetaProdWrapperLatest: {"beta", "compute", "images", "export", "--quiet",
 			"--docker-image-tag=latest", fmt.Sprintf("--project=%v", testProjectConfig.TestProjectID),
@@ -257,6 +261,7 @@ func runImageExportWithSubnetWithoutNetworkParamsTest(ctx context.Context, testC
 				testProjectConfig.TestProjectID, region, testProjectConfig.TestProjectID),
 			"-source_image=global/images/e2e-test-image-10g", fmt.Sprintf("-destination_uri=%v", fileURI),
 			fmt.Sprintf("-zone=%v", zone),
+			"-enable_nested_virtualization",
 		},
 		e2e.GcloudBetaProdWrapperLatest: {"beta", "compute", "images", "export", "--quiet",
 			"--docker-image-tag=latest", fmt.Sprintf("--project=%v", testProjectConfig.TestProjectID),
@@ -304,6 +309,7 @@ func runImageExportRawWithoutDefaultServiceAccountTest(ctx context.Context, test
 			fmt.Sprintf("-destination_uri=%v", fileURI),
 			fmt.Sprintf("-zone=%v", testProjectConfig.TestZone),
 			fmt.Sprintf("-compute_service_account=%v", testVariables.ComputeServiceAccount),
+			"-enable_nested_virtualization",
 		},
 		e2e.GcloudBetaProdWrapperLatest: {"beta", "compute", "images", "export", "--quiet",
 			"--docker-image-tag=latest", fmt.Sprintf("--project=%v", testVariables.ProjectID),
@@ -348,6 +354,7 @@ func runImageExportVMDKDefaultServiceAccountWithMissingPermissionsTest(ctx conte
 			fmt.Sprintf("-destination_uri=%v", fileURI), "-format=vmdk",
 			fmt.Sprintf("-zone=%v", testProjectConfig.TestZone),
 			fmt.Sprintf("-compute_service_account=%v", testVariables.ComputeServiceAccount),
+			"-enable_nested_virtualization",
 		},
 		e2e.GcloudBetaProdWrapperLatest: {"beta", "compute", "images", "export", "--quiet",
 			"--docker-image-tag=latest", fmt.Sprintf("--project=%v", testVariables.ProjectID),

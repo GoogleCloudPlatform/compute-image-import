@@ -68,6 +68,7 @@ func TestBuildParams(t *testing.T) {
 	assert.Equal(t, flags.StringArrayFlag{"env,IN,prod,test"}, params.NodeAffinityLabelsFlag)
 	assert.Equal(t, cliArgs[ovfimporter.HostnameFlagKey], params.Hostname)
 	assert.Equal(t, cliArgs[ovfimporter.MachineImageStorageLocationFlagKey], params.MachineImageStorageLocation)
+	assert.Equal(t, cliArgs[ovfimporter.EnableNestedVirtualizationFlagKey], params.NestedVirtualizationEnabled)
 }
 
 func getAllCliArgs() map[string]interface{} {
@@ -109,5 +110,6 @@ func getAllCliArgs() map[string]interface{} {
 		"node-affinity-label":               "env,IN,prod,test",
 		ovfimporter.HostnameFlagKey:         "hostname1",
 		ovfimporter.MachineImageStorageLocationFlagKey: "us-west2",
+		ovfimporter.EnableNestedVirtualizationFlagKey:  true,
 	}
 }

@@ -142,7 +142,8 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 func Run(clientID string, destinationURI string, sourceImage string, sourceDiskSnapshot string, format string,
 	project *string, network string, subnet string, zone string, timeout string,
 	scratchBucketGcsPath string, oauth string, ce string, computeServiceAccount string, gcsLogsDisabled bool,
-	cloudLogsDisabled bool, stdoutLogsDisabled bool, labels string, currentExecutablePath string, logger logging.Logger) error {
+	cloudLogsDisabled bool, stdoutLogsDisabled bool, labels string, currentExecutablePath string, nestedVirtualizationEnabled bool,
+	logger logging.Logger) error {
 
 	userLabels, err := validateAndParseFlags(destinationURI, sourceImage, sourceDiskSnapshot, labels)
 	if err != nil {
@@ -190,20 +191,21 @@ func Run(clientID string, destinationURI string, sourceImage string, sourceDiskS
 	}
 
 	env := daisyutils.EnvironmentSettings{
-		Project:               *project,
-		Zone:                  zone,
-		GCSPath:               scratchBucketGcsPath,
-		OAuth:                 oauth,
-		Timeout:               timeout,
-		ComputeEndpoint:       ce,
-		DisableGCSLogs:        gcsLogsDisabled,
-		DisableCloudLogs:      cloudLogsDisabled,
-		DisableStdoutLogs:     stdoutLogsDisabled,
-		Network:               network,
-		Subnet:                subnet,
-		ComputeServiceAccount: computeServiceAccount,
-		Labels:                userLabels,
-		ExecutionID:           os.Getenv(os.Getenv(daisyutils.BuildIDOSEnvVarName)),
+		Project:                     *project,
+		Zone:                        zone,
+		GCSPath:                     scratchBucketGcsPath,
+		OAuth:                       oauth,
+		Timeout:                     timeout,
+		ComputeEndpoint:             ce,
+		DisableGCSLogs:              gcsLogsDisabled,
+		DisableCloudLogs:            cloudLogsDisabled,
+		DisableStdoutLogs:           stdoutLogsDisabled,
+		Network:                     network,
+		Subnet:                      subnet,
+		ComputeServiceAccount:       computeServiceAccount,
+		Labels:                      userLabels,
+		ExecutionID:                 os.Getenv(os.Getenv(daisyutils.BuildIDOSEnvVarName)),
+		NestedVirtualizationEnabled: nestedVirtualizationEnabled,
 		Tool: daisyutils.Tool{
 			HumanReadableName: "gce image export",
 			ResourceLabelName: "gce-image-export",
