@@ -50,7 +50,6 @@
       ]
     },
     "translate-disk": {
-      "Timeout": "1h",
       "IncludeWorkflow": {
         "Path": "./translate_el.wf.json",
         "Vars": {
