@@ -87,6 +87,14 @@ var (
 			WorkflowPath: "enterprise_linux/translate_rhel_8_byol.wf.json",
 			LicenseURI:   "projects/rhel-cloud/global/licenses/rhel-8-byos",
 		}, {
+			GcloudOsFlag: "rhel-9",
+			WorkflowPath: "enterprise_linux/translate_rhel_9_licensed.wf.json",
+			LicenseURI:   "projects/rhel-cloud/global/licenses/rhel-9-server",
+		}, {
+			GcloudOsFlag: "rhel-9-byol",
+			WorkflowPath: "enterprise_linux/translate_rhel_9_byol.wf.json",
+			LicenseURI:   "projects/rhel-cloud/global/licenses/rhel-9-byos",
+		}, {
 			GcloudOsFlag: "rocky-8",
 			WorkflowPath: "enterprise_linux/translate_rocky_8.wf.json",
 			LicenseURI:   "projects/rocky-linux-cloud/global/licenses/rocky-linux-8",
