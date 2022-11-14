@@ -28,6 +28,15 @@
         }
       }
     },
+    "translate-disk": {
+      "Timeout": "120m",
+      "IncludeWorkflow": {
+        "Path": "./debian_worker.subwf.json",
+        "Vars": {
+          "worker_image": "${image_prefix}-v${build_tag}"
+        }
+      }
+    },
     "delete-image": {
       "DeleteResources": {
         "Images": [
@@ -37,8 +46,7 @@
     }
   },
   "Dependencies": {
-    "delete-image": [
-      "build-debian-worker"
-    ]
+    "translate-disk": ["build-debian-worker"],
+    "delete-image": ["translate-disk"]
   }
 }

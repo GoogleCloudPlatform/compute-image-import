@@ -1,0 +1,82 @@
+{
+  "Name": "debian-worker",
+  "Vars": {
+    "input_el_image": {
+      "Value": "projects/compute-image-import-test/global/images/rhel-8-2",
+      "Description": "The enterprise Linux image to use as input for the translation."
+    },
+    "el_major_version": {
+      "Value": "8",
+      "Description": "The major version of the enterprise Linux installed on the image. It will be used to select the translation workflow."
+    },
+    "worker_image": {
+      "Required": true,
+      "Description": "The image to use as a source for a worker VM."
+    }
+  },
+  "Sources": {
+    "post_translate_test.sh": "./scripts/post_translate_test.sh"
+  },
+  "Steps": {
+    "create-disks": {
+      "CreateDisks": [
+        {
+          "name": "worker-disk",
+          "sourceImage": "${worker_image}",
+          "type": "pd-ssd"
+        },
+        {
+          "name": "input-disk",
+          "sourceImage": "${input_el_image}",
+          "type": "pd-ssd"
+        }
+      ]
+    },
+    "translate-disk": {
+      "Timeout": "60m",
+      "IncludeWorkflow": {
+        "Path": "../daisy_workflows/image_import/enterprise_linux/translate_el.wf.json",
+        "Vars": {
+          "el_release": "${el_major_version}",
+          "install_gce_packages": "true",
+          "translator_disk": "worker-disk",
+          "imported_disk": "input-disk",
+          "use_rhel_gce_license": "true"
+        }
+      }
+    },
+    "create-test-instance": {
+      "CreateInstances": [
+        {
+          "name": "test-inst",
+          "disks": [
+            {
+              "source": "input-disk"
+            }
+          ],
+          "machineType": "n1-standard-4",
+          "StartupScript": "post_translate_test.sh"
+        }
+      ]
+    },
+    "wait-for-test-instance": {
+      "Timeout": "30m",
+      "WaitForInstancesSignal": [
+        {
+          "Name": "test-inst",
+          "SerialOutput": {
+            "Port": 1,
+            "SuccessMatch": "PASSED:",
+            "FailureMatch": "FAILED:",
+            "StatusMatch": "STATUS:"
+          }
+        }
+      ]
+    }
+  },
+  "Dependencies": {
+    "translate-disk": ["create-disks"],
+    "create-test-instance": ["translate-disk"],
+    "wait-for-test-instance": ["create-test-instance"]
+  }
+}
