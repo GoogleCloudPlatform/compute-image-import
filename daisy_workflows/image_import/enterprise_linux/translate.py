@@ -223,13 +223,6 @@ def DistroSpecific(spec: TranslateSpec):
     g.mkdir('/etc/yum.repos.d')
 
   if spec.distro == Distro.RHEL:
-    if el_release == '9':
-      # Tmp solution to avoid "Error: GPG check FAILED"
-      # TODO: track b/256169383
-      cmd = 'update-crypto-policies --set LEGACY'
-      p = run(g, cmd, raiseOnError=False)
-      if p.code != 0:
-        logging.warn('Failed to run command \"', cmd, '\"')
     if spec.use_rhel_gce_license:
       run(g, ['yum', 'remove', '-y', '*rhui*'])
       logging.info('Adding in GCE RHUI package.')
