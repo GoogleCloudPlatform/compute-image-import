@@ -305,11 +305,6 @@ def _reset_network(g: guestfs.GuestFS):
   ))
 
 
-def _install_virtio_drivers(g: guestfs.GuestFS):
-  """Rebuilds initramfs to ensure that virtio drivers are present."""
-  logging.info('Installing virtio drivers.')
-  for kernel in g.ls('/lib/modules'):
-    g.command(['dracut', '-v', '-f', '--kver', kernel])
 
 
 def translate():
@@ -343,7 +338,9 @@ def translate():
     _install_product(g, release)
     _refresh_zypper(g)
     _install_packages(g, pkgs)
-  _install_virtio_drivers(g)
+
+    # Rebuilds initramfs to ensure that virtio drivers are present.
+    utils.RebuildInitramfs(g)
   if include_gce_packages:
     logging.info('Enabling google services.')
     for unit in g.ls('/usr/lib/systemd/system/'):
