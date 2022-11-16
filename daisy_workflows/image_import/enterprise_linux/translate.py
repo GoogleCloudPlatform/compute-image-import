@@ -25,7 +25,6 @@ use_rhel_gce_license: True if GCE RHUI package should be installed
 from enum import Enum
 import logging
 import os
-import re
 import time
 
 import guestfs

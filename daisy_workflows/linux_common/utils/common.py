@@ -246,6 +246,7 @@ def is_rhel6_img(g):
         return True
     return False
 
+
 def RebuildInitramfs(g):
   logging.info('Updating initramfs')
   for kver in g.ls('/lib/modules'):

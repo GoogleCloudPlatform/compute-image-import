@@ -305,8 +305,6 @@ def _reset_network(g: guestfs.GuestFS):
   ))
 
 
-
-
 def translate():
   """Mounts the disk, runs translation steps, then unmounts the disk."""
   include_gce_packages = utils.GetMetadataAttribute(
