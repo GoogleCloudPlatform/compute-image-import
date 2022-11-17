@@ -236,6 +236,63 @@ def CommonRoutines(g):
   g.sh("rm -f /etc/ssh/ssh_host_*")
 
 
+def is_rhel6_img(g):
+    if (g.exists('/etc/redhat-release')):
+      # This is a sample string that exist in /etc/redhat-release for RHEL-6:
+      # `Red Hat Enterprise Linux Server release 6.10 (Santiago)`
+      etc_redhat_release_str = str(g.cat('/etc/redhat-release'))
+      if ('Red Hat' in etc_redhat_release_str
+          and 'release 6' in etc_redhat_release_str):
+        return True
+    return False
+
+
+def RebuildInitramfs(g):
+  logging.info('Updating initramfs')
+  for kver in g.ls('/lib/modules'):
+    logging.debug('Updating initramfs for ' + kver)
+    # Although each directory in /lib/modules typically corresponds to a
+    # kernel version  [1], that may not always be true.
+    # kernel-abi-whitelists, for example, creates extra directories in
+    # /lib/modules.
+    #
+    # Skip building initramfs if the directory doesn't look like a
+    # kernel version. Emulates the version matching from depmod [2].
+    #
+    # 1. https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/lib.html
+    # 2. https://kernel.googlesource.com/pub/scm/linux/kernel/git/mmarek/kmod
+    # /+/tip/tools/depmod.c#2537
+    if not re.match(r'^\d+.\d+', kver):
+      logging.debug('/lib/modules/{} doesn\'t look like a kernel directory. '
+                    'Skipping creation of initramfs for it'.format(kver))
+      continue
+
+    # We perform a best-effort attempt to rebuild initramfs; if there's a
+    # failure, continue while giving the user some debug tips. This is
+    # sensible since the existing initramfs may work for booting. Or the
+    # failure may be associated with an older kernel that will never be used.
+    cmds = []
+    if not g.exists(os.path.join('/lib/modules', kver, 'modules.dep')):
+      cmds.append(['depmod', kver])
+    if is_rhel6_img(g):
+      # Version 6 doesn't have option --kver
+      cmds.append(['dracut', '-v', '-f', kver])
+    else:
+      cmds.append(['dracut', '--stdlog=1', '-f', '--kver', kver])
+    for cmd in cmds:
+      try:
+        run(g, cmd)
+      except RuntimeError as e:
+        cmd_string = ' '.join(cmd)
+        logging.debug('`{cmd}` error: {err}'.format(cmd=cmd_string, err=e))
+        msg = ('Failed to write initramfs for {kver}. If the image '
+               'fails to boot: Boot the original machine, remove unused '
+               'kernel versions, verify that `{cmd}` runs, re-export '
+               'the disks, and re-import.').format(kver=kver, cmd=cmd_string)
+        logging.info(msg)
+        break
+
+
 def RunTranslate(translate_func: typing.Callable,
                  run_with_tracing: bool = True):
   """Run `translate_func`, and communicate success or failure back to Daisy.
