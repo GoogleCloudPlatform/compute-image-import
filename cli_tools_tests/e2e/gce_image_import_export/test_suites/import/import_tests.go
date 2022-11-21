@@ -285,8 +285,8 @@ var basicCases = []*testCase{
 		// Spec: http://linux-training.be/sysadmin/ch28.html#idp68123376
 		// Bug: b/168774581
 		caseName: "el-allow-extra-dirs-in-lib-modules",
-		source:   "projects/compute-image-import-test/global/images/el-depmod-extra-lib-modules",
-		os:       "centos-8",
+		source:   "projects/compute-image-import-test/global/images/rhel9-allow-extra-dirs-in-lib-modules",
+		os:       "rhel-9",
 	}, {
 		// Fail when a package isn't found, and alert user with useful message.
 		caseName:      "el-package-not-found",
@@ -296,8 +296,8 @@ var basicCases = []*testCase{
 	}, {
 		// Fail when yum has an unreachable repo.
 		caseName:      "el-unreachable-repos",
-		source:        "projects/compute-image-import-test/global/images/centos-8-cdrom-repo",
-		os:            "centos-8",
+		source:        "projects/compute-image-import-test/global/images/centos7-unreachable-repos",
+		os:            "centos-7",
 		expectedError: "Ensure all configured repos are reachable",
 	}, {
 		// Fail when imported as RHEL BYOL, but image does not have valid subscription.
@@ -309,8 +309,8 @@ var basicCases = []*testCase{
 	}, {
 		// Fail when `yum` not found.
 		caseName:      "el-yum-not-found",
-		source:        "projects/compute-image-import-test/global/images/manjaro",
-		os:            "centos-8",
+		source:        "projects/compute-image-import-test/global/images/centos7-yum-not-found",
+		os:            "centos-7",
 		expectedError: "Verify the disk's OS: `yum` not found.",
 	},
 
