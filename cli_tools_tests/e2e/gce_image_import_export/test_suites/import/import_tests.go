@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -75,6 +76,9 @@ type testCase struct {
 
 	// Additional information to show on failure to assist with debugging.
 	tip string
+
+	// Used to override the default zone passed via with the testconfig.
+	zone string
 }
 
 var basicCases = []*testCase{
@@ -404,7 +408,27 @@ func (t *testCase) run(ctx context.Context, junit *junitxml.TestCase, logger *lo
 	t.imageName = "e2e-test-image-import" + path.RandString(5)
 	imagePath := fmt.Sprintf("projects/%s/global/images/%s", testProjectConfig.TestProjectID, t.imageName)
 
-	importLogs, err := t.runImport(junit, logger, testProjectConfig, t.imageName)
+	if t.zone == "" {
+		t.zone = testProjectConfig.TestZone
+
+		// Overriding the default test zone to avoid exceeding the 'IN_USE_ADDRESSES' quota that happens because of
+		// a big number of ImageImport tests running in parallel.
+		// rand.Float32() will return a uniformly distributed random value in [0.0, 1.0), so we will override the
+		// default test zone in around 30% of cases.
+		if rand.Float32() < 0.3 {
+			if testProjectConfig.TestZone == "us-central1-b" {
+				t.zone = "us-east1-b"
+			} else {
+				t.zone = "us-central1-b"
+			}
+		}
+	}
+
+	if t.zone != testProjectConfig.TestZone {
+		logger.Printf("Overriding the default test zone '%v' to '%v'.",
+			testProjectConfig.TestZone, t.zone)
+	}
+	importLogs, err := t.runImport(junit, logger, testProjectConfig)
 
 	if importLogs == nil {
 		panic("Expected importLogs to be non-nil")
@@ -449,12 +473,12 @@ func (t testCase) createTestScopedLogger(junit *junitxml.TestCase, logger *log.L
 
 // runImport runs an image import workflow, and returns its console output and error.
 func (t testCase) runImport(junit *junitxml.TestCase, logger *log.Logger,
-	testProjectConfig *testconfig.Project, imageName string) (*bytes.Buffer, error) {
+	testProjectConfig *testconfig.Project) (*bytes.Buffer, error) {
 	args := []string{
 		"-client_id", "e2e",
 		"-project", testProjectConfig.TestProjectID,
-		"-zone", testProjectConfig.TestZone,
-		"-image_name", imageName,
+		"-zone", t.zone,
+		"-image_name", t.imageName,
 		"-enable_nested_virtualization",
 	}
 	if t.os != "" {
@@ -520,7 +544,7 @@ func (t testCase) runPostTranslateTest(ctx context.Context, imagePath string,
 
 	wf.Logger = logging.AsDaisyLogger(logger)
 	wf.Project = testProjectConfig.TestProjectID
-	wf.Zone = testProjectConfig.TestZone
+	wf.Zone = t.zone
 	err = wf.Run(ctx)
 	return err
 }
