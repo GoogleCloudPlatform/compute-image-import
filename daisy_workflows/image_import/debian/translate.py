@@ -52,9 +52,24 @@ def DistroSpecific(g):
     utils.update_apt(g)
     utils.install_apt_packages(g, 'gnupg')
 
-    run(g,
-        ['wget', 'https://packages.cloud.google.com/apt/doc/apt-key.gpg',
-        '-O', '/tmp/gce_key'])
+    try:
+      logging.debug('Adding Google Cloud apt-key.')
+      cmd = ['wget', 'https://packages.cloud.google.com/apt/doc/apt-key.gpg',
+             '-O', '/tmp/gce_key']
+      run(g, cmd)
+    except Exception as e:
+      logging.debug('Failed to run wget command: ' + str(e))
+      # check if curl is exist use it to add Google Cloud apt-key
+      p = run(g, 'curl --version', raiseOnError=False)
+      if p.code == 0:
+        logging.debug('Trying to add Google Cloud apt-key with curl')
+        cmd[0] = 'curl'
+        cmd[2] = '-o'
+        run(g, cmd)
+      else:
+        logging.debug('Installing wget')
+        run(g, ['apt-get', 'install', '-y', 'wget'])
+        run(g, cmd)
     run(g, ['apt-key', 'add', '/tmp/gce_key'])
     g.rm('/tmp/gce_key')
     g.write(
