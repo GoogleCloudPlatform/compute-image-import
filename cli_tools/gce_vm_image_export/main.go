@@ -46,7 +46,7 @@ var (
 	cloudLogsDisabled           = flag.Bool("disable_cloud_logging", false, "do not stream logs to Cloud Logging.")
 	stdoutLogsDisabled          = flag.Bool("disable_stdout_logging", false, "do not display individual workflow logs on stdout.")
 	labels                      = flag.String("labels", "", "List of label KEY=VALUE pairs to add. Keys must start with a lowercase character and contain only hyphens (-), underscores (_), lowercase characters, and numbers. Values must contain only hyphens (-), underscores (_), lowercase characters, and numbers.")
-	nestedVirtualizationEnabled = flag.Bool("enable_nested_virtualization", false, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
+	nestedVirtualizationEnabled = flag.Bool("enable_nested_virtualization", true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 )
 
 func exportEntry() (service.Loggable, error) {

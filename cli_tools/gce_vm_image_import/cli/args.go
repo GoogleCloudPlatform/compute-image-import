@@ -190,7 +190,7 @@ func (args *imageImportArgs) registerFlags(flagSet *flag.FlagSet) {
 	flagSet.BoolVar(&args.NoGuestEnvironment, "no_guest_environment", false,
 		"When enabled, the Google Guest Environment will not be installed.")
 
-	flagSet.BoolVar(&args.NestedVirtualizationEnabled, "enable_nested_virtualization", false,
+	flagSet.BoolVar(&args.NestedVirtualizationEnabled, "enable_nested_virtualization", true,
 		"When enabled, temporary worker VMs will be created with enabled nested virtualization. "+
 			"See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 
