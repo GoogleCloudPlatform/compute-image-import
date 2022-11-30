@@ -78,7 +78,7 @@ var (
 	hostname                    = flag.String(ovfimporter.HostnameFlagKey, "", "Specify the hostname of the instance to be created. The specified hostname must be RFC1035 compliant.")
 	machineImageStorageLocation = flag.String(ovfimporter.MachineImageStorageLocationFlagKey, "", "GCS bucket storage location of the machine image being imported (regional or multi-regional)")
 	buildID                     = flag.String("build-id", "", "Cloud Build ID override. This flag should be used if auto-generated or build ID provided by Cloud Build is not appropriate. For example, if running multiple imports in parallel in a single Cloud Build run, sharing build ID could cause premature temporary resource clean-up resulting in import failures.")
-	nestedVirtualizationEnabled = flag.Bool(ovfimporter.EnableNestedVirtualizationFlagKey, false, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
+	nestedVirtualizationEnabled = flag.Bool(ovfimporter.EnableNestedVirtualizationFlagKey, true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	nodeAffinityLabelsFlag      flags.StringArrayFlag
 	currentExecutablePath       string
 )

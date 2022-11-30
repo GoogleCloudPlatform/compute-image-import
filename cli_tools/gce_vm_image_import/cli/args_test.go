@@ -385,8 +385,8 @@ func Test_populateAndValidate_StandardizesScratchBucketPath(t *testing.T) {
 }
 
 func Test_populateAndValidate_NestedVirtualization(t *testing.T) {
-	assert.False(t, parseAndPopulate(t).NestedVirtualizationEnabled)
-	assert.True(t, parseAndPopulate(t, "-enable_nested_virtualization").NestedVirtualizationEnabled)
+	assert.True(t, parseAndPopulate(t).NestedVirtualizationEnabled)
+	assert.False(t, parseAndPopulate(t, "-enable_nested_virtualization=false").NestedVirtualizationEnabled)
 }
 
 // fields here will override what's passed to PopulateMissingParameters

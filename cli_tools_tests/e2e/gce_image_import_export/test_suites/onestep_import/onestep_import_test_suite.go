@@ -270,7 +270,6 @@ func buildTestArgs(props *onestepImportAWSTestProperties, testProjectID string, 
 		fmt.Sprintf("-aws_region=%v", awsRegion),
 		fmt.Sprintf("-os=%v", props.os),
 		fmt.Sprintf("-compute_service_account=%v", props.computeServiceAccount),
-		"-enable_nested_virtualization",
 	}
 
 	if props.amiID != "" {

@@ -371,7 +371,6 @@ func buildTestArgs(props *ovfMachineImageImportTestProperties, testProjectConfig
 	wrapperArgs := []string{
 		"-client-id=e2e",
 		fmt.Sprintf("-machine-image-name=%s", props.machineImageName),
-		"-enable-nested-virtualization",
 	}
 	if props.storageLocation != "" {
 		gcloudBetaArgs = append(gcloudBetaArgs, fmt.Sprintf("--storage-location=%v", props.storageLocation))
