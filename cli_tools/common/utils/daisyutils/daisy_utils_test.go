@@ -38,7 +38,6 @@ func Test_GetTranslationSettings_ResolveSameWorkflowPathAsOldMap(t *testing.T) {
 		"debian-8":            "debian/translate_debian_8.wf.json",
 		"debian-9":            "debian/translate_debian_9.wf.json",
 		"centos-7":            "enterprise_linux/translate_centos_7.wf.json",
-		"centos-8":            "enterprise_linux/translate_centos_8.wf.json",
 		"opensuse-15":         "suse/translate_opensuse_15.wf.json",
 		"rhel-6":              "enterprise_linux/translate_rhel_6_licensed.wf.json",
 		"rhel-7":              "enterprise_linux/translate_rhel_7_licensed.wf.json",
