@@ -108,12 +108,6 @@ Where, `YOUR_IMPORTED_IMAGE` is the GCE image that was created in step 2. The `s
     </td>
   </tr>
   <tr>
-    <td>CentOS 8
-    </td>
-    <td>/daisy_workflows/image_import/enterprise_linux/translate_centos_8.wf.json
-    </td>
-  </tr>
-  <tr>
     <td>CentOS 7
     </td>
     <td>/daisy_workflows/image_import/enterprise_linux/translate_centos_7.wf.json
