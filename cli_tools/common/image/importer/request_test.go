@@ -267,6 +267,7 @@ func Test_EnvironmentSettings(t *testing.T) {
 		NoExternalIP:                true,
 		WorkflowDir:                 "workflow-dir",
 		NestedVirtualizationEnabled: true,
+		WorkerMachineSeries:         []string{"n2", "n1"},
 	}
 	expected := daisyutils.EnvironmentSettings{
 		Project:                     "panda",
@@ -285,6 +286,7 @@ func Test_EnvironmentSettings(t *testing.T) {
 		NoExternalIP:                true,
 		WorkflowDirectory:           "workflow-dir",
 		NestedVirtualizationEnabled: true,
+		WorkerMachineSeries:         []string{"n2", "n1"},
 	}
 	assert.Equal(t, expected, request.EnvironmentSettings())
 }

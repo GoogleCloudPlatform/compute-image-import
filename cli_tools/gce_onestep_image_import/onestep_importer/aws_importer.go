@@ -99,6 +99,7 @@ func newAWSImporter(oauth string, timeoutChan chan struct{}, args *awsImportArgu
 		client,
 		storageutils.NewResourceLocationRetriever(metadataGCE, computeClient),
 		storageutils.NewScratchBucketCreator(ctx, client),
+		param.NewMachineSeriesDetector(computeClient),
 	)
 
 	awsSession, err := createAWSSession(args.region, args.accessKeyID, args.secretAccessKey, args.sessionToken)

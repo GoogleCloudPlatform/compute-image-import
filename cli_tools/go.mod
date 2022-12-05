@@ -13,7 +13,7 @@ require (
 	github.com/aws/aws-sdk-go v1.37.5
 	github.com/cenkalti/backoff/v4 v4.1.0
 	github.com/dustin/go-humanize v1.0.0
-	github.com/go-ole/go-ole v1.2.5
+	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.2
@@ -21,8 +21,6 @@ require (
 	github.com/google/logger v1.1.0
 	github.com/google/uuid v1.2.0
 	github.com/klauspost/compress v1.11.7 // indirect
-	github.com/klauspost/pgzip v1.2.5
-	github.com/kylelemons/godebug v1.1.0
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/minio/highwayhash v1.0.1
 	github.com/stretchr/testify v1.7.0

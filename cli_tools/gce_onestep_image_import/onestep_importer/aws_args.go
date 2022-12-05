@@ -29,23 +29,24 @@ import (
 // and optionally allows for validating and populating the arguments.
 type awsImportArguments struct {
 	// Passed in by user
-	accessKeyID        string
-	amiID              string
-	clientID           string
-	executablePath     string
-	exportLocation     string
-	sourceFilePath     string
-	gcsComputeEndpoint string
-	gcsProjectPtr      *string
-	gcsZone            string
-	gcsRegion          string
-	gcsNetwork         string
-	gcsSubnet          string
-	gcsScratchBucket   string
-	gcsStorageLocation string
-	region             string
-	secretAccessKey    string
-	sessionToken       string
+	accessKeyID         string
+	amiID               string
+	clientID            string
+	executablePath      string
+	exportLocation      string
+	sourceFilePath      string
+	gcsComputeEndpoint  string
+	gcsProjectPtr       *string
+	gcsZone             string
+	gcsRegion           string
+	gcsNetwork          string
+	gcsSubnet           string
+	gcsScratchBucket    string
+	gcsStorageLocation  string
+	region              string
+	secretAccessKey     string
+	sessionToken        string
+	workerMachineSeries []string
 
 	// Internal generated
 	exportBucket   string
@@ -102,7 +103,8 @@ func (args *awsImportArguments) validateAndPopulate(populator param.Populator) e
 	}
 
 	err = populator.PopulateMissingParameters(args.gcsProjectPtr, args.clientID, &args.gcsZone,
-		&args.gcsRegion, &args.gcsScratchBucket, "", &args.gcsStorageLocation, &args.gcsNetwork, &args.gcsSubnet)
+		&args.gcsRegion, &args.gcsScratchBucket, "", &args.gcsStorageLocation, &args.gcsNetwork, &args.gcsSubnet,
+		&args.workerMachineSeries)
 	if err != nil {
 		return err
 	}

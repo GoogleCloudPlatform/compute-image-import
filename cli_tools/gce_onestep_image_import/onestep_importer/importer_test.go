@@ -209,6 +209,12 @@ func TestNestedVirtualization(t *testing.T) {
 	assert.False(t, expectSuccessfulParse(t, "-enable_nested_virtualization=false").NestedVirtualizationEnabled)
 }
 
+func TestWorkerMachineSeries(t *testing.T) {
+	assert.Equal(t, []string{"n2"}, expectSuccessfulParse(t, "-worker_machine_series=n2").WorkerMachineSeries)
+	assert.Equal(t, []string{"n2", "n1"}, expectSuccessfulParse(t, "-worker_machine_series=n2", "-worker_machine_series=n1").WorkerMachineSeries)
+	assert.Equal(t, []string{"n1", "n2"}, expectSuccessfulParse(t, "-worker_machine_series=n1", "-worker_machine_series=n2").WorkerMachineSeries)
+}
+
 func TestRunReturnErrorWhenInvalidArgs(t *testing.T) {
 	args := setUpArgs(osFlag)
 	importArgs, _ := NewOneStepImportArguments(args)

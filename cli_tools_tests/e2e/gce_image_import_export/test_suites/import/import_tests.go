@@ -483,6 +483,7 @@ func (t testCase) runImport(junit *junitxml.TestCase, logger *log.Logger,
 		"-project", testProjectConfig.TestProjectID,
 		"-zone", t.zone,
 		"-image_name", t.imageName,
+		"-worker_machine_series", "n1",
 	}
 	if t.os != "" {
 		args = append(args, "-os", t.os)

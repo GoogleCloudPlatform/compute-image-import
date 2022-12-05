@@ -5,34 +5,35 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
-// MockOvfManifestGenerator is a mock of OvfManifestGenerator interface
+// MockOvfManifestGenerator is a mock of OvfManifestGenerator interface.
 type MockOvfManifestGenerator struct {
 	ctrl     *gomock.Controller
 	recorder *MockOvfManifestGeneratorMockRecorder
 }
 
-// MockOvfManifestGeneratorMockRecorder is the mock recorder for MockOvfManifestGenerator
+// MockOvfManifestGeneratorMockRecorder is the mock recorder for MockOvfManifestGenerator.
 type MockOvfManifestGeneratorMockRecorder struct {
 	mock *MockOvfManifestGenerator
 }
 
-// NewMockOvfManifestGenerator creates a new mock instance
+// NewMockOvfManifestGenerator creates a new mock instance.
 func NewMockOvfManifestGenerator(ctrl *gomock.Controller) *MockOvfManifestGenerator {
 	mock := &MockOvfManifestGenerator{ctrl: ctrl}
 	mock.recorder = &MockOvfManifestGeneratorMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockOvfManifestGenerator) EXPECT() *MockOvfManifestGeneratorMockRecorder {
 	return m.recorder
 }
 
-// Cancel mocks base method
+// Cancel mocks base method.
 func (m *MockOvfManifestGenerator) Cancel(arg0 string) bool {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Cancel", arg0)
@@ -40,13 +41,13 @@ func (m *MockOvfManifestGenerator) Cancel(arg0 string) bool {
 	return ret0
 }
 
-// Cancel indicates an expected call of Cancel
+// Cancel indicates an expected call of Cancel.
 func (mr *MockOvfManifestGeneratorMockRecorder) Cancel(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Cancel", reflect.TypeOf((*MockOvfManifestGenerator)(nil).Cancel), arg0)
 }
 
-// GenerateAndWriteToGCS mocks base method
+// GenerateAndWriteToGCS mocks base method.
 func (m *MockOvfManifestGenerator) GenerateAndWriteToGCS(arg0, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateAndWriteToGCS", arg0, arg1)
@@ -54,7 +55,7 @@ func (m *MockOvfManifestGenerator) GenerateAndWriteToGCS(arg0, arg1 string) erro
 	return ret0
 }
 
-// GenerateAndWriteToGCS indicates an expected call of GenerateAndWriteToGCS
+// GenerateAndWriteToGCS indicates an expected call of GenerateAndWriteToGCS.
 func (mr *MockOvfManifestGeneratorMockRecorder) GenerateAndWriteToGCS(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateAndWriteToGCS", reflect.TypeOf((*MockOvfManifestGenerator)(nil).GenerateAndWriteToGCS), arg0, arg1)

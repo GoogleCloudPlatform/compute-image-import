@@ -78,6 +78,7 @@ var (
 	hostname                    = flag.String(ovfimporter.HostnameFlagKey, "", "Specify the hostname of the instance to be created. The specified hostname must be RFC1035 compliant.")
 	machineImageStorageLocation = flag.String(ovfimporter.MachineImageStorageLocationFlagKey, "", "GCS bucket storage location of the machine image being imported (regional or multi-regional)")
 	buildID                     = flag.String("build-id", "", "Cloud Build ID override. This flag should be used if auto-generated or build ID provided by Cloud Build is not appropriate. For example, if running multiple imports in parallel in a single Cloud Build run, sharing build ID could cause premature temporary resource clean-up resulting in import failures.")
+	workerMachineSeries         flags.StringArrayFlag
 	nestedVirtualizationEnabled = flag.Bool(ovfimporter.EnableNestedVirtualizationFlagKey, true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	nodeAffinityLabelsFlag      flags.StringArrayFlag
 	currentExecutablePath       string
@@ -85,6 +86,7 @@ var (
 
 func init() {
 	currentExecutablePath = string(os.Args[0])
+	flag.Var(&workerMachineSeries, "worker-machine-series", "The import tool automatically selects the machine series for temporary worker VMs based on the execution context. The argument overrides this behavior and specifies the machine series to use for worker VMs. Additionally it is possible to specify fallback machine series by setting this argument twice. For example, -worker-machine-series n1 -worker-machine-series n2")
 	flag.Var(&nodeAffinityLabelsFlag, "node-affinity-label", "Node affinity label used to determine sole tenant node to schedule this instance on. Label is of the format: <key>,<operator>,<value>,<value2>... where <operator> can be one of: IN, NOT. For example: workload,IN,prod,test is a label with key 'workload' and values 'prod' and 'test'. This flag can be specified multiple times for multiple labels.")
 }
 
@@ -114,7 +116,7 @@ func buildOVFImportParams() *domain.OVFImportParams {
 		CurrentExecutablePath: currentExecutablePath, ReleaseTrack: *releaseTrack,
 		UefiCompatible: *uefiCompatible, Hostname: *hostname,
 		MachineImageStorageLocation: *machineImageStorageLocation, BuildID: *buildID, NestedVirtualizationEnabled: *nestedVirtualizationEnabled,
-		WorkflowDir: workflowDir,
+		WorkflowDir: workflowDir, WorkerMachineSeries: workerMachineSeries,
 	}
 }
 

@@ -59,6 +59,7 @@ func GetAllInstanceExportArgs() *OVFExportArgs {
 		ReleaseTrack:         GA,
 		DiskExportFormat:     "vmdk",
 		Region:               TestRegion,
+		WorkerMachineSeries:  []string{"n2", "n1"},
 	}
 }
 
@@ -87,5 +88,6 @@ func GetAllMachineImageExportArgs() *OVFExportArgs {
 		ReleaseTrack:         GA,
 		DiskExportFormat:     "vmdk",
 		Region:               TestRegion,
+		WorkerMachineSeries:  []string{"n2", "n1"},
 	}
 }

@@ -11,30 +11,30 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockImporter is a mock of Importer interface
+// MockImporter is a mock of Importer interface.
 type MockImporter struct {
 	ctrl     *gomock.Controller
 	recorder *MockImporterMockRecorder
 }
 
-// MockImporterMockRecorder is the mock recorder for MockImporter
+// MockImporterMockRecorder is the mock recorder for MockImporter.
 type MockImporterMockRecorder struct {
 	mock *MockImporter
 }
 
-// NewMockImporter creates a new mock instance
+// NewMockImporter creates a new mock instance.
 func NewMockImporter(ctrl *gomock.Controller) *MockImporter {
 	mock := &MockImporter{ctrl: ctrl}
 	mock.recorder = &MockImporterMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockImporter) EXPECT() *MockImporterMockRecorder {
 	return m.recorder
 }
 
-// Run mocks base method
+// Run mocks base method.
 func (m *MockImporter) Run(ctx context.Context) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Run", ctx)
@@ -42,36 +42,36 @@ func (m *MockImporter) Run(ctx context.Context) error {
 	return ret0
 }
 
-// Run indicates an expected call of Run
+// Run indicates an expected call of Run.
 func (mr *MockImporterMockRecorder) Run(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Run", reflect.TypeOf((*MockImporter)(nil).Run), ctx)
 }
 
-// MockdiskClient is a mock of diskClient interface
+// MockdiskClient is a mock of diskClient interface.
 type MockdiskClient struct {
 	ctrl     *gomock.Controller
 	recorder *MockdiskClientMockRecorder
 }
 
-// MockdiskClientMockRecorder is the mock recorder for MockdiskClient
+// MockdiskClientMockRecorder is the mock recorder for MockdiskClient.
 type MockdiskClientMockRecorder struct {
 	mock *MockdiskClient
 }
 
-// NewMockdiskClient creates a new mock instance
+// NewMockdiskClient creates a new mock instance.
 func NewMockdiskClient(ctrl *gomock.Controller) *MockdiskClient {
 	mock := &MockdiskClient{ctrl: ctrl}
 	mock.recorder = &MockdiskClientMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockdiskClient) EXPECT() *MockdiskClientMockRecorder {
 	return m.recorder
 }
 
-// DeleteDisk mocks base method
+// DeleteDisk mocks base method.
 func (m *MockdiskClient) DeleteDisk(project, zone, uri string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteDisk", project, zone, uri)
@@ -79,7 +79,7 @@ func (m *MockdiskClient) DeleteDisk(project, zone, uri string) error {
 	return ret0
 }
 
-// DeleteDisk indicates an expected call of DeleteDisk
+// DeleteDisk indicates an expected call of DeleteDisk.
 func (mr *MockdiskClientMockRecorder) DeleteDisk(project, zone, uri interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDisk", reflect.TypeOf((*MockdiskClient)(nil).DeleteDisk), project, zone, uri)

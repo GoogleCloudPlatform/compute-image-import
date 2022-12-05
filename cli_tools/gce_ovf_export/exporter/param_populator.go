@@ -41,13 +41,20 @@ func NewPopulator(
 	resourceLocationRetriever domain.ResourceLocationRetrieverInterface,
 	scratchBucketCreator domain.ScratchBucketCreatorInterface) ovfexportdomain.OvfExportParamPopulator {
 	return &ovfExportParamPopulatorImpl{
-		Populator: param.NewPopulator(param.NewNetworkResolver(computeClient), metadataClient, storageClient, resourceLocationRetriever, scratchBucketCreator),
+		Populator: param.NewPopulator(
+			param.NewNetworkResolver(computeClient),
+			metadataClient,
+			storageClient,
+			resourceLocationRetriever,
+			scratchBucketCreator,
+			param.NewMachineSeriesDetector(computeClient)),
 	}
 }
 
 func (populator *ovfExportParamPopulatorImpl) Populate(params *ovfexportdomain.OVFExportArgs) (err error) {
 	if err := populator.PopulateMissingParameters(&params.Project, params.ClientID, &params.Zone,
-		&params.Region, &params.ScratchBucketGcsPath, params.DestinationURI, nil, &params.Network, &params.Subnet); err != nil {
+		&params.Region, &params.ScratchBucketGcsPath, params.DestinationURI, nil, &params.Network, &params.Subnet,
+		&params.WorkerMachineSeries); err != nil {
 		return err
 	}
 	populator.populateBuildID(params)

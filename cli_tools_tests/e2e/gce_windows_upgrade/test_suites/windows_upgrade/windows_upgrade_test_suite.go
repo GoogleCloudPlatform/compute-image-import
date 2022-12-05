@@ -30,7 +30,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/path"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools_tests/e2e"
 	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/junitxml"
-	"github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
+	testconfig "github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils/test_config"
 )
 
 const (

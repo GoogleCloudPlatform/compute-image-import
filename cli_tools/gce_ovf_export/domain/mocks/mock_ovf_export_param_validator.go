@@ -5,35 +5,37 @@
 package mocks
 
 import (
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
+
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
 )
 
-// MockOvfExportParamValidator is a mock of OvfExportParamValidator interface
+// MockOvfExportParamValidator is a mock of OvfExportParamValidator interface.
 type MockOvfExportParamValidator struct {
 	ctrl     *gomock.Controller
 	recorder *MockOvfExportParamValidatorMockRecorder
 }
 
-// MockOvfExportParamValidatorMockRecorder is the mock recorder for MockOvfExportParamValidator
+// MockOvfExportParamValidatorMockRecorder is the mock recorder for MockOvfExportParamValidator.
 type MockOvfExportParamValidatorMockRecorder struct {
 	mock *MockOvfExportParamValidator
 }
 
-// NewMockOvfExportParamValidator creates a new mock instance
+// NewMockOvfExportParamValidator creates a new mock instance.
 func NewMockOvfExportParamValidator(ctrl *gomock.Controller) *MockOvfExportParamValidator {
 	mock := &MockOvfExportParamValidator{ctrl: ctrl}
 	mock.recorder = &MockOvfExportParamValidatorMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockOvfExportParamValidator) EXPECT() *MockOvfExportParamValidatorMockRecorder {
 	return m.recorder
 }
 
-// ValidateAndParseParams mocks base method
+// ValidateAndParseParams mocks base method.
 func (m *MockOvfExportParamValidator) ValidateAndParseParams(arg0 *ovfexportdomain.OVFExportArgs) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ValidateAndParseParams", arg0)
@@ -41,7 +43,7 @@ func (m *MockOvfExportParamValidator) ValidateAndParseParams(arg0 *ovfexportdoma
 	return ret0
 }
 
-// ValidateAndParseParams indicates an expected call of ValidateAndParseParams
+// ValidateAndParseParams indicates an expected call of ValidateAndParseParams.
 func (mr *MockOvfExportParamValidatorMockRecorder) ValidateAndParseParams(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ValidateAndParseParams", reflect.TypeOf((*MockOvfExportParamValidator)(nil).ValidateAndParseParams), arg0)

@@ -51,6 +51,7 @@ func createEnvironment() daisyutils.EnvironmentSettings {
 		},
 		ExecutionID:                 path.RandString(5),
 		NestedVirtualizationEnabled: true,
+		WorkerMachineSeries:         []string{"n1"},
 	}
 }
 
@@ -419,12 +420,14 @@ func TestInspectDisk_SupportsNoExternalIP(t *testing.T) {
 	}
 
 	env := daisyutils.EnvironmentSettings{
-		Project:           "gce-guest-no-external-ip-3afc2",
-		Zone:              "us-west1-a",
-		WorkflowDirectory: workflowDir,
-		NoExternalIP:      true,
-		Network:           "projects/gce-guest-no-external-ip-3afc2/global/networks/nat",
-		Subnet:            "projects/gce-guest-no-external-ip-3afc2/regions/us-west1/subnetworks/nat",
+		Project:                     "gce-guest-no-external-ip-3afc2",
+		Zone:                        "us-west1-a",
+		WorkflowDirectory:           workflowDir,
+		NoExternalIP:                true,
+		Network:                     "projects/gce-guest-no-external-ip-3afc2/global/networks/nat",
+		Subnet:                      "projects/gce-guest-no-external-ip-3afc2/regions/us-west1/subnetworks/nat",
+		NestedVirtualizationEnabled: true,
+		WorkerMachineSeries:         []string{"n1"},
 		Tool: daisyutils.Tool{
 			HumanReadableName: "module-tests",
 			ResourceLabelName: "module-tests",
@@ -477,12 +480,14 @@ func TestInspectDisk_DontFailWithNoEnabledCloudNatAndNoExternalIP(t *testing.T) 
 	subnet := fmt.Sprintf("projects/%s/regions/%s/subnetworks/unrestricted-egress", project, region)
 
 	env := daisyutils.EnvironmentSettings{
-		Project:           project,
-		Zone:              zone,
-		WorkflowDirectory: workflowDir,
-		NoExternalIP:      true,
-		Network:           network,
-		Subnet:            subnet,
+		Project:                     project,
+		Zone:                        zone,
+		WorkflowDirectory:           workflowDir,
+		NoExternalIP:                true,
+		Network:                     network,
+		Subnet:                      subnet,
+		NestedVirtualizationEnabled: true,
+		WorkerMachineSeries:         []string{"n1"},
 		Tool: daisyutils.Tool{
 			HumanReadableName: "module-tests",
 			ResourceLabelName: "module-tests",
@@ -549,11 +554,13 @@ func TestInspectionDisk_SupportsNonDefaultNetwork(t *testing.T) {
 			t.Parallel()
 			t.Logf("Network=%s, Subnet=%s, project=%s", currentTest.network, currentTest.subnet, project)
 			env := daisyutils.EnvironmentSettings{
-				Project:           "compute-image-test-custom-vpc",
-				Zone:              zone,
-				WorkflowDirectory: workflowDir,
-				Network:           currentTest.network,
-				Subnet:            currentTest.subnet,
+				Project:                     "compute-image-test-custom-vpc",
+				Zone:                        zone,
+				WorkflowDirectory:           workflowDir,
+				Network:                     currentTest.network,
+				Subnet:                      currentTest.subnet,
+				NestedVirtualizationEnabled: true,
+				WorkerMachineSeries:         []string{"n1"},
 				Tool: daisyutils.Tool{
 					HumanReadableName: "module-tests",
 					ResourceLabelName: "module-tests",

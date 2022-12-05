@@ -89,6 +89,7 @@ type OVFImportParams struct {
 	Hostname                    string
 	BuildID                     string
 	NestedVirtualizationEnabled bool
+	WorkerMachineSeries         []string
 
 	// Non-flags
 
@@ -160,6 +161,7 @@ func (oip *OVFImportParams) EnvironmentSettings() daisyutils.EnvironmentSettings
 		ExecutionID:                 oip.BuildID,
 		StorageLocation:             oip.Region,
 		NestedVirtualizationEnabled: oip.NestedVirtualizationEnabled,
+		WorkerMachineSeries:         oip.WorkerMachineSeries,
 		Tool:                        tool,
 		DaisyLogLinePrefix:          tool.ResourceLabelName,
 	}

@@ -19,6 +19,7 @@ import (
 	"flag"
 	"os"
 
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/flags"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging/service"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_vm_image_export/exporter"
@@ -47,16 +48,43 @@ var (
 	stdoutLogsDisabled          = flag.Bool("disable_stdout_logging", false, "do not display individual workflow logs on stdout.")
 	labels                      = flag.String("labels", "", "List of label KEY=VALUE pairs to add. Keys must start with a lowercase character and contain only hyphens (-), underscores (_), lowercase characters, and numbers. Values must contain only hyphens (-), underscores (_), lowercase characters, and numbers.")
 	nestedVirtualizationEnabled = flag.Bool("enable_nested_virtualization", true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
+	workerMachineSeries         flags.StringArrayFlag
 )
+
+func init() {
+	flag.Var(&workerMachineSeries, "worker_machine_series", "The export tool automatically selects the machine series for temporary worker VMs based on the execution context. The argument overrides this behavior and specifies the machine series to use for worker VMs. Additionally it is possible to specify fallback machine series by setting this argument twice. For example, -worker_machine_series n1 -worker_machine_series n2")
+}
 
 func exportEntry() (service.Loggable, error) {
 	currentExecutablePath := string(os.Args[0])
 	logger := logging.NewToolLogger(logPrefix)
 	logging.RedirectGlobalLogsToUser(logger)
-	err := exporter.Run(*clientID, *destinationURI, *sourceImage, *sourceDiskSnapshot, *format, project,
-		*network, *subnet, *zone, *timeout, *scratchBucketGcsPath, *oauth, *ce, *computeServiceAccount,
-		*gcsLogsDisabled, *cloudLogsDisabled, *stdoutLogsDisabled, *labels, currentExecutablePath, *nestedVirtualizationEnabled,
-		logger)
+
+	args := &exporter.ImageExportRequest{
+		ClientID:                    *clientID,
+		DestinationURI:              *destinationURI,
+		SourceImage:                 *sourceImage,
+		SourceDiskSnapshot:          *sourceDiskSnapshot,
+		Format:                      *format,
+		Project:                     *project,
+		Network:                     *network,
+		Subnet:                      *subnet,
+		Zone:                        *zone,
+		Timeout:                     *timeout,
+		ScratchBucketGcsPath:        *scratchBucketGcsPath,
+		Oauth:                       *oauth,
+		ComputeEndpoint:             *ce,
+		ComputeServiceAccount:       *computeServiceAccount,
+		GcsLogsDisabled:             *gcsLogsDisabled,
+		CloudLogsDisabled:           *cloudLogsDisabled,
+		StdoutLogsDisabled:          *stdoutLogsDisabled,
+		Labels:                      *labels,
+		CurrentExecutablePath:       currentExecutablePath,
+		WorkerMachineSeries:         *&workerMachineSeries,
+		NestedVirtualizationEnabled: *nestedVirtualizationEnabled,
+	}
+
+	err := exporter.Run(logger, args)
 	return service.NewOutputInfoLoggable(logger.ReadOutputInfo()), err
 }
 

@@ -64,12 +64,13 @@ const (
 
 // ParamValidatorAndPopulator validates parameters and infers missing values.
 type ParamValidatorAndPopulator struct {
-	metadataClient        domain.MetadataGCEInterface
-	zoneValidator         domain.ZoneValidatorInterface
-	bucketIteratorCreator domain.BucketIteratorCreatorInterface
-	storageClient         domain.StorageClientInterface
-	NetworkResolver       param.NetworkResolver
-	logger                logging.Logger
+	metadataClient              domain.MetadataGCEInterface
+	zoneValidator               domain.ZoneValidatorInterface
+	bucketIteratorCreator       domain.BucketIteratorCreatorInterface
+	storageClient               domain.StorageClientInterface
+	NetworkResolver             param.NetworkResolver
+	workerMachineSeriesDetector param.MachineSeriesDetector
+	logger                      logging.Logger
 }
 
 // ValidateAndPopulate validates OVFImportParams, and populates values that are missing.
@@ -92,6 +93,13 @@ func (p *ParamValidatorAndPopulator) ValidateAndPopulate(params *ovfdomain.OVFIm
 	if params.Network, params.Subnet, err = p.NetworkResolver.Resolve(
 		params.Network, params.Subnet, params.Region, *params.Project); err != nil {
 		return err
+	}
+
+	if len(params.WorkerMachineSeries) == 0 {
+		params.WorkerMachineSeries, err = p.workerMachineSeriesDetector.Detect(*params.Project, params.Zone)
+		if err != nil {
+			return err
+		}
 	}
 
 	if params.ReleaseTrack, err = p.resolveReleaseTrack(params.ReleaseTrack); err != nil {

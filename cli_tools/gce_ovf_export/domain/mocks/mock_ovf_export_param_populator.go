@@ -5,35 +5,37 @@
 package mocks
 
 import (
-	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
+
+	ovfexportdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_export/domain"
 )
 
-// MockOvfExportParamPopulator is a mock of OvfExportParamPopulator interface
+// MockOvfExportParamPopulator is a mock of OvfExportParamPopulator interface.
 type MockOvfExportParamPopulator struct {
 	ctrl     *gomock.Controller
 	recorder *MockOvfExportParamPopulatorMockRecorder
 }
 
-// MockOvfExportParamPopulatorMockRecorder is the mock recorder for MockOvfExportParamPopulator
+// MockOvfExportParamPopulatorMockRecorder is the mock recorder for MockOvfExportParamPopulator.
 type MockOvfExportParamPopulatorMockRecorder struct {
 	mock *MockOvfExportParamPopulator
 }
 
-// NewMockOvfExportParamPopulator creates a new mock instance
+// NewMockOvfExportParamPopulator creates a new mock instance.
 func NewMockOvfExportParamPopulator(ctrl *gomock.Controller) *MockOvfExportParamPopulator {
 	mock := &MockOvfExportParamPopulator{ctrl: ctrl}
 	mock.recorder = &MockOvfExportParamPopulatorMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockOvfExportParamPopulator) EXPECT() *MockOvfExportParamPopulatorMockRecorder {
 	return m.recorder
 }
 
-// Populate mocks base method
+// Populate mocks base method.
 func (m *MockOvfExportParamPopulator) Populate(arg0 *ovfexportdomain.OVFExportArgs) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Populate", arg0)
@@ -41,7 +43,7 @@ func (m *MockOvfExportParamPopulator) Populate(arg0 *ovfexportdomain.OVFExportAr
 	return ret0
 }
 
-// Populate indicates an expected call of Populate
+// Populate indicates an expected call of Populate.
 func (mr *MockOvfExportParamPopulatorMockRecorder) Populate(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Populate", reflect.TypeOf((*MockOvfExportParamPopulator)(nil).Populate), arg0)

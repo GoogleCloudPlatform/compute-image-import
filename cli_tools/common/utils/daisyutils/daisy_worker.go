@@ -46,6 +46,7 @@ type WorkflowProvider func() (*daisy.Workflow, error)
 // include a resource labeler, one will be created.
 func NewDaisyWorker(wf WorkflowProvider, env EnvironmentSettings,
 	logger logging.Logger, hooks ...interface{}) DaisyWorker {
+
 	hooks = append(createResourceLabelerIfMissing(env, hooks),
 		&ApplyEnvToWorkflow{env},
 		&ConfigureDaisyLogging{env},
@@ -56,6 +57,19 @@ func NewDaisyWorker(wf WorkflowProvider, env EnvironmentSettings,
 	}
 	if env.NestedVirtualizationEnabled {
 		hooks = append(hooks, &EnableNestedVirtualizationHook{})
+	}
+
+	if len(env.WorkerMachineSeries) >= 1 {
+		updateMachineHook := &UpdateMachineTypesHook{logger: logger}
+		updateMachineHook.primaryMachineSeries = env.WorkerMachineSeries[0]
+
+		if len(env.WorkerMachineSeries) >= 2 {
+			updateMachineHook.secondaryMachineSeries = env.WorkerMachineSeries[1]
+		}
+
+		hooks = append(hooks, updateMachineHook)
+	} else {
+		logger.Debug("UpdateMachineTypesHook was not activated because machine series were not specified.")
 	}
 
 	for _, hook := range hooks {

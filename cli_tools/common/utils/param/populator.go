@@ -18,10 +18,13 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 )
 
+// To rebuild the mock for Populator, run `go generate ./...`
+//go:generate go run github.com/golang/mock/mockgen -package mocks -source $GOFILE -destination ../../../mocks/mock_param_populator.go
+
 // Populator standardizes user input, and determines omitted values.
 type Populator interface {
 	PopulateMissingParameters(project *string, clientID string, zone *string, region *string,
-		scratchBucketGcsPath *string, file string, storageLocation, network, subnet *string) error
+		scratchBucketGcsPath *string, file string, storageLocation, network, subnet *string, workerMachineSeries *[]string) error
 }
 
 // NewPopulator returns an object that implements Populator.
@@ -30,26 +33,29 @@ func NewPopulator(
 	metadataClient domain.MetadataGCEInterface,
 	storageClient domain.StorageClientInterface,
 	locationClient domain.ResourceLocationRetrieverInterface,
-	scratchBucketClient domain.ScratchBucketCreatorInterface) Populator {
+	scratchBucketClient domain.ScratchBucketCreatorInterface,
+	workerMachineSeriesDetector MachineSeriesDetector) Populator {
 	return &populator{
-		NetworkResolver:     NetworkResolver,
-		metadataClient:      metadataClient,
-		storageClient:       storageClient,
-		locationClient:      locationClient,
-		scratchBucketClient: scratchBucketClient,
+		NetworkResolver:             NetworkResolver,
+		metadataClient:              metadataClient,
+		storageClient:               storageClient,
+		locationClient:              locationClient,
+		scratchBucketClient:         scratchBucketClient,
+		workerMachineSeriesDetector: workerMachineSeriesDetector,
 	}
 }
 
 type populator struct {
-	NetworkResolver     NetworkResolver
-	metadataClient      domain.MetadataGCEInterface
-	storageClient       domain.StorageClientInterface
-	locationClient      domain.ResourceLocationRetrieverInterface
-	scratchBucketClient domain.ScratchBucketCreatorInterface
+	NetworkResolver             NetworkResolver
+	metadataClient              domain.MetadataGCEInterface
+	storageClient               domain.StorageClientInterface
+	locationClient              domain.ResourceLocationRetrieverInterface
+	scratchBucketClient         domain.ScratchBucketCreatorInterface
+	workerMachineSeriesDetector MachineSeriesDetector
 }
 
 func (p *populator) PopulateMissingParameters(project *string, clientID string, zone *string,
-	region *string, scratchBucketGcsPath *string, file string, storageLocation, network, subnet *string) error {
+	region *string, scratchBucketGcsPath *string, file string, storageLocation, network, subnet *string, workerMachineSeries *[]string) error {
 
 	if err := PopulateProjectIfMissing(p.metadataClient, project); err != nil {
 		return err
@@ -77,6 +83,13 @@ func (p *populator) PopulateMissingParameters(project *string, clientID string, 
 
 	if *network, *subnet, err = p.NetworkResolver.Resolve(*network, *subnet, *region, *project); err != nil {
 		return err
+	}
+
+	if workerMachineSeries == nil || len(*workerMachineSeries) == 0 {
+		*workerMachineSeries, err = p.workerMachineSeriesDetector.Detect(*project, *zone)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

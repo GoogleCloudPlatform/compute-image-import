@@ -63,6 +63,7 @@ func (r *requestBuilder) buildRequests(params *ovfdomain.OVFImportParams, dataDi
 			Tool:                        params.GetTool(),
 			UefiCompatible:              params.UefiCompatible,
 			Zone:                        params.Zone,
+			WorkerMachineSeries:         params.WorkerMachineSeries,
 			NestedVirtualizationEnabled: params.NestedVirtualizationEnabled,
 			DataDisk:                    true,
 		}

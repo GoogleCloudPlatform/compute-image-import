@@ -56,6 +56,31 @@ const (
 	sourceSizeGBKey = "source-size-gb"
 )
 
+// ImageExportRequest includes the parameters required to perform an image export.
+type ImageExportRequest struct {
+	ClientID                    string
+	DestinationURI              string
+	SourceImage                 string
+	SourceDiskSnapshot          string
+	Format                      string
+	Project                     string
+	Network                     string
+	Subnet                      string
+	Zone                        string
+	Timeout                     string
+	ScratchBucketGcsPath        string
+	Oauth                       string
+	ComputeEndpoint             string
+	ComputeServiceAccount       string
+	GcsLogsDisabled             bool
+	CloudLogsDisabled           bool
+	StdoutLogsDisabled          bool
+	Labels                      string
+	CurrentExecutablePath       string
+	NestedVirtualizationEnabled bool
+	WorkerMachineSeries         []string
+}
+
 func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string) (map[string]string, error) {
 	if err := validation.ValidateStringFlagNotEmpty(destinationURI, DestinationURIFlagKey); err != nil {
 		return nil, err
@@ -139,13 +164,9 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 }
 
 // Run runs export workflow.
-func Run(clientID string, destinationURI string, sourceImage string, sourceDiskSnapshot string, format string,
-	project *string, network string, subnet string, zone string, timeout string,
-	scratchBucketGcsPath string, oauth string, ce string, computeServiceAccount string, gcsLogsDisabled bool,
-	cloudLogsDisabled bool, stdoutLogsDisabled bool, labels string, currentExecutablePath string, nestedVirtualizationEnabled bool,
-	logger logging.Logger) error {
+func Run(logger logging.Logger, args *ImageExportRequest) error {
 
-	userLabels, err := validateAndParseFlags(destinationURI, sourceImage, sourceDiskSnapshot, labels)
+	userLabels, err := validateAndParseFlags(args.DestinationURI, args.SourceImage, args.SourceDiskSnapshot, args.Labels)
 	if err != nil {
 		return err
 	}
@@ -153,59 +174,69 @@ func Run(clientID string, destinationURI string, sourceImage string, sourceDiskS
 	ctx := context.Background()
 	metadataGCE := &compute.MetadataGCE{}
 	storageClient, err := storage.NewStorageClient(
-		ctx, logger, option.WithCredentialsFile(oauth))
+		ctx, logger, option.WithCredentialsFile(args.Oauth))
 	if err != nil {
 		return err
 	}
 	defer storageClient.Close()
 
 	scratchBucketCreator := storage.NewScratchBucketCreator(ctx, storageClient)
-	computeClient, err := param.CreateComputeClient(&ctx, oauth, ce)
+	computeClient, err := param.CreateComputeClient(&ctx, args.Oauth, args.ComputeEndpoint)
 	if err != nil {
 		return err
 	}
 	resourceLocationRetriever := storage.NewResourceLocationRetriever(metadataGCE, computeClient)
 
 	region := new(string)
-	paramPopulator := param.NewPopulator(param.NewNetworkResolver(computeClient), metadataGCE, storageClient, resourceLocationRetriever, scratchBucketCreator)
-	err = paramPopulator.PopulateMissingParameters(project, clientID, &zone, region, &scratchBucketGcsPath, destinationURI, nil, &network, &subnet)
+	paramPopulator := param.NewPopulator(
+		param.NewNetworkResolver(computeClient),
+		metadataGCE, storageClient,
+		resourceLocationRetriever,
+		scratchBucketCreator,
+		param.NewMachineSeriesDetector(computeClient),
+	)
+	err = paramPopulator.PopulateMissingParameters(&args.Project, args.ClientID, &args.Zone, region, &args.ScratchBucketGcsPath,
+		args.DestinationURI, nil, &args.Network, &args.Subnet, &args.WorkerMachineSeries)
 	if err != nil {
 		return err
 	}
 
 	var imageDiskSizeGb int64
-	if sourceImage != "" {
-		if imageDiskSizeGb, err = validateImageExists(computeClient, *project, sourceImage); err != nil {
+	if args.SourceImage != "" {
+		if imageDiskSizeGb, err = validateImageExists(computeClient, args.Project, args.SourceImage); err != nil {
 			return err
 		}
 	} else {
-		if imageDiskSizeGb, err = validateSnapshotExists(computeClient, *project, sourceDiskSnapshot); err != nil {
+		if imageDiskSizeGb, err = validateSnapshotExists(computeClient, args.Project, args.SourceDiskSnapshot); err != nil {
 			return err
 		}
 	}
 
-	varMap := buildDaisyVars(destinationURI, sourceImage, sourceDiskSnapshot, imageDiskSizeGb, format, network, subnet, *region, computeServiceAccount)
+	varMap := buildDaisyVars(
+		args.DestinationURI, args.SourceImage, args.SourceDiskSnapshot, imageDiskSizeGb,
+		args.Format, args.Network, args.Subnet, *region, args.ComputeServiceAccount)
 
 	workflowProvider := func() (*daisy.Workflow, error) {
-		return daisy.NewFromFile(getWorkflowPath(format, currentExecutablePath))
+		return daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
 	}
 
 	env := daisyutils.EnvironmentSettings{
-		Project:                     *project,
-		Zone:                        zone,
-		GCSPath:                     scratchBucketGcsPath,
-		OAuth:                       oauth,
-		Timeout:                     timeout,
-		ComputeEndpoint:             ce,
-		DisableGCSLogs:              gcsLogsDisabled,
-		DisableCloudLogs:            cloudLogsDisabled,
-		DisableStdoutLogs:           stdoutLogsDisabled,
-		Network:                     network,
-		Subnet:                      subnet,
-		ComputeServiceAccount:       computeServiceAccount,
+		Project:                     args.Project,
+		Zone:                        args.Zone,
+		GCSPath:                     args.ScratchBucketGcsPath,
+		OAuth:                       args.Oauth,
+		Timeout:                     args.Timeout,
+		ComputeEndpoint:             args.ComputeEndpoint,
+		DisableGCSLogs:              args.GcsLogsDisabled,
+		DisableCloudLogs:            args.CloudLogsDisabled,
+		DisableStdoutLogs:           args.StdoutLogsDisabled,
+		Network:                     args.Network,
+		Subnet:                      args.Subnet,
+		ComputeServiceAccount:       args.ComputeServiceAccount,
 		Labels:                      userLabels,
 		ExecutionID:                 os.Getenv(os.Getenv(daisyutils.BuildIDOSEnvVarName)),
-		NestedVirtualizationEnabled: nestedVirtualizationEnabled,
+		WorkerMachineSeries:         args.WorkerMachineSeries,
+		NestedVirtualizationEnabled: args.NestedVirtualizationEnabled,
 		Tool: daisyutils.Tool{
 			HumanReadableName: "gce image export",
 			ResourceLabelName: "gce-image-export",
