@@ -59,7 +59,10 @@
               "Network": "${network}",
               "Subnetwork": "${subnetwork}"
             }
-          ]
+          ],
+          "AdvancedMachineFeatures": {
+            "EnableNestedVirtualization": true
+          }
         }
       ]
     },
