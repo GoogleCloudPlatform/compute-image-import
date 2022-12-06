@@ -71,7 +71,7 @@ func (f *UpdateMachineTypesHook) updateWorkflowMachineSeries(wf *daisy.Workflow,
 	wf.IterateWorkflowSteps(func(step *daisy.Step) {
 		if step.CreateInstances != nil {
 			for _, instance := range step.CreateInstances.Instances {
-				newMachineType, err := f.useMachineSeries(instance.MachineType, newSeries)
+				newMachineType, err := f.updateMachineSeries(instance.MachineType, newSeries)
 				if err != nil {
 					msg := fmt.Sprintf("Machine type %s was not updated: %s", instance.MachineType, err.Error())
 					f.logger.Debug(msg)
@@ -82,7 +82,7 @@ func (f *UpdateMachineTypesHook) updateWorkflowMachineSeries(wf *daisy.Workflow,
 			}
 
 			for _, instance := range step.CreateInstances.InstancesBeta {
-				newMachineType, err := f.useMachineSeries(instance.MachineType, newSeries)
+				newMachineType, err := f.updateMachineSeries(instance.MachineType, newSeries)
 				if err != nil {
 					msg := fmt.Sprintf("Machine type %s was not updated: %s", instance.MachineType, err.Error())
 					f.logger.Debug(msg)
@@ -95,7 +95,7 @@ func (f *UpdateMachineTypesHook) updateWorkflowMachineSeries(wf *daisy.Workflow,
 	})
 }
 
-func (f *UpdateMachineTypesHook) useMachineSeries(machineType string, newSeries string) (string, error) {
+func (f *UpdateMachineTypesHook) updateMachineSeries(machineType string, newSeries string) (string, error) {
 	curSeries, err := f.getMachineSeries(machineType)
 	if err != nil {
 		return "", err
