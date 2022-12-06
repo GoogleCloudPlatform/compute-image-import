@@ -105,11 +105,10 @@ func (f *UpdateMachineTypesHook) useMachineSeries(machineType string, newSeries 
 }
 
 func (f *UpdateMachineTypesHook) getMachineSeries(machineType string) (string, error) {
-	for i := 0; i < len(machineType); i++ {
-		if machineType[i] == '-' {
-			return machineType[:i], nil
-		}
+	dashIdx := strings.Index(machineType, "-")
+	if dashIdx == -1 {
+		return "", fmt.Errorf("unknown machine type: %s", machineType)
 	}
 
-	return "", fmt.Errorf("unknown machine type: %s", machineType)
+	return machineType[:dashIdx], nil
 }

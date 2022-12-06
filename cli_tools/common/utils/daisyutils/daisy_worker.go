@@ -69,7 +69,7 @@ func NewDaisyWorker(wf WorkflowProvider, env EnvironmentSettings,
 
 		hooks = append(hooks, updateMachineHook)
 	} else {
-		logger.Debug("UpdateMachineTypesHook was not activated because machine series were not specified.")
+		logger.Debug("UpdateMachineTypesHook is not activated because machine series are not specified.")
 	}
 
 	for _, hook := range hooks {
