@@ -129,6 +129,7 @@ func NewOVFImporter(params *ovfdomain.OVFImportParams, logger logging.ToolLogger
 			&storageutils.BucketIteratorCreator{},
 			storageClient,
 			param.NewNetworkResolver(computeClient),
+			param.NewMachineSeriesDetector(computeClient),
 			logger,
 		},
 	}
@@ -442,8 +443,11 @@ func (oi *OVFImporter) Import() error {
 func (oi *OVFImporter) createWorkerForFinalInstance() daisyutils.DaisyWorker {
 	// We enable nested virtualization to only boost the performance of worker VMs,
 	// so we don't propagate it to the output VM instance or a machine image.
+	// The same is true for the worker machine series argument - it mustn't affect
+	// the machine type of the final VM.
 	env := oi.params.EnvironmentSettings()
 	env.NestedVirtualizationEnabled = false
+	env.WorkerMachineSeries = []string{}
 
 	return daisyutils.NewDaisyWorker(func() (*daisy.Workflow, error) {
 		return oi.createWorkflowForFinalInstance()
@@ -553,6 +557,7 @@ func (oi *OVFImporter) buildBootDiskImageImportRequest(imageName string, bootDis
 		DataDisks:                   oi.disks,
 		OS:                          oi.params.OsID,
 		BYOL:                        oi.params.BYOL,
+		WorkerMachineSeries:         oi.params.WorkerMachineSeries,
 		NestedVirtualizationEnabled: oi.params.NestedVirtualizationEnabled,
 	}
 

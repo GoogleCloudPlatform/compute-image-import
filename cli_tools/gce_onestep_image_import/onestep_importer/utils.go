@@ -100,7 +100,8 @@ func importFromCloudProvider(args *OneStepImportArguments) error {
 // runImageImport calls image import
 func runImageImport(args *OneStepImportArguments) error {
 	imageImportPath := path.ToWorkingDir("gce_vm_image_import", args.ExecutablePath)
-	err := runCmd(imageImportPath, []string{
+
+	imageImportArgs := []string{
 		fmt.Sprintf("-image_name=%v", args.ImageName),
 		fmt.Sprintf("-client_id=%v", args.ClientID),
 		fmt.Sprintf("-client_version=%v", args.ClientVersion),
@@ -124,7 +125,16 @@ func runImageImport(args *OneStepImportArguments) error {
 		fmt.Sprintf("-no_external_ip=%v", args.NoExternalIP),
 		fmt.Sprintf("-enable_nested_virtualization=%v", args.NestedVirtualizationEnabled),
 		fmt.Sprintf("-labels=%v", flags.KeyValueString(args.Labels).String()),
-		fmt.Sprintf("-storage_location=%v", args.StorageLocation)})
+		fmt.Sprintf("-storage_location=%v", args.StorageLocation),
+	}
+
+	if args.WorkerMachineSeries != nil && len(args.WorkerMachineSeries) > 0 {
+		for _, wms := range args.WorkerMachineSeries {
+			imageImportArgs = append(imageImportArgs, fmt.Sprintf("-worker_machine_series=%v", wms))
+		}
+	}
+
+	err := runCmd(imageImportPath, imageImportArgs)
 	if err != nil {
 		return daisy.Errf("failed to import image: %v", err)
 	}

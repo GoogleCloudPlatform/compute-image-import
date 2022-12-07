@@ -138,13 +138,14 @@ func Test_DaisyWorkerRun_CapturesDaisyLogs(t *testing.T) {
 	wf.Logger = mockLogger
 
 	env := EnvironmentSettings{
-		Project:            "lucky-lemur",
-		Zone:               "us-west1-c",
-		GCSPath:            "gs://test",
-		Timeout:            "60s",
-		DaisyLogLinePrefix: "import-image",
-		ExecutionID:        "b1234",
-		Tool:               Tool{ResourceLabelName: "unit-test"},
+		Project:             "lucky-lemur",
+		Zone:                "us-west1-c",
+		GCSPath:             "gs://test",
+		Timeout:             "60s",
+		DaisyLogLinePrefix:  "import-image",
+		ExecutionID:         "b1234",
+		Tool:                Tool{ResourceLabelName: "unit-test"},
+		WorkerMachineSeries: []string{"n2", "n1"},
 	}
 	configWorkflowForUnitTesting(t, wf, mockCtrl, env)
 

@@ -91,6 +91,7 @@ type OVFExportArgs struct {
 	BuildID                     string
 	ComputeServiceAccount       string
 	NestedVirtualizationEnabled bool
+	WorkerMachineSeries         []string
 
 	// Non-args
 	WorkflowDir string
@@ -173,6 +174,7 @@ func (args *OVFExportArgs) EnvironmentSettings(daisyLogLinePrefix string) daisyu
 		Labels:                      map[string]string{},
 		ExecutionID:                 args.BuildID,
 		NestedVirtualizationEnabled: args.NestedVirtualizationEnabled,
+		WorkerMachineSeries:         args.WorkerMachineSeries,
 		StorageLocation:             "",
 		Tool: daisyutils.Tool{
 			HumanReadableName: "ovf export",
@@ -229,5 +231,6 @@ func (args *OVFExportArgs) registerFlags(cliArgs []string) error {
 		"Cloud Build ID override. This flag should be used if auto-generated or build ID provided by Cloud Build is not appropriate. For example, if running multiple exports in parallel in a single Cloud Build run, sharing build ID could cause premature temporary resource clean-up resulting in export failures.")
 	flagSet.Var((*flags.TrimmedString)(&args.ComputeServiceAccount), "compute-service-account", "Compute service account to be used by exporter Virtual Machine. When empty, the Compute Engine default service account is used.")
 	flagSet.BoolVar(&args.NestedVirtualizationEnabled, "enable-nested-virtualization", true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
+	flagSet.Var((*flags.StringArrayFlag)(&args.WorkerMachineSeries), "worker-machine-series", "The export tool automatically selects the machine series for temporary worker VMs based on the execution context. The argument overrides this behavior and specifies the machine series to use for worker VMs. Additionally it is possible to specify fallback machine series by setting this argument twice. For example, -worker-machine-series n1 -worker-machine-series n2")
 	return flagSet.Parse(cliArgs)
 }

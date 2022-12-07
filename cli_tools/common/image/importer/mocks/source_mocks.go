@@ -12,30 +12,30 @@ import (
 	importer "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
 )
 
-// MockSource is a mock of Source interface
+// MockSource is a mock of Source interface.
 type MockSource struct {
 	ctrl     *gomock.Controller
 	recorder *MockSourceMockRecorder
 }
 
-// MockSourceMockRecorder is the mock recorder for MockSource
+// MockSourceMockRecorder is the mock recorder for MockSource.
 type MockSourceMockRecorder struct {
 	mock *MockSource
 }
 
-// NewMockSource creates a new mock instance
+// NewMockSource creates a new mock instance.
 func NewMockSource(ctrl *gomock.Controller) *MockSource {
 	mock := &MockSource{ctrl: ctrl}
 	mock.recorder = &MockSourceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockSource) EXPECT() *MockSourceMockRecorder {
 	return m.recorder
 }
 
-// Path mocks base method
+// Path mocks base method.
 func (m *MockSource) Path() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Path")
@@ -43,36 +43,36 @@ func (m *MockSource) Path() string {
 	return ret0
 }
 
-// Path indicates an expected call of Path
+// Path indicates an expected call of Path.
 func (mr *MockSourceMockRecorder) Path() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Path", reflect.TypeOf((*MockSource)(nil).Path))
 }
 
-// MockSourceFactory is a mock of SourceFactory interface
+// MockSourceFactory is a mock of SourceFactory interface.
 type MockSourceFactory struct {
 	ctrl     *gomock.Controller
 	recorder *MockSourceFactoryMockRecorder
 }
 
-// MockSourceFactoryMockRecorder is the mock recorder for MockSourceFactory
+// MockSourceFactoryMockRecorder is the mock recorder for MockSourceFactory.
 type MockSourceFactoryMockRecorder struct {
 	mock *MockSourceFactory
 }
 
-// NewMockSourceFactory creates a new mock instance
+// NewMockSourceFactory creates a new mock instance.
 func NewMockSourceFactory(ctrl *gomock.Controller) *MockSourceFactory {
 	mock := &MockSourceFactory{ctrl: ctrl}
 	mock.recorder = &MockSourceFactoryMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockSourceFactory) EXPECT() *MockSourceFactoryMockRecorder {
 	return m.recorder
 }
 
-// Init mocks base method
+// Init mocks base method.
 func (m *MockSourceFactory) Init(sourceFile, sourceImage string) (importer.Source, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Init", sourceFile, sourceImage)
@@ -81,7 +81,7 @@ func (m *MockSourceFactory) Init(sourceFile, sourceImage string) (importer.Sourc
 	return ret0, ret1
 }
 
-// Init indicates an expected call of Init
+// Init indicates an expected call of Init.
 func (mr *MockSourceFactoryMockRecorder) Init(sourceFile, sourceImage interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Init", reflect.TypeOf((*MockSourceFactory)(nil).Init), sourceFile, sourceImage)

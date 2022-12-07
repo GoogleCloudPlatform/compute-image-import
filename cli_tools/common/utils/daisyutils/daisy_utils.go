@@ -507,6 +507,7 @@ type EnvironmentSettings struct {
 	StorageLocation             string
 	Tool                        Tool
 	NestedVirtualizationEnabled bool
+	WorkerMachineSeries         []string
 }
 
 // ApplyToWorkflow sets fields on daisy.Workflow from the environment settings.

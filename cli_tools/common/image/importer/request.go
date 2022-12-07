@@ -106,6 +106,7 @@ type ImageImportRequest struct {
 	Zone                        string `name:"zone" validate:"required"`
 	DataDisks                   []domain.Disk
 	NestedVirtualizationEnabled bool
+	WorkerMachineSeries         []string
 }
 
 // FixBYOLAndOSArguments fixes the user's arguments for the --os and --byol flags
@@ -148,5 +149,6 @@ func (args ImageImportRequest) EnvironmentSettings() daisyutils.EnvironmentSetti
 		StorageLocation:             args.StorageLocation,
 		Tool:                        args.Tool,
 		NestedVirtualizationEnabled: args.NestedVirtualizationEnabled,
+		WorkerMachineSeries:         args.WorkerMachineSeries,
 	}
 }

@@ -69,6 +69,7 @@ func Main(args []string, toolLogger logging.ToolLogger, workflowDir string) erro
 		storageClient,
 		storage.NewResourceLocationRetriever(metadataGCE, computeClient),
 		storage.NewScratchBucketCreator(ctx, storageClient),
+		param.NewMachineSeriesDetector(computeClient),
 	)
 
 	// 3. Populate missing arguments.

@@ -371,6 +371,7 @@ func buildTestArgs(props *ovfMachineImageImportTestProperties, testProjectConfig
 	wrapperArgs := []string{
 		"-client-id=e2e",
 		fmt.Sprintf("-machine-image-name=%s", props.machineImageName),
+		"-worker-machine-series=n1",
 	}
 	if props.storageLocation != "" {
 		gcloudBetaArgs = append(gcloudBetaArgs, fmt.Sprintf("--storage-location=%v", props.storageLocation))

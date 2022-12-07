@@ -54,6 +54,7 @@ func TestDaisyAttrs(t *testing.T) {
 			ExecutionID:           params.BuildID,
 			Tool:                  daisyutils.Tool{HumanReadableName: "ovf export", ResourceLabelName: "gce-ovf-export"},
 			DaisyLogLinePrefix:    "ovf-export",
+			WorkerMachineSeries:   []string{"n2", "n1"},
 		},
 		params.EnvironmentSettings("ovf-export"))
 }

@@ -143,13 +143,17 @@ func Test_ValidateAndParseParams_GenerateBucketName_WhenNotProvided(t *testing.T
 	mockNetworkResolver.EXPECT().ResolveAndValidateNetworkAndSubnet(
 		params.Network, params.Subnet, defaultRegion, projectName).Return(params.Network, params.Subnet, nil)
 
+	mockMachineSeriesDetector := mocks.NewMockMachineSeriesDetector(mockCtrl)
+	mockMachineSeriesDetector.EXPECT().Detect(*params.Project, params.Zone).Return([]string{"n2", "n1"}, nil)
+
 	mockStorage := mocks.NewMockStorageClientInterface(mockCtrl)
 	err := (&ParamValidatorAndPopulator{
-		zoneValidator:         mockZoneValidator,
-		bucketIteratorCreator: mockBucketIteratorCreator,
-		logger:                logging.NewToolLogger("test"),
-		storageClient:         mockStorage,
-		NetworkResolver:       mockNetworkResolver,
+		zoneValidator:               mockZoneValidator,
+		bucketIteratorCreator:       mockBucketIteratorCreator,
+		logger:                      logging.NewToolLogger("test"),
+		storageClient:               mockStorage,
+		NetworkResolver:             mockNetworkResolver,
+		workerMachineSeriesDetector: mockMachineSeriesDetector,
 	}).ValidateAndPopulate(params)
 	assert.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("gs://%s/%s", expectedBucketName, params.BuildID), params.ScratchBucketGcsPath)
@@ -186,14 +190,18 @@ func Test_ValidateAndParseParams_CreateScratchBucket_WhenGeneratedDoesntExist(t 
 	mockNetworkResolver.EXPECT().ResolveAndValidateNetworkAndSubnet(
 		params.Network, params.Subnet, defaultRegion, projectName).Return(params.Network, params.Subnet, nil)
 
+	mockMachineSeriesDetector := mocks.NewMockMachineSeriesDetector(mockCtrl)
+	mockMachineSeriesDetector.EXPECT().Detect(*params.Project, params.Zone).Return([]string{"n2", "n1"}, nil)
+
 	mockStorage := mocks.NewMockStorageClientInterface(mockCtrl)
 	mockStorage.EXPECT().CreateBucket(expectedBucketName, projectName, &storage.BucketAttrs{Name: expectedBucketName, Location: params.Region})
 	err := (&ParamValidatorAndPopulator{
-		zoneValidator:         mockZoneValidator,
-		bucketIteratorCreator: mockBucketIteratorCreator,
-		logger:                logging.NewToolLogger("test"),
-		storageClient:         mockStorage,
-		NetworkResolver:       mockNetworkResolver,
+		zoneValidator:               mockZoneValidator,
+		bucketIteratorCreator:       mockBucketIteratorCreator,
+		logger:                      logging.NewToolLogger("test"),
+		storageClient:               mockStorage,
+		NetworkResolver:             mockNetworkResolver,
+		workerMachineSeriesDetector: mockMachineSeriesDetector,
 	}).ValidateAndPopulate(params)
 	assert.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("gs://%s/%s", expectedBucketName, params.BuildID), params.ScratchBucketGcsPath)
@@ -213,10 +221,14 @@ func Test_ValidateAndParseParams_UseNetworkResolverResults(t *testing.T) {
 	mockNetworkResolver.EXPECT().ResolveAndValidateNetworkAndSubnet(
 		params.Network, params.Subnet, defaultRegion, *params.Project).Return("fixed-network", "fixed-subnet", nil)
 
+	mockMachineSeriesDetector := mocks.NewMockMachineSeriesDetector(mockCtrl)
+	mockMachineSeriesDetector.EXPECT().Detect(*params.Project, params.Zone).Return([]string{"n2", "n1"}, nil)
+
 	err := (&ParamValidatorAndPopulator{
-		logger:          logging.NewToolLogger("test"),
-		zoneValidator:   mockZoneValidator,
-		NetworkResolver: mockNetworkResolver,
+		logger:                      logging.NewToolLogger("test"),
+		zoneValidator:               mockZoneValidator,
+		NetworkResolver:             mockNetworkResolver,
+		workerMachineSeriesDetector: mockMachineSeriesDetector,
 	}).ValidateAndPopulate(params)
 	assert.NoError(t, err)
 	assert.Equal(t, "fixed-network", params.Network)
@@ -581,10 +593,14 @@ func runValidateAndParseParams(t *testing.T, params *domain.OVFImportParams) err
 	mockNetworkResolver.EXPECT().ResolveAndValidateNetworkAndSubnet(
 		params.Network, params.Subnet, defaultRegion, defaultProject).Return(params.Network, params.Subnet, nil)
 
+	mockMachineSeriesDetector := mocks.NewMockMachineSeriesDetector(mockCtrl)
+	mockMachineSeriesDetector.EXPECT().Detect(defaultProject, defaultZone).Return([]string{"n2", "n1"}, nil)
+
 	err := (&ParamValidatorAndPopulator{
-		metadataClient:  mockMetadataGce,
-		zoneValidator:   mockZoneValidator,
-		NetworkResolver: mockNetworkResolver,
+		metadataClient:              mockMetadataGce,
+		zoneValidator:               mockZoneValidator,
+		NetworkResolver:             mockNetworkResolver,
+		workerMachineSeriesDetector: mockMachineSeriesDetector,
 	}).ValidateAndPopulate(params)
 	return err
 }

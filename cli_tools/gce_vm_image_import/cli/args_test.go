@@ -389,20 +389,36 @@ func Test_populateAndValidate_NestedVirtualization(t *testing.T) {
 	assert.False(t, parseAndPopulate(t, "-enable_nested_virtualization=false").NestedVirtualizationEnabled)
 }
 
+func Test_populateAndValidate_WorkerMachineSeriesAreSpecified(t *testing.T) {
+	assert.Equal(t, []string{"n2", "n1"}, parseAndPopulate(t, "-worker_machine_series=n2", "-worker_machine_series=n1").WorkerMachineSeries)
+}
+
+func Test_populateAndValidate_WorkerMachineSeriesAreDetected(t *testing.T) {
+	args := []string{"-image_name=i", "-client_id=c", "-data_disk"}
+	actual, err := parseArgsFromUser(args)
+	assert.NoError(t, err)
+	err = actual.populateAndValidate(mockPopulator{
+		workerMachineSeries: []string{"n2", "n1"},
+	}, mockSourceFactory{})
+
+	assert.Equal(t, []string{"n2", "n1"}, actual.WorkerMachineSeries)
+}
+
 // fields here will override what's passed to PopulateMissingParameters
 type mockPopulator struct {
-	project         string
-	zone            string
-	region          string
-	scratchBucket   string
-	storageLocation string
-	network         string
-	subnet          string
-	err             error
+	project             string
+	zone                string
+	region              string
+	scratchBucket       string
+	storageLocation     string
+	network             string
+	subnet              string
+	workerMachineSeries []string
+	err                 error
 }
 
 func (m mockPopulator) PopulateMissingParameters(project *string, client string, zone *string, region *string,
-	scratchBucketGcsPath *string, file string, storageLocation, network, subnet *string) error {
+	scratchBucketGcsPath *string, file string, storageLocation, network, subnet *string, workerMachineSeries *[]string) error {
 	if m.err != nil {
 		return m.err
 	}
@@ -427,6 +443,10 @@ func (m mockPopulator) PopulateMissingParameters(project *string, client string,
 	if *subnet == "" {
 		*subnet = m.subnet
 	}
+	if workerMachineSeries == nil || len(*workerMachineSeries) == 0 {
+		*workerMachineSeries = m.workerMachineSeries
+	}
+
 	return nil
 }
 

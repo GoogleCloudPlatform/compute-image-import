@@ -75,8 +75,10 @@ func (args *imageImportArgs) populateAndValidate(populator param.Populator,
 	if err != nil {
 		return err
 	}
+
 	if err := populator.PopulateMissingParameters(&args.Project, args.ClientID, &args.Zone, &args.Region,
-		&args.ScratchBucketGcsPath, args.SourceFile, &args.StorageLocation, &args.Network, &args.Subnet); err != nil {
+		&args.ScratchBucketGcsPath, args.SourceFile, &args.StorageLocation, &args.Network, &args.Subnet,
+		&args.WorkerMachineSeries); err != nil {
 		return err
 	}
 
@@ -193,6 +195,12 @@ func (args *imageImportArgs) registerFlags(flagSet *flag.FlagSet) {
 	flagSet.BoolVar(&args.NestedVirtualizationEnabled, "enable_nested_virtualization", true,
 		"When enabled, temporary worker VMs will be created with enabled nested virtualization. "+
 			"See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
+
+	flagSet.Var((*flags.StringArrayFlag)(&args.WorkerMachineSeries), "worker_machine_series",
+		"The import tool automatically selects the machine series for temporary worker VMs based on the execution context. "+
+			"The argument overrides this behavior and specifies the machine series to use for worker VMs. "+
+			"Additionally it is possible to specify fallback machine series by setting this argument twice. "+
+			"For example, -worker_machine_series n1 -worker_machine_series n2")
 
 	flagSet.DurationVar(&args.Timeout, "timeout", time.Hour*2,
 		"Maximum time a build can last before it is failed as TIMEOUT. For example, "+

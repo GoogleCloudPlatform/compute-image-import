@@ -63,7 +63,7 @@ func TestPopulate_ErrorOnSuperPopulatorError(t *testing.T) {
 	superPopulatorErr := fmt.Errorf("super populator error")
 	paramPopulator := mocks.NewMockPopulator(mockCtrl)
 	paramPopulator.EXPECT().PopulateMissingParameters(&params.Project, params.ClientID, &params.Zone,
-		&params.Region, &params.ScratchBucketGcsPath, params.DestinationURI, nil, &params.Network, &params.Subnet).Return(superPopulatorErr)
+		&params.Region, &params.ScratchBucketGcsPath, params.DestinationURI, nil, &params.Network, &params.Subnet, &params.WorkerMachineSeries).Return(superPopulatorErr)
 	ovfExporParamPopulator := ovfExportParamPopulatorImpl{Populator: paramPopulator}
 	err := ovfExporParamPopulator.Populate(params)
 	assert.Equal(t, superPopulatorErr, err)
@@ -137,7 +137,7 @@ func TestPopulate_DestinationWhenURIBucketOnlyEndingWithDotOvf_MachineImage(t *t
 func runPopulateParams(params *ovfexportdomain.OVFExportArgs, mockCtrl *gomock.Controller) error {
 	paramPopulator := mocks.NewMockPopulator(mockCtrl)
 	paramPopulator.EXPECT().PopulateMissingParameters(&params.Project, params.ClientID, &params.Zone,
-		&params.Region, &params.ScratchBucketGcsPath, params.DestinationURI, nil, &params.Network, &params.Subnet).Return(nil)
+		&params.Region, &params.ScratchBucketGcsPath, params.DestinationURI, nil, &params.Network, &params.Subnet, &params.WorkerMachineSeries).Return(nil)
 	ovfExportParamPopulator := ovfExportParamPopulatorImpl{Populator: paramPopulator}
 	return ovfExportParamPopulator.Populate(params)
 }
