@@ -58,7 +58,8 @@ var (
 
 type ovfInstanceImportTestProperties struct {
 	ovfimporttestsuite.OvfImportTestProperties
-	instanceName string
+	instanceName              string
+	detectWorkerMachineSeries bool
 }
 
 // TestSuite is image import test suite.
@@ -144,6 +145,8 @@ func TestSuite(
 		testSuiteName, fmt.Sprintf("[%v] %v", e2e.Wrapper, "Remove temp images&disks when instance creation fails"))] = deleteResourcesIfInstanceCreationFails
 	testsMap[e2e.Wrapper][junitxml.NewTestCase(
 		testSuiteName, fmt.Sprintf("[%v] %v", e2e.Wrapper, "Allow import to work when SSD quota is exhausted"))] = fallbackWhenSSDQuotaExhausted
+	testsMap[e2e.Wrapper][junitxml.NewTestCase(
+		testSuiteName, fmt.Sprintf("[%v] %v", e2e.Wrapper, "Allow import to work when N2 quota is exhausted"))] = fallbackWhenN2QuotaExhausted
 
 	e2e.CLITestSuite(ctx, tswg, testSuites, logger, testSuiteRegex, testCaseRegex,
 		testProjectConfig, testSuiteName, testsMap)
@@ -236,6 +239,103 @@ func fallbackWhenSSDQuotaExhausted(ctx context.Context, testCase *junitxml.TestC
 			FailureMatches:            []string{"FAILED:", "TestFailed:"},
 			SourceURI:                 fmt.Sprintf("gs://%v/ova/debian-11-600GB-disk", ovaBucket),
 			Os:                        "debian-11",
+			MachineType:               "n1-standard-1",
+			AllowFallbackToPDStandard: true,
+		}}
+
+	runOVFInstanceImportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
+}
+
+func checkN2QuotaExhaustedInZone(ctx context.Context, testCase *junitxml.TestCase, testSuffix string, logger *log.Logger,
+	project string, zone string) error {
+
+	client, err := daisyCompute.NewClient(ctx)
+	if err != nil {
+		e2e.Failure(testCase, logger, fmt.Sprintf("Error creating client: %v", err))
+		return err
+	}
+
+	diskName := "n2-fail-disk-" + testSuffix
+	err = client.CreateDisk(project, zone, &compute.Disk{
+		Name:        diskName,
+		Zone:        zone,
+		SourceImage: "projects/debian-cloud/global/images/family/debian-11",
+	})
+
+	if err == nil {
+		defer func() {
+			err := client.DeleteDisk(project, zone, diskName)
+			if err != nil {
+				logger.Printf("[%s] Failed to delete the disk %s in %s/%s", testCase.Name, diskName, project, zone)
+			}
+		}()
+	} else {
+		e2e.Failure(testCase, logger, err.Error())
+		return err
+	}
+
+	instName := "n2-fail-inst-" + testSuffix
+	err = client.CreateInstance(project, zone, &compute.Instance{
+		Name:        instName,
+		Zone:        zone,
+		MachineType: fmt.Sprintf("projects/%s/zones/%s/machineTypes/n2-standard-2", project, zone),
+		// Needs to be specified otherwise an instance won't be created.
+		Disks: []*compute.AttachedDisk{
+			{
+				Boot:   true,
+				Source: fmt.Sprintf("projects/%s/zones/%s/disks/%s", project, zone, diskName),
+			},
+		},
+		// Needs to be specified otherwise an instance won't be created.
+		NetworkInterfaces: []*compute.NetworkInterface{
+			{
+				AccessConfigs: []*compute.AccessConfig{{Type: "ONE_TO_ONE_NAT"}},
+				Network:       fmt.Sprintf("projects/%s/global/networks/default", project),
+			},
+		},
+	})
+	if err == nil {
+		defer func() {
+			err := client.DeleteInstance(project, zone, instName)
+			if err != nil {
+				logger.Printf("[%s] Failed to delete the instance %s in %s/%s", testCase.Name, instName, project, zone)
+			}
+		}()
+	}
+
+	if err == nil || !strings.Contains(err.Error(), "N2_CPUS") {
+		return fmt.Errorf("Expected insufficient N2 CPUs quota: %v", err)
+	}
+
+	return nil
+}
+
+func fallbackWhenN2QuotaExhausted(ctx context.Context, testCase *junitxml.TestCase, logger *log.Logger,
+	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
+	suffix := path.RandString(5)
+
+	// The test runs with an assumption that the N2 CPUs quota in us-west3-a is set to 0 for the test project.
+	// We check this prerequisites in checkN2QuotaExhaustedInZone.
+	project := testProjectConfig.TestProjectID
+	zone := "us-west3-a"
+
+	err := checkN2QuotaExhaustedInZone(ctx, testCase, suffix, logger, project, zone)
+	if err != nil {
+		e2e.Failure(testCase, logger, fmt.Sprintf("Expected insufficient N2 CPUs quota: %v", err))
+		return
+	}
+
+	props := &ovfInstanceImportTestProperties{
+		instanceName:              fmt.Sprintf("insufficient-n2-quota-%v", suffix),
+		detectWorkerMachineSeries: true,
+		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
+			VerificationStartupScript: ovfimporttestsuite.LoadScriptContent(
+				"daisy_integration_tests/scripts/post_translate_test.sh", map[string]string{}, logger),
+			Zone:                      zone,
+			ExpectedStartupOutput:     "All tests passed!",
+			FailureMatches:            []string{"FAILED:", "TestFailed:"},
+			SourceURI:                 fmt.Sprintf("gs://%v/ova/ubuntu-16.04-virtualbox.ova", ovaBucket),
+			Os:                        "ubuntu-1604",
 			MachineType:               "n1-standard-1",
 			AllowFallbackToPDStandard: true,
 		}}
@@ -632,7 +732,10 @@ func buildTestArgs(props *ovfInstanceImportTestProperties, testProjectConfig *te
 		"beta", "compute", "instances", "import", props.instanceName, "--quiet",
 		"--docker-image-tag=latest"}
 	gcloudArgs := []string{"compute", "instances", "import", props.instanceName, "--quiet"}
-	wrapperArgs := []string{"-client-id=e2e", fmt.Sprintf("-instance-names=%s", props.instanceName), "-worker-machine-series=n1"}
+	wrapperArgs := []string{"-client-id=e2e", fmt.Sprintf("-instance-names=%s", props.instanceName)}
+	if !props.detectWorkerMachineSeries {
+		wrapperArgs = append(wrapperArgs, "-worker-machine-series=n1")
+	}
 	return ovfimporttestsuite.BuildArgsMap(&props.OvfImportTestProperties, testProjectConfig, gcloudBetaArgs, gcloudArgs, wrapperArgs)
 }
 
