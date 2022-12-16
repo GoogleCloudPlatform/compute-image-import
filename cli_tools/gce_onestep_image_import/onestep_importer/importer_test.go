@@ -51,11 +51,6 @@ func TestTrimClientVersion(t *testing.T) {
 	assert.Equal(t, "301.0.0B", expectSuccessfulParse(t, args...).ClientVersion)
 }
 
-func TestFailWhenOSNotProvided(t *testing.T) {
-	args := setUpArgs(osFlag)
-	assert.EqualError(t, expectFailedValidation(t, args), "The flag -os must be provided")
-}
-
 func TestTrimAndLowerOS(t *testing.T) {
 	args := setUpArgs(osFlag, "-os=    UbUntu-1804    ")
 	assert.Equal(t, "ubuntu-1804", expectSuccessfulParse(t, args...).OS)
@@ -218,9 +213,9 @@ func TestWorkerMachineSeries(t *testing.T) {
 func TestRunReturnErrorWhenInvalidArgs(t *testing.T) {
 	args := setUpArgs(osFlag)
 	importArgs, _ := NewOneStepImportArguments(args)
-
+	importArgs.ImageName = ""
 	_, err := Run(importArgs)
-	assert.EqualError(t, err, "The flag -os must be provided")
+	assert.EqualError(t, err, "The flag -image_name must be provided")
 }
 
 func TestRunReturnErrorWhenImporterFail(t *testing.T) {

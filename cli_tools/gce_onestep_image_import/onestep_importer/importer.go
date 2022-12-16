@@ -242,11 +242,10 @@ func (args *OneStepImportArguments) validate() error {
 	if err := validation.ValidateStringFlagNotEmpty(args.ImageName, imageNameFlag); err != nil {
 		return err
 	}
-	if err := validation.ValidateStringFlagNotEmpty(args.OS, osFlag); err != nil {
-		return err
-	}
-	if err := daisyutils.ValidateOS(args.OS); err != nil {
-		return err
+	if args.OS != "" {
+		if err := daisyutils.ValidateOS(args.OS); err != nil {
+			return err
+		}
 	}
 
 	return nil
