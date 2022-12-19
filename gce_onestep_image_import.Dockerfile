@@ -24,5 +24,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -q -y gcsfu
 COPY linux/gce_onestep_image_import /gce_onestep_image_import
 COPY linux/gce_vm_image_import /gce_vm_image_import
 COPY daisy_workflows/ /daisy_workflows/
+COPY proto/ /proto/
 
 ENTRYPOINT ["/gce_onestep_image_import"]
