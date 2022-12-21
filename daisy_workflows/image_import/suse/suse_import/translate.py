@@ -199,7 +199,7 @@ def _disambiguate_suseconnect_product_error(
   except Exception as e:
     return ValueError(
         'Unable to communicate with SCC. Ensure the import '
-        'is running in a network that allows internet access.')
+        'is running in a network that allows internet access.', e)
 
   # `SUSEConnect --status` returns a list of status objects,
   # where the triple of (identifier, version, arch) uniquely
@@ -281,7 +281,8 @@ def _refresh_zypper(g: guestfs.GuestFS):
   try:
     g.command(cmd)
   except Exception as e:
-      logging.info('Warning: Failed to execute command: %s ' % str(cmd))
+    logging.info('Warning: Failed to execute command: '
+                 '%s, %s ' % (str(cmd), str(e)))
 
 
 def _update_grub(g: guestfs.GuestFS):
