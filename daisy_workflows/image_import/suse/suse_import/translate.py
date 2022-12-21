@@ -199,7 +199,7 @@ def _disambiguate_suseconnect_product_error(
   except Exception as e:
     return ValueError(
         'Unable to communicate with SCC. Ensure the import '
-        'is running in a network that allows internet access.', e)
+        'is running in a network that allows internet access.')
 
   # `SUSEConnect --status` returns a list of status objects,
   # where the triple of (identifier, version, arch) uniquely
@@ -255,11 +255,13 @@ def _install_product(g: guestfs.GuestFS, release: _SuseRelease):
     ValueError: If there was a failure adding the subscription.
   """
   if release.cloud_product:
+    cmd = ['SUSEConnect', '--debug', '-p', release.cloud_product]
     try:
-      g.command(['SUSEConnect', '--debug', '-p', release.cloud_product])
+      g.command(cmd)
     except Exception as e:
-      raise _disambiguate_suseconnect_product_error(
-          g, release.cloud_product, e)
+      logging.warn(_disambiguate_suseconnect_product_error(
+          g, release.cloud_product, e))
+      logging.info('Warning: Failed to execute command: %s ' % str(cmd))
 
 
 @utils.RetryOnFailure(stop_after_seconds=5 * 60, initial_delay_seconds=1)
@@ -275,10 +277,11 @@ def _install_packages(g: guestfs.GuestFS, pkgs: typing.List[str]):
 
 @utils.RetryOnFailure(stop_after_seconds=5 * 60, initial_delay_seconds=1)
 def _refresh_zypper(g: guestfs.GuestFS):
+  cmd = ['zypper', '--debug', 'refresh']
   try:
-    g.command(['zypper', '--debug', 'refresh'])
+    g.command(cmd)
   except Exception as e:
-    raise ValueError('Failed to call zypper refresh', e)
+      logging.info('Warning: Failed to execute command: %s ' % str(cmd))
 
 
 def _update_grub(g: guestfs.GuestFS):
