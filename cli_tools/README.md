@@ -12,8 +12,8 @@ flags etc.
 
 ### OVF Image Import
 
-The `gce_ovf_import` tool imports a virtual appliance in OVF format created in
-VMware environments to a Google Compute Engine VM or a Google Compute Engine
+The `gce_ovf_import` tool imports a virtual appliance in OVF format 
+to a Google Compute Engine VM or a Google Compute Engine
 machine image.
 
 ### VM Image Export
