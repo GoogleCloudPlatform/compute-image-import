@@ -100,6 +100,22 @@ func TestInspectDisk(t *testing.T) {
 				OsCount:      1,
 			},
 		},
+		{
+			imageURI: "projects/suse-sap-cloud/global/images/family/sles-15-sp4-sap",
+			expected: &pb.InspectionResults{
+				OsRelease: &pb.OsRelease{
+					CliFormatted: "sles-sap-15",
+					Distro:       "sles-sap",
+					MajorVersion: "15",
+					MinorVersion: "4",
+					Architecture: pb.Architecture_X64,
+					DistroId:     pb.Distro_SLES_SAP,
+				},
+				BiosBootable: true,
+				UefiBootable: true,
+				OsCount:      1,
+			},
+		},
 
 		// UEFI
 		{
