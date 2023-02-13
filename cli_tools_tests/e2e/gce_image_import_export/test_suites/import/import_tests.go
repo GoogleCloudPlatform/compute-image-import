@@ -235,6 +235,11 @@ var basicCases = []*testCase{
 		os:       "sles-15",
 		tip:      slesOnDemandTip,
 	}, {
+		caseName: "sles-15-4-on-demand",
+		source:   "projects/compute-image-import-test/global/images/sles-15-4-unregistered",
+		os:       "sles-15",
+		tip:      slesOnDemandTip,
+	}, {
 		caseName: "sles-sap-15-0-on-demand",
 		source:   "projects/compute-image-import-test/global/images/sles-sap-15-0-unregistered",
 		os:       "sles-sap-15",
