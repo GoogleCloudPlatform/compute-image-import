@@ -91,12 +91,12 @@ YumInstall.first_run = True
 
 @RetryOnFailure()
 def AptGetInstall(package_list, suite=None):
-  # When `apt update` fails to update a repo, it returns 0.
+  # When `apt-get update` fails to update a repo, it returns 0.
   # This check ensures that we retry running update until we've
   # had one successful install.
   # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=778357
   if not AptGetInstall.prior_success:
-    Execute(['apt', '-y', 'update'])
+    Execute(['apt-get', '-y', 'update'])
 
   env = os.environ.copy()
   env['DEBIAN_FRONTEND'] = 'noninteractive'
@@ -882,7 +882,7 @@ def install_apt_packages(g, *pkgs):
 
 @RetryOnFailure(stop_after_seconds=5 * 60, initial_delay_seconds=1)
 def update_apt(g):
-  """Runs apt update in a guest.
+  """Runs apt-get update in a guest.
 
   Starting at apt 1.5, release info changes must be confirmed
   explicitly with `--allow-releaseinfo-change`. That flag,
@@ -894,6 +894,6 @@ def update_apt(g):
   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=931566
   """
   try:
-    run(g, 'apt update -y')
+    run(g, 'apt-get update -y')
   except RuntimeError:
-    run(g, 'apt update -y --allow-releaseinfo-change')
+    run(g, 'apt-get update -y --allow-releaseinfo-change')
