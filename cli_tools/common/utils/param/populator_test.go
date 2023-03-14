@@ -255,7 +255,7 @@ func TestPopulator_PopulateMissingParametersReturnsErrorWhenScratchBucketCreatio
 	mockMetadataGce := mocks.NewMockMetadataGCEInterface(mockCtrl)
 	mockMetadataGce.EXPECT().OnGCE().Return(false)
 	mockScratchBucketCreator := mocks.NewMockScratchBucketCreatorInterface(mockCtrl)
-	mockScratchBucketCreator.EXPECT().CreateScratchBucket(file, project, zone).Return("", "", daisy.Errf("err"))
+	mockScratchBucketCreator.EXPECT().CreateScratchBucket(file, project, zone, true).Return("", "", daisy.Errf("err"))
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
 	mockNetworkResolver := newNoOpNetworkResolver(mockCtrl)
@@ -504,7 +504,7 @@ func TestPopulator_PopulateMissingParametersCreatesScratchBucketIfNotProvided(t 
 
 	mockScratchBucketCreator := mocks.NewMockScratchBucketCreatorInterface(mockCtrl)
 	mockScratchBucketCreator.EXPECT().
-		CreateScratchBucket(file, project, zone).
+		CreateScratchBucket(file, project, zone, true).
 		Return(expectedBucketName, expectedRegion, nil).
 		Times(1)
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)
@@ -552,7 +552,7 @@ func TestPopulator_PopulateMissingParametersCreatesScratchBucketIfNotProvidedOnG
 
 	mockScratchBucketCreator := mocks.NewMockScratchBucketCreatorInterface(mockCtrl)
 	mockScratchBucketCreator.EXPECT().
-		CreateScratchBucket(file, project, expectedZone).
+		CreateScratchBucket(file, project, expectedZone, true).
 		Return(expectedBucketName, expectedRegion, nil).
 		Times(1)
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)

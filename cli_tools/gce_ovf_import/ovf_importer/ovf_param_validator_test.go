@@ -176,8 +176,9 @@ func Test_ValidateAndParseParams_CreateScratchBucket_WhenGeneratedDoesntExist(t 
 		ZoneValid(projectName, params.Zone).Return(nil)
 
 	someBucketAttrs := &storage.BucketAttrs{
-		Name:     "other-bucket",
-		Location: "us-west2",
+		Name:                     "other-bucket",
+		Location:                 "us-west2",
+		UniformBucketLevelAccess: storage.UniformBucketLevelAccess{Enabled: true},
 	}
 	mockBucketIterator := mocks.NewMockBucketIteratorInterface(mockCtrl)
 	mockBucketIterator.EXPECT().Next().Return(someBucketAttrs, nil)
@@ -194,7 +195,11 @@ func Test_ValidateAndParseParams_CreateScratchBucket_WhenGeneratedDoesntExist(t 
 	mockMachineSeriesDetector.EXPECT().Detect(*params.Project, params.Zone).Return([]string{"n2", "n1"}, nil)
 
 	mockStorage := mocks.NewMockStorageClientInterface(mockCtrl)
-	mockStorage.EXPECT().CreateBucket(expectedBucketName, projectName, &storage.BucketAttrs{Name: expectedBucketName, Location: params.Region})
+	mockStorage.EXPECT().CreateBucket(expectedBucketName, projectName, &storage.BucketAttrs{
+		Name:                     expectedBucketName,
+		Location:                 params.Region,
+		UniformBucketLevelAccess: storage.UniformBucketLevelAccess{Enabled: true},
+	})
 	err := (&ParamValidatorAndPopulator{
 		zoneValidator:               mockZoneValidator,
 		bucketIteratorCreator:       mockBucketIteratorCreator,

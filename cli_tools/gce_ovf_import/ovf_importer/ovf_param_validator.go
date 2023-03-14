@@ -257,7 +257,8 @@ func (p *ParamValidatorAndPopulator) createScratchBucketIfMissing(originalBucket
 			p.logger.User(fmt.Sprintf("Creating scratch bucket `%v` in %v region", bucket, region))
 			if err := p.storageClient.CreateBucket(
 				bucket, project,
-				&storage.BucketAttrs{Name: bucket, Location: region}); err != nil {
+				&storage.BucketAttrs{Name: bucket, Location: region,
+					UniformBucketLevelAccess: storage.UniformBucketLevelAccess{Enabled: true}}); err != nil {
 				return "", err
 			}
 		}

@@ -23,46 +23,46 @@ import (
 	reflect "reflect"
 )
 
-// MockScratchBucketCreatorInterface is a mock of ScratchBucketCreatorInterface interface
+// MockScratchBucketCreatorInterface is a mock of ScratchBucketCreatorInterface interface.
 type MockScratchBucketCreatorInterface struct {
 	ctrl     *gomock.Controller
 	recorder *MockScratchBucketCreatorInterfaceMockRecorder
 }
 
-// MockScratchBucketCreatorInterfaceMockRecorder is the mock recorder for MockScratchBucketCreatorInterface
+// MockScratchBucketCreatorInterfaceMockRecorder is the mock recorder for MockScratchBucketCreatorInterface.
 type MockScratchBucketCreatorInterfaceMockRecorder struct {
 	mock *MockScratchBucketCreatorInterface
 }
 
-// NewMockScratchBucketCreatorInterface creates a new mock instance
+// NewMockScratchBucketCreatorInterface creates a new mock instance.
 func NewMockScratchBucketCreatorInterface(ctrl *gomock.Controller) *MockScratchBucketCreatorInterface {
 	mock := &MockScratchBucketCreatorInterface{ctrl: ctrl}
 	mock.recorder = &MockScratchBucketCreatorInterfaceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockScratchBucketCreatorInterface) EXPECT() *MockScratchBucketCreatorInterfaceMockRecorder {
 	return m.recorder
 }
 
-// CreateScratchBucket mocks base method
-func (m *MockScratchBucketCreatorInterface) CreateScratchBucket(arg0, arg1, arg2 string) (string, string, error) {
+// CreateScratchBucket mocks base method.
+func (m *MockScratchBucketCreatorInterface) CreateScratchBucket(arg0, arg1, arg2 string, arg3 bool) (string, string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateScratchBucket", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "CreateScratchBucket", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(string)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// CreateScratchBucket indicates an expected call of CreateScratchBucket
-func (mr *MockScratchBucketCreatorInterfaceMockRecorder) CreateScratchBucket(arg0, arg1, arg2 interface{}) *gomock.Call {
+// CreateScratchBucket indicates an expected call of CreateScratchBucket.
+func (mr *MockScratchBucketCreatorInterfaceMockRecorder) CreateScratchBucket(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateScratchBucket", reflect.TypeOf((*MockScratchBucketCreatorInterface)(nil).CreateScratchBucket), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateScratchBucket", reflect.TypeOf((*MockScratchBucketCreatorInterface)(nil).CreateScratchBucket), arg0, arg1, arg2, arg3)
 }
 
-// IsBucketInProject mocks base method
+// IsBucketInProject mocks base method.
 func (m *MockScratchBucketCreatorInterface) IsBucketInProject(arg0, arg1 string) bool {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IsBucketInProject", arg0, arg1)
@@ -70,7 +70,7 @@ func (m *MockScratchBucketCreatorInterface) IsBucketInProject(arg0, arg1 string)
 	return ret0
 }
 
-// IsBucketInProject indicates an expected call of IsBucketInProject
+// IsBucketInProject indicates an expected call of IsBucketInProject.
 func (mr *MockScratchBucketCreatorInterfaceMockRecorder) IsBucketInProject(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsBucketInProject", reflect.TypeOf((*MockScratchBucketCreatorInterface)(nil).IsBucketInProject), arg0, arg1)
