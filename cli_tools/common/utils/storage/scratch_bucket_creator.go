@@ -50,9 +50,9 @@ func NewScratchBucketCreator(ctx context.Context, storageClient domain.StorageCl
 // determine region by source file, we will try to determine region by fallbackZone.
 // Returns (bucket_name, region, error)
 func (c *ScratchBucketCreator) CreateScratchBucket(sourceFileFlag string, project string,
-	fallbackZone string) (string, string, error) {
+	fallbackZone string, EnableUniformBucketLevelAccess bool) (string, string, error) {
 
-	bucketAttrs, err := c.getBucketAttrs(sourceFileFlag, project, fallbackZone)
+	bucketAttrs, err := c.getBucketAttrs(sourceFileFlag, project, fallbackZone, EnableUniformBucketLevelAccess)
 	if err != nil {
 		return "", "", err
 	}
@@ -65,19 +65,23 @@ func (c *ScratchBucketCreator) CreateScratchBucket(sourceFileFlag string, projec
 }
 
 func (c *ScratchBucketCreator) getBucketAttrs(fileGcsPath string, project string,
-	fallbackZone string) (*storage.BucketAttrs, error) {
-
+	fallbackZone string, EnableUniformBucketLevelAccess bool) (bucketAttrs *storage.BucketAttrs, err error) {
 	if project == "" {
 		return nil, daisy.Errf("can't get bucket attributes if project not specified")
 	}
 
 	if fileGcsPath != "" {
 		// file provided, create bucket in the same region for cost/performance reasons
-		return c.getBucketAttrsFromInputFile(fileGcsPath, project, fallbackZone)
+		bucketAttrs, err = c.getBucketAttrsFromInputFile(fileGcsPath, project, fallbackZone)
+	} else {
+		// if file is not provided, fallback to input / default zone.
+		bucketAttrs, err = c.getBucketAttrsOnFallbackZone(project, fallbackZone)
 	}
 
-	// if file is not provided, fallback to input / default zone.
-	return c.getBucketAttrsOnFallbackZone(project, fallbackZone)
+	// Enable Uniform-Bucket-Level-Access by default in image-import/export tools.
+	bucketAttrs.UniformBucketLevelAccess.Enabled = EnableUniformBucketLevelAccess
+
+	return bucketAttrs, err
 }
 
 func (c *ScratchBucketCreator) getBucketAttrsFromInputFile(fileGcsPath string, project string,

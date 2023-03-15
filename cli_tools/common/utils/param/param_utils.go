@@ -65,7 +65,7 @@ func populateScratchBucketGcsPath(scratchBucketGcsPath *string, zone string, mgc
 			}
 		}
 
-		scratchBucketName, sbr, err := scratchBucketCreator.CreateScratchBucket(file, *project, fallbackZone)
+		scratchBucketName, sbr, err := scratchBucketCreator.CreateScratchBucket(file, *project, fallbackZone, true)
 		scratchBucketRegion = sbr
 		if err != nil {
 			return "", daisy.Errf("failed to create scratch bucket: %v", err)
