@@ -102,7 +102,7 @@ type ZoneValidatorInterface interface {
 //go:generate go run github.com/golang/mock/mockgen -package mocks -destination mocks/mock_scratch_bucket_creator.go github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain ScratchBucketCreatorInterface
 type ScratchBucketCreatorInterface interface {
 	CreateScratchBucket(sourceFileFlag string, projectFlag string, fallbackZone string,
-		EnableUniformBucketLevelAccess bool) (string, string, error)
+		enableUniformBucketLevelAccess bool) (string, string, error)
 	IsBucketInProject(project string, bucketName string) bool
 }
 

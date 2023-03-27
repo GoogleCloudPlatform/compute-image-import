@@ -17,6 +17,7 @@ package storage
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"cloud.google.com/go/storage"
@@ -190,18 +191,18 @@ func TestCreateScratchBucketNewBucketCreatedProject(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-// func TestCreateScratchBucketInvalidSourceFileErrorThrown(t *testing.T) {
-// 	mockCtrl := gomock.NewController(t)
-// 	defer mockCtrl.Finish()
+func TestCreateScratchBucketInvalidSourceFileErrorThrown(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
 
-// 	project := "proJect1"
+	project := "proJect1"
 
-// 	c := ScratchBucketCreator{}
-// 	gcsPath := "NOT_A_GS_PATH"
-// 	_, _, err := c.CreateScratchBucket(gcsPath, project, "", true)
-// 	assert.NotNil(t, err)
-// 	assert.True(t, strings.HasPrefix(err.Error(), fmt.Sprintf("file GCS path `%v` is invalid:", gcsPath)))
-// }
+	c := ScratchBucketCreator{}
+	gcsPath := "NOT_A_GS_PATH"
+	_, _, err := c.CreateScratchBucket(gcsPath, project, "", true)
+	assert.NotNil(t, err)
+	assert.True(t, strings.HasPrefix(err.Error(), fmt.Sprintf("file GCS path `%v` is invalid:", gcsPath)))
+}
 
 func TestCreateScratchBucketErrorRetrievingSourceFileBucketMetadataDefaultBucketCreated(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
