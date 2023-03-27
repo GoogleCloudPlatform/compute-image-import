@@ -69,8 +69,8 @@ func (oi *OsInfo) hasImporterOSIDs() bool {
 	return len(oi.importerOSIDs) > 0
 }
 
-//Mapping OVF OS ID to OS info
-//Full list: http://schemas.dmtf.org/wbem/cim-html/2/CIM_OperatingSystem.html
+// Mapping OVF OS ID to OS info
+// Full list: http://schemas.dmtf.org/wbem/cim-html/2/CIM_OperatingSystem.html
 var ovfOSIDToImporterOSID = map[int16]OsInfo{
 	2:   {description: "MACOS", importerOSIDs: []string{}},
 	3:   {description: "ATTUNIX", importerOSIDs: []string{}},
@@ -214,11 +214,11 @@ func GetOSInfoForInspectionResults(ir *pb.InspectionResults) (*OsInfo, int16) {
 	return nil, 0
 }
 
-//Mapping OVF osType attribute to importer OS ID
-//Some might have multiple importer OS ID  values. In that case, user need to provide a value via --os flag.
+// Mapping OVF osType attribute to importer OS ID
+// Some might have multiple importer OS ID  values. In that case, user need to provide a value via --os flag.
 // Some might have only one option but we can't select it automatically as we cannot guarantee
 // correctness. All Windows Client imports are in this category due to the fact we can't assume BYOL licensing.
-//Full list: https://vdc-download.vmware.com/vmwb-repository/dcr-public/da47f910-60ac-438b-8b9b-6122f4d14524/16b7274a-bf8b-4b4c-a05e-746f2aa93c8c/doc/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html
+// Full list: https://vdc-download.vmware.com/vmwb-repository/dcr-public/da47f910-60ac-438b-8b9b-6122f4d14524/16b7274a-bf8b-4b4c-a05e-746f2aa93c8c/doc/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html
 var ovfOSTypeToOSID = map[string]OsInfo{
 	"debian8_64Guest":       OsInfo{importerOSIDs: []string{"debian-8"}},
 	"debian9_64Guest":       OsInfo{importerOSIDs: []string{"debian-9"}},

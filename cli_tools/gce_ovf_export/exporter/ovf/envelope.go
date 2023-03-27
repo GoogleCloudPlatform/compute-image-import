@@ -144,7 +144,7 @@ type DiskSection struct {
 	Disks []VirtualDiskDesc `xml:"Disk"`
 }
 
-//VirtualDiskDesc represents virtual disk description
+// VirtualDiskDesc represents virtual disk description
 type VirtualDiskDesc struct {
 	DiskID                  string  `xml:"ovf:diskId,attr"`
 	FileRef                 *string `xml:"ovf:fileRef,attr"`

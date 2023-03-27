@@ -31,7 +31,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
 )
 
-//TODO: merge with OVF import ovf_utils.go
+// TODO: merge with OVF import ovf_utils.go
 const (
 	cpu                    uint16 = 3
 	memory                 uint16 = 4
