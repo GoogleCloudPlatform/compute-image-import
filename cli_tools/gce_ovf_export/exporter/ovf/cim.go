@@ -53,7 +53,7 @@ type CIMVirtualSystemSettingData struct {
 Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2.24.0/CIM_ResourceAllocationSettingData.xsd
 */
 
-//CIMResourceAllocationSettingData represents ResourceAllocationSetting element
+// CIMResourceAllocationSettingData represents ResourceAllocationSetting element
 type CIMResourceAllocationSettingData struct {
 	AddressOnParent       *string  `xml:"rasd:AddressOnParent"`
 	Address               *string  `xml:"rasd:Address"`
@@ -84,7 +84,7 @@ type CIMResourceAllocationSettingData struct {
 Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2.24.0/CIM_StorageAllocationSettingData.xsd
 */
 
-//CIMStorageAllocationSettingData represents StorageAllocationSetting
+// CIMStorageAllocationSettingData represents StorageAllocationSetting
 type CIMStorageAllocationSettingData struct {
 	ElementName string `xml:"rasd:ElementName"`
 	InstanceID  string `xml:"rasd:InstanceID"`

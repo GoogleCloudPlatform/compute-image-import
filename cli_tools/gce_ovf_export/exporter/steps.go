@@ -111,7 +111,7 @@ func generateWorkflowWithSteps(workflowName, timeout string, populateStepsFunc p
 	return w, populateStepsFunc(w)
 }
 
-//TODO: consolidate with gce_vm_image_import.runStep()
+// TODO: consolidate with gce_vm_image_import.runStep()
 func (oe *OVFExporter) runStep(ctx context.Context, step func() error, cancel func(string) bool) (err error) {
 	e := make(chan error)
 	var wg sync.WaitGroup
@@ -151,7 +151,7 @@ func (oe *OVFExporter) runStep(ctx context.Context, step func() error, cancel fu
 	return err
 }
 
-//TODO: consolidate with gce_vm_image_import.getCtxError()
+// TODO: consolidate with gce_vm_image_import.getCtxError()
 func (oe *OVFExporter) getCtxError(ctx context.Context) (err error) {
 	if ctxErr := ctx.Err(); ctxErr == context.DeadlineExceeded {
 		err = daisy.Errf("OVF Export did not complete within the specified timeout of %s", oe.params.Timeout.String())

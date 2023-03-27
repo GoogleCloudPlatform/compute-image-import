@@ -43,9 +43,10 @@ var (
 )
 
 // VirtualBox doesn't include a unit when defining disks. The default unit is bytes.
-//  DSP0243, 9.1 DiskSection:
-//   ...
-//   The default unit of allocation shall be bytes.
+//
+//	DSP0243, 9.1 DiskSection:
+//	 ...
+//	 The default unit of allocation shall be bytes.
 func TestGetMemoryInMBSpecInGBDefaultsToBytes(t *testing.T) {
 	envelope := parseOVF(t, "testdata/missing-disk-units.ovf")
 

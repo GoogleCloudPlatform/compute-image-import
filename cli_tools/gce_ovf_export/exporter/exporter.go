@@ -121,7 +121,7 @@ func validateAndPopulateParams(params *ovfexportdomain.OVFExportArgs,
 }
 
 // creates a new Daisy Compute client
-//TODO: consolidate with ovf_importer.createComputeClient
+// TODO: consolidate with ovf_importer.createComputeClient
 func createComputeClient(ctx *context.Context, params *ovfexportdomain.OVFExportArgs) (daisyCompute.Client, error) {
 	computeOptions := []option.ClientOption{option.WithCredentialsFile(params.Oauth)}
 	if params.Ce != "" {

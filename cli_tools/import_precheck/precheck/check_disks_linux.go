@@ -28,13 +28,13 @@ import (
 )
 
 // DisksCheck performs disk configuration checking:
-// - finding the root filesystem partition
-// - checking if the device is MBR
-// - checking whether the root mount is physically located on a single disk.
-//   The check fails, for example, when the root mount is on an LVM
-//   logical volume that spans multiple disks.
-// - check for GRUB
-// - warning for any mount points from partitions from other devices
+//   - finding the root filesystem partition
+//   - checking if the device is MBR
+//   - checking whether the root mount is physically located on a single disk.
+//     The check fails, for example, when the root mount is on an LVM
+//     logical volume that spans multiple disks.
+//   - check for GRUB
+//   - warning for any mount points from partitions from other devices
 type DisksCheck struct {
 	getMBROverride func(devName string) ([]byte, error)
 	inspector      mount.Inspector
