@@ -290,6 +290,9 @@ var basicCases = []*testCase{
 	}, {
 		caseName: "el-rocky-8-4",
 		source:   "projects/compute-image-import-test/global/images/rocky-8-4",
+	}, {
+		caseName: "el-rocky-9-1",
+		source:   "projects/compute-image-import-test/global/images/rocky-9-1",
 	},
 
 	// EL - Error cases
