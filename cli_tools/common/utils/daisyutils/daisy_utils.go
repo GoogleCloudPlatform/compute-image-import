@@ -94,6 +94,10 @@ var (
 			GcloudOsFlag: "rocky-8",
 			WorkflowPath: "enterprise_linux/translate_rocky_8.wf.json",
 			LicenseURI:   "projects/rocky-linux-cloud/global/licenses/rocky-linux-8",
+		}, {
+			GcloudOsFlag: "rocky-9",
+			WorkflowPath: "enterprise_linux/translate_rocky_9.wf.json",
+			LicenseURI:   "projects/rocky-linux-cloud/global/licenses/rocky-linux-9",
 		},
 
 		// SUSE

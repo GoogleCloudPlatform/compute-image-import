@@ -1,9 +1,9 @@
 {
-  "Name": "translate-rocky-8",
+  "Name": "translate-rocky-9",
   "Vars": {
     "source_disk": {
       "Required": true,
-      "Description": "The Rocky 8 GCE disk to translate."
+      "Description": "The Rocky 9 GCE disk to translate."
     },
     "sysprep": {
       "Value": "false",
@@ -14,8 +14,8 @@
       "Description": "Whether to install GCE packages."
     },
     "image_name": {
-      "Value": "rocky-8-${ID}",
-      "Description": "The name of the translated Rocky 8 image."
+      "Value": "rocky-9-${ID}",
+      "Description": "The name of the translated Rocky 9 image."
     },
     "family": {
       "Value": "",
@@ -54,7 +54,7 @@
       "IncludeWorkflow": {
         "Path": "./translate_el.wf.json",
         "Vars": {
-          "el_release": "8",
+          "el_release": "9",
           "install_gce_packages": "${install_gce_packages}",
           "translator_disk": "disk-translator",
           "imported_disk": "${source_disk}",
@@ -70,7 +70,7 @@
           "Name": "${image_name}",
           "SourceDisk": "${source_disk}",
           "Family": "${family}",
-          "Licenses": ["projects/rocky-linux-cloud/global/licenses/rocky-linux-8"],
+          "Licenses": ["projects/rocky-linux-cloud/global/licenses/rocky-linux-9"],
           "Description": "${description}",
           "ExactName": true,
           "NoCleanup": true

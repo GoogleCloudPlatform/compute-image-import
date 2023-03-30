@@ -375,7 +375,7 @@ import. Below is a list of known compatibility requirements and issues:
 
 | Name | Severity | Description |
 |---|---|---|
-| OS Version | Required | We support the following OS versions: RHEL 6, 7, 8, or 9; CentOS/OEL 7; Debian 8, 9, 10, or 11; Rocky Linux 8; SLES 12 or 15; Ubuntu 14.04, 16.04 or 18.04. See [supported operating systems](https://cloud.google.com/compute/docs/images/os-details#import)|
+| OS Version | Required | We support the following OS versions: RHEL 6, 7, 8, or 9; CentOS/OEL 7; Debian 8, 9, 10, or 11; Rocky Linux 8 or 9; SLES 12 or 15; Ubuntu 14.04, 16.04, 18.04, 20.04 or 22.04. See [supported operating systems](https://cloud.google.com/compute/docs/images/os-details#import)|
 | OS Disk | Required | The disk containing the OS must be bootable. The disk must be MBR or GPT and have GRUB or GRUB2 installed. |
 | Multiple Disks | Warning  | Image import cannot directly handle multiple disk scenarios. Additional disks must be imported and attached separately. |
 | SSH | Warning | Warn if SSH is not running on port 22. GCE provides SSH clients via the Cloud Console and the gcloud CLI. These clients connect on port 22 and will not work if you have a different SSH configuration. |
