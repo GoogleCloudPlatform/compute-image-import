@@ -205,7 +205,7 @@ func doTestFindGcsFile(t *testing.T, bucket, lookupPath string) {
 		CreateObjectIterator(bucket, lookupPath).
 		Return(mockObjectIterator)
 
-	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]")}
+	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]"), StorageClient: &storage.Client{}}
 	storageObject, err := sc.FindGcsFile(
 		fmt.Sprintf("gs://%v/%v", bucket, lookupPath), ".ovf")
 
@@ -303,7 +303,7 @@ func TestFindGcsFileDepthLimitedFileInRoot(t *testing.T) {
 		CreateObjectIterator("sourcebucket", "").
 		Return(mockObjectIterator)
 
-	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]")}
+	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]"), StorageClient: &storage.Client{}}
 	storageObject, err := sc.FindGcsFileDepthLimited(
 		"gs://sourcebucket/", ".ovf", 0)
 
@@ -372,7 +372,7 @@ func doTestFindGcsFileDepthLimitedFileInSubFolderlookupFromRoot(t *testing.T, gc
 		CreateObjectIterator("sourcebucket", "").
 		Return(mockObjectIterator)
 
-	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]")}
+	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]"), StorageClient: &storage.Client{}}
 	storageObject, err := sc.FindGcsFileDepthLimited(
 		gcsDirectoryPath, ".ovf", 2)
 
@@ -410,7 +410,7 @@ func doTestFindGcsFileDepthLimitedFileInSubFolderlookupFromSubfolder(t *testing.
 		CreateObjectIterator(bucket, lookupPath).
 		Return(mockObjectIterator)
 
-	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]")}
+	sc := Client{Oic: mockObjectIteratorCreator, Logger: logging.NewToolLogger("[test]"), StorageClient: &storage.Client{}}
 	storageObject, err := sc.FindGcsFileDepthLimited(
 		fmt.Sprintf("gs://%v/%v", bucket, lookupPath), ".ovf", 0)
 
