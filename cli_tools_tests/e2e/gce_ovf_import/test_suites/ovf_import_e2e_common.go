@@ -57,6 +57,7 @@ type OvfImportTestProperties struct {
 	InstanceAccessScopes      string
 	NoInstanceAccessScopes    bool
 	InstanceMetadata          map[string]string
+	Timeout                   string
 }
 
 // BuildArgsMap builds CLI args map for all OVF import CLIs being tested
@@ -133,6 +134,11 @@ func BuildArgsMap(props *OvfImportTestProperties, testProjectConfig *testconfig.
 		gcloudBetaArgs = append(gcloudBetaArgs, "--scopes=")
 		gcloudArgs = append(gcloudArgs, "--scopes=")
 		wrapperArgs = append(wrapperArgs, "-scopes=")
+	}
+	if props.Timeout != "" {
+		gcloudBetaArgs = append(gcloudBetaArgs, fmt.Sprintf("--timeout=%v", props.Timeout))
+		gcloudArgs = append(gcloudArgs, fmt.Sprintf("--timeout=%v", props.Timeout))
+		wrapperArgs = append(wrapperArgs, fmt.Sprintf("-timeout=%v", props.Timeout))
 	}
 
 	argsMap := map[e2e.CLITestType][]string{

@@ -241,6 +241,7 @@ func fallbackWhenSSDQuotaExhausted(ctx context.Context, testCase *junitxml.TestC
 			Os:                        "debian-11",
 			MachineType:               "n1-standard-1",
 			AllowFallbackToPDStandard: true,
+			Timeout:                   "4h",
 		}}
 
 	runOVFInstanceImportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
