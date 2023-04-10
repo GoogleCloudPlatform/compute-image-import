@@ -25,15 +25,16 @@ import (
 )
 
 const (
-	centos   = "centos"
-	debian   = "debian"
-	opensuse = "opensuse"
-	rhel     = "rhel"
-	rocky    = "rocky"
-	sles     = "sles"
-	slesSAP  = "sles-sap"
-	ubuntu   = "ubuntu"
-	windows  = "windows"
+	centosStream = "centos-stream"
+	centos       = "centos"
+	debian       = "debian"
+	opensuse     = "opensuse"
+	rhel         = "rhel"
+	rocky        = "rocky"
+	sles         = "sles"
+	slesSAP      = "sles-sap"
+	ubuntu       = "ubuntu"
+	windows      = "windows"
 
 	archX86 = "x86"
 	archX64 = "x64"
@@ -140,7 +141,7 @@ func standardizeDistro(distro string) (string, error) {
 		return "", errors.New("distro name required")
 	}
 	d := strings.ReplaceAll(strings.ToLower(distro), "_", "-")
-	for _, known := range []string{centos, debian, opensuse, rhel, rocky, slesSAP, sles, ubuntu, windows} {
+	for _, known := range []string{centosStream, centos, debian, opensuse, rhel, rocky, slesSAP, sles, ubuntu, windows} {
 		if strings.Contains(d, known) {
 			return known, nil
 		}
@@ -168,6 +169,8 @@ func newLinuxRelease(distro string, major string, minor string) (Release, error)
 	case ubuntu:
 		return newUbuntuRelease(majorInt, minorInt)
 	case centos:
+		fallthrough
+	case centosStream:
 		fallthrough
 	case debian:
 		fallthrough
@@ -256,7 +259,7 @@ func (r commonLinuxRelease) ImportCompatible(other Release) bool {
 }
 
 func commonLinuxDistros() []string {
-	return []string{centos, debian, opensuse, rhel, rocky}
+	return []string{centosStream, centos, debian, opensuse, rhel, rocky}
 }
 
 // The caller is responsible for verifying the syntax of the arguments.

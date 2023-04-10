@@ -59,6 +59,14 @@ var (
 			WorkflowPath: "enterprise_linux/translate_centos_7.wf.json",
 			LicenseURI:   "projects/centos-cloud/global/licenses/centos-7",
 		}, {
+			GcloudOsFlag: "centos-stream-8",
+			WorkflowPath: "enterprise_linux/translate_centos_stream_8.wf.json",
+			LicenseURI:   "projects/centos-cloud/global/licenses/centos-stream",
+		}, {
+			GcloudOsFlag: "centos-stream-9",
+			WorkflowPath: "enterprise_linux/translate_centos_stream_9.wf.json",
+			LicenseURI:   "projects/centos-cloud/global/licenses/centos-stream-9",
+		}, {
 			GcloudOsFlag: "rhel-6",
 			WorkflowPath: "enterprise_linux/translate_rhel_6_licensed.wf.json",
 			LicenseURI:   "projects/rhel-cloud/global/licenses/rhel-6-server",

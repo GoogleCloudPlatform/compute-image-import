@@ -48,6 +48,7 @@ enum Distro {
   AMAZON = 4003;
   ORACLE = 4004;
   ROCKY = 4005;
+  CENTOS_STREAM = 4006;
 
   ARCH = 5000;
 

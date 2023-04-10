@@ -41,6 +41,17 @@ _LINUX = [
     linux.Fingerprint(inspect_pb2.Distro.AMAZON,
                       aliases=['amzn', 'amazonlinux']),
     linux.Fingerprint(
+        inspect_pb2.Distro.CENTOS_STREAM, aliases=['CentOS Stream'],
+        fs_predicate=linux.FileExistenceMatcher(
+            require={'/etc/centos-release', '/etc/os-release'},
+            disallow={'/etc/fedora-release',
+                      '/etc/rocky-release',
+                      '/etc/oracle-release'}),
+        version_reader=linux.VersionReader(
+            metadata_file='/etc/centos-release',
+            version_pattern=re.compile(r'(\d*\.)?\d+')),
+    ),
+    linux.Fingerprint(
         inspect_pb2.Distro.CENTOS,
         fs_predicate=linux.FileExistenceMatcher(
             require={'/etc/centos-release'},
