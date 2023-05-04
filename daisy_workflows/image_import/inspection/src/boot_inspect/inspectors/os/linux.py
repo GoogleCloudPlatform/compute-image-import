@@ -147,9 +147,6 @@ class Fingerprint:
         matches = self._name_matcher.fullmatch(etc_os_rel['ID']) is not None
       if 'NAME' in etc_os_rel:
         matches |= self._name_matcher.fullmatch(etc_os_rel['NAME']) is not None
-      print(etc_os_rel)
-      print(inspect_pb2.Distro.Name(self.distro))
-      print("%%%%%%%%%%%")
       if self._fs_predicate:
         matches &= self._fs_predicate.matches(fs)
     elif self._fs_predicate:
