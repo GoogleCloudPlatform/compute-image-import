@@ -18,8 +18,6 @@ addopts = "--import-mode=importlib"
 [tool.gcp-guest-pytest]
 
 envlist = [
-    "3.5",
-    "3.6",
     "3.7",
     "3.8"
 ]
