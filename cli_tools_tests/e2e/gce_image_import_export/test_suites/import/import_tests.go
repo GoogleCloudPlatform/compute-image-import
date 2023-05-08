@@ -267,6 +267,14 @@ var basicCases = []*testCase{
 		source:   "projects/compute-image-import-test/global/images/centos-7-8",
 		os:       "centos-7",
 	}, {
+		caseName: "el-centos-stream-8",
+		source:   "projects/compute-image-import-test/global/images/centos-stream-8",
+		os:       "centos-stream-8",
+	}, {
+		caseName: "el-centos-stream-9",
+		source:   "projects/compute-image-import-test/global/images/centos-stream-9",
+		os:       "centos-stream-9",
+	}, {
 		caseName:  "el-rhel-7-uefi",
 		source:    "projects/compute-image-import-test/global/images/linux-uefi-no-guestosfeature-rhel7",
 		os:        "rhel-7",

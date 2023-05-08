@@ -142,8 +142,11 @@ class Fingerprint:
     if fs.is_file('/etc/os-release'):
       etc_os_rel = _parse_config_file(fs.read_utf8('/etc/os-release'))
 
-    if 'ID' in etc_os_rel:
-      matches = self._name_matcher.fullmatch(etc_os_rel['ID']) is not None
+    if 'ID' in etc_os_rel or 'NAME' in etc_os_rel:
+      if 'ID' in etc_os_rel:
+        matches = self._name_matcher.fullmatch(etc_os_rel['ID']) is not None
+      if 'NAME' in etc_os_rel:
+        matches |= self._name_matcher.fullmatch(etc_os_rel['NAME']) is not None
       if self._fs_predicate:
         matches &= self._fs_predicate.matches(fs)
     elif self._fs_predicate:
