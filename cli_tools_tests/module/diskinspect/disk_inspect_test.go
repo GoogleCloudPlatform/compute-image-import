@@ -116,6 +116,36 @@ func TestInspectDisk(t *testing.T) {
 				OsCount:      1,
 			},
 		},
+		{
+			imageURI: "projects/compute-image-import-test/global/images/centos-stream-8",
+			expected: &pb.InspectionResults{
+				OsRelease: &pb.OsRelease{
+					CliFormatted: "centos-stream-8",
+					Distro:       "centos-stream",
+					MajorVersion: "8",
+					Architecture: pb.Architecture_X64,
+					DistroId:     pb.Distro_CENTOS_STREAM,
+				},
+				BiosBootable: true,
+				UefiBootable: false,
+				OsCount:      1,
+			},
+		},
+		{
+			imageURI: "projects/compute-image-import-test/global/images/centos-stream-9",
+			expected: &pb.InspectionResults{
+				OsRelease: &pb.OsRelease{
+					CliFormatted: "centos-stream-9",
+					Distro:       "centos-stream",
+					MajorVersion: "9",
+					Architecture: pb.Architecture_X64,
+					DistroId:     pb.Distro_CENTOS_STREAM,
+				},
+				BiosBootable: true,
+				UefiBootable: false,
+				OsCount:      1,
+			},
+		},
 
 		// UEFI
 		{
