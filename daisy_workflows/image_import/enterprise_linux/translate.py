@@ -413,5 +413,6 @@ def main():
 
   selinux_relable(input_disks)
 
+
 if __name__ == '__main__':
   utils.RunTranslate(main, run_with_tracing=False)
