@@ -384,6 +384,22 @@ def cleanup(g: guestfs.GuestFS):
   if not success:
     logging.debug('Shutdown failed. Continuing anyway.')
 
+def selinux_relable(input_disks):
+  virt_customize_args = ['virt-customize', '--selinux-relabel']
+
+  for disk in input_disks:
+    virt_customize_args += ['-a', disk]
+
+  try:
+    utils.Execute(virt_customize_args)
+  except:
+    logging.info('Warning: Failed to relabel selinux with \'virt-customize\' command, '
+                 'autorelabel will happen on the first boot.')
+    g = diskutils.MountDisks(input_disks)
+    g.touch('/.autorelabel')
+
+    utils.CommonRoutines(g)
+    cleanup(g)
 
 def main():
   input_disks = get_input_disks()
@@ -393,11 +409,8 @@ def main():
   utils.CommonRoutines(g)
   cleanup(g)
 
-  virt_customize_args = ['virt-customize', '--selinux-relabel']
-  for disk in input_disks:
-    virt_customize_args += ['-a', disk]
 
-  utils.Execute(virt_customize_args)
+  selinux_relable(input_disks)
 
 
 if __name__ == '__main__':
