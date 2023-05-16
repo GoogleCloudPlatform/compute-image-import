@@ -126,9 +126,7 @@ func TestInspectDisk(t *testing.T) {
 					Architecture: pb.Architecture_X64,
 					DistroId:     pb.Distro_CENTOS_STREAM,
 				},
-				BiosBootable: true,
-				UefiBootable: false,
-				OsCount:      1,
+				OsCount: 1,
 			},
 		},
 		{
@@ -141,9 +139,7 @@ func TestInspectDisk(t *testing.T) {
 					Architecture: pb.Architecture_X64,
 					DistroId:     pb.Distro_CENTOS_STREAM,
 				},
-				BiosBootable: true,
-				UefiBootable: false,
-				OsCount:      1,
+				OsCount: 1,
 			},
 		},
 
