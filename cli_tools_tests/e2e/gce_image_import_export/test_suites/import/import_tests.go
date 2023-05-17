@@ -97,9 +97,9 @@ var basicCases = []*testCase{
 	// Error messages
 	{
 		caseName:      "incorrect OS specified",
-		source:        "projects/compute-image-import-test/global/images/debian-9-translate",
+		source:        "projects/compute-image-import-test/global/images/debian-11",
 		os:            "opensuse-15",
-		expectedError: "\"debian-9\" was detected on your disk, but \"opensuse-15\" was specified",
+		expectedError: "\"debian-11\" was detected on your disk, but \"opensuse-15\" was specified",
 	},
 	{
 		caseName:      "SLES import with no OS on disk",
@@ -109,11 +109,6 @@ var basicCases = []*testCase{
 	},
 
 	// Debian
-	{
-		caseName: "debian-9",
-		source:   "projects/compute-image-import-test/global/images/debian-9-translate",
-		os:       "debian-9",
-	},
 	{
 		caseName: "debian-10",
 		source:   "projects/compute-image-import-test/global/images/debian-10",
@@ -382,10 +377,9 @@ var inspectUEFICases = []*testCase{
 		os:                      "rhel-7",
 		requiredGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
-		caseName: "inspect-uefi-linux-nonuefi-debian-9",
-		// source created from projects/debian-cloud/global/images/debian-9-stretch-v20200714
-		source:                    "gs://compute-image-import-test-resources/uefi/linux-nonuefi-debian-9.vmdk",
-		os:                        "debian-9",
+		caseName:                  "inspect-uefi-linux-nonuefi-debian-11",
+		source:                    "projects/compute-image-import-test/global/images/debian-11",
+		os:                        "debian-11",
 		notAllowedGuestOsFeatures: []string{"UEFI_COMPATIBLE"},
 	}, {
 		caseName: "inspect-uefi-linux-dual-protective-mbr-ubuntu-1804",
