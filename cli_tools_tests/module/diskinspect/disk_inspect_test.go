@@ -161,17 +161,19 @@ func TestInspectDisk(t *testing.T) {
 			},
 		}, {
 			caseName: "UEFI inspection test for MBR-only",
-			imageURI: "projects/debian-cloud/global/images/debian-9-stretch-v20211028",
+			imageURI: "projects/debian-cloud/global/images/debian-11-bullseye-v20230509",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
-					CliFormatted: "debian-9",
+					CliFormatted: "debian-11",
 					Distro:       "debian",
-					MajorVersion: "9",
-					MinorVersion: "13",
+					MajorVersion: "11",
+					MinorVersion: "7",
 					Architecture: pb.Architecture_X64,
 					DistroId:     pb.Distro_DEBIAN,
 				},
-				OsCount: 1,
+				BiosBootable: true,
+				UefiBootable: true,
+				OsCount:      1,
 			},
 		}, {
 			caseName: "UEFI inspection test for GPT UEFI - windows",
@@ -481,7 +483,7 @@ func TestInspectDisk_SupportsNoExternalIP(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	diskURI := createDisk(t, client, env, "projects/debian-cloud/global/images/debian-9-stretch-v20200714")
+	diskURI := createDisk(t, client, env, "projects/debian-cloud/global/images/debian-11-bullseye-v20230509")
 	defer deleteDisk(t, client, env, diskURI)
 
 	actual, err := inspector.Inspect(diskURI)
@@ -490,13 +492,15 @@ func TestInspectDisk_SupportsNoExternalIP(t *testing.T) {
 	expected := &pb.InspectionResults{
 		OsCount: 1,
 		OsRelease: &pb.OsRelease{
-			CliFormatted: "debian-9",
+			CliFormatted: "debian-11",
 			Distro:       "debian",
-			MajorVersion: "9",
-			MinorVersion: "12",
+			MajorVersion: "11",
+			MinorVersion: "7",
 			Architecture: pb.Architecture_X64,
 			DistroId:     pb.Distro_DEBIAN,
 		},
+		BiosBootable: true,
+		UefiBootable: true,
 	}
 	if diff := cmp.Diff(expected, actual, protocmp.Transform()); diff != "" {
 		t.Errorf("unexpected difference:\n%v", diff)

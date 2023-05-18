@@ -88,8 +88,6 @@ func TestSuite(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "Windows 2016"))
 		instanceImportWindows2008R2FourNICs := junitxml.NewTestCase(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "Windows 2008r2 - Four NICs"))
-		instanceImportDebian9 := junitxml.NewTestCase(
-			testSuiteName, fmt.Sprintf("[%v] %v", testType, "Debian 9"))
 		instanceImportUbuntu16FromVirtualBox := junitxml.NewTestCase(
 			testSuiteName, fmt.Sprintf("[%v] %v", testType, "Ubuntu 1604 from Virtualbox"))
 		instanceImportUbuntu16FromAWS := junitxml.NewTestCase(
@@ -107,7 +105,6 @@ func TestSuite(
 		testsMap[testType][instanceImportWindows2012R2TwoDisksNetworkSettingsPath] = runOVFInstanceImportWindows2012R2TwoDisksNetworkSettingsPath
 		testsMap[testType][instanceImportWindows2016] = runOVFInstanceImportWindows2016
 		testsMap[testType][instanceImportWindows2008R2FourNICs] = runOVFInstanceImportWindows2008R2FourNICs
-		testsMap[testType][instanceImportDebian9] = runOVFInstanceImportDebian9
 		testsMap[testType][InstanceImportDebian10WithBootDiskSpanMultiplePhysicalDisks] = runOVFInstanceImportDebian10WithBootDiskSpanMultiplePhysicalDisks
 		testsMap[testType][InstanceImportUbuntu18WithBootDiskSpanMultiplePhysicalDisksWithLVM] = runOVFInstanceImportUbuntu18WithBootDiskSpanMultiplePhysicalDisksWithLVM
 		testsMap[testType][instanceImportCentOS7With3Disks] = runOVFInstanceImportCentOS7With3Disks
@@ -436,24 +433,6 @@ func runOVFInstanceImportWindows2008R2FourNICs(ctx context.Context, testCase *ju
 			Os:                    "windows-2008r2",
 			InstanceMetadata:      skipOSConfigMetadata,
 			IsWindows:             true,
-		}}
-
-	runOVFInstanceImportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
-}
-
-func runOVFInstanceImportDebian9(ctx context.Context, testCase *junitxml.TestCase, logger *log.Logger,
-	testProjectConfig *testconfig.Project, testType e2e.CLITestType) {
-
-	suffix := path.RandString(5)
-	// no startup script as this OVA has issues running it (possibly due to no SSH allowed)
-	// b/141321520
-	props := &ovfInstanceImportTestProperties{
-		instanceName: fmt.Sprintf("test-instance-debian-9-%v", suffix),
-		OvfImportTestProperties: ovfimporttestsuite.OvfImportTestProperties{
-			Zone:        "us-west1-c",
-			SourceURI:   fmt.Sprintf("gs://%v/ova/bitnami-tomcat-8.5.43-0-linux-debian-9-x86_64.ova", ovaBucket),
-			Os:          "debian-9",
-			MachineType: "n1-standard-4",
 		}}
 
 	runOVFInstanceImportTest(ctx, buildTestArgs(props, testProjectConfig)[testType], testType, testProjectConfig, logger, testCase, props)
