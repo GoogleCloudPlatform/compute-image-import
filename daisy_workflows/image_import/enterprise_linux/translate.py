@@ -323,6 +323,7 @@ def yum_install(g, *packages):
       RuntimeError: If there is a failure during installation.
   """
   p = None
+  skip_broken = False
   for i in range(6):
     # There's no sleep on the first iteration since `i` is zero.
     time.sleep(i**2)
@@ -331,12 +332,20 @@ def yum_install(g, *packages):
     #   no_proxy="*": Disables proxies set by using the `http_proxy`
     #                 environment variable.
     #   proxy=_none_: Disables proxies set in /etc/yum.conf.
-    cmd = 'no_proxy="*" yum install --setopt=proxy=_none_ -y ' + ' '.join(
-        '"{0}"'.format(p) for p in packages)
+
+    cmd = ('no_proxy="*" yum install --setopt=proxy=_none_ -y '
+           + ('--skip-broken ' if skip_broken else '')
+           + ' '.join('"{0}"'.format(p) for p in packages))
+
     p = run(g, cmd, raiseOnError=False)
     if p.code == 0:
       return
     logging.debug('Yum install failed: {}'.format(p))
+
+    if 'try to add \'--skip-broken\'' in p.stdout:
+      logging.debug('Will try again to install packages [{}] with '
+                    '\'--skip-broken\' flag.'.format(', '.join(packages)))
+      skip_broken = True
   raise RuntimeError('Failed to install {}. Details: {}.'.format(
       ', '.join(packages), p))
 
