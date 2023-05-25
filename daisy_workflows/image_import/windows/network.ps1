@@ -51,4 +51,3 @@ $interface | Get-DnsClientServerAddress
 # Test connection to packages.cloud.google.com and log results.
 Write-Host 'Testing connection to packages.cloud.google.com:'
 Test-NetConnection -ComputerName packages.cloud.google.com -Port 443
-Test-NetConnection -ComputerName packages.cloud.google.com -Port 80
