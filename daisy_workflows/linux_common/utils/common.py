@@ -249,6 +249,9 @@ def is_rhel6_img(g):
 
 def RebuildInitramfs(g):
   logging.info('Updating initramfs')
+
+  tmp_dir = g.mkdtemp('/google-image-import-temp-dracut-XXXXXX')
+
   for kver in g.ls('/lib/modules'):
     logging.debug('Updating initramfs for ' + kver)
     # Although each directory in /lib/modules typically corresponds to a
@@ -278,7 +281,10 @@ def RebuildInitramfs(g):
       # Version 6 doesn't have option --kver
       cmds.append(['dracut', '-v', '-f', kver])
     else:
-      cmds.append(['dracut', '--stdlog=1', '-f', '--kver', kver])
+      cmds.append(['dracut', '--stdlog=1', '-f',
+                   '--tmpdir', tmp_dir,
+                   '--kver', kver])
+
     for cmd in cmds:
       try:
         run(g, cmd)
@@ -291,6 +297,7 @@ def RebuildInitramfs(g):
                'the disks, and re-import.').format(kver=kver, cmd=cmd_string)
         logging.info(msg)
         break
+  g.rmdir(tmp_dir)
 
 
 def RunTranslate(translate_func: typing.Callable,
