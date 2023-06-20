@@ -17,7 +17,7 @@ Some basic concepts to start with:
 *   Networking: Import workflow sets the interface to DHCP. If that fails, or if there are other interfaces set with firewalls, special routing, VPN's, or other non-standard configurations, networking may fail and while the resulting instance may boot, you may not be able to access it.
 
 Not every VM image will be importable to GCE. Some VMs will have issues after
-import. Below is a list of known compatibility requirements and issues:
+import.
 
 ## Compatibility Precheck Tool
 Image import has a long runtime, can fail due to incompatibilities, and can
