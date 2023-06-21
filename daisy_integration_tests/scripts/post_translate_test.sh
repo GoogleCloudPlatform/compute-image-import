@@ -116,6 +116,32 @@ function check_google_services {
   assert_running google-osconfig-agent
 }
 
+# Check gcloud.
+# If gcloud doesn't exit, this function will retry again multiple times
+# Because starting from Ubuntu 18, Google Cloud SDK is scheduled to be installed
+# using cloud-init on the first boot, so adding retries here to handle case if cloud-init
+# took long time. These retries will not affect other Operating systems.
+function check_gcloud {
+  status "Checking for gcloud."
+  for i in $(seq 1 10) ; do
+    gcloud version && return 0
+    status "Waiting until Google Cloud SDK being installed."
+    sleep $((i**2))
+  done
+  fail "gcloud is not installed."
+}
+
+# Check gsutil.
+function check_gsutil {
+  status "Checking for gsutil."
+  for i in $(seq 1 10) ; do
+    gsutil -v && return 0
+    status "Waiting until Google Cloud SDK being installed."
+    sleep $((i**2))
+  done
+  fail "gsutil is not installed."
+}
+
 # Check Google Cloud SDK.
 function check_google_cloud_sdk {
   # Skip for EL6
@@ -142,17 +168,8 @@ function check_google_cloud_sdk {
     fi
   fi
 
-  status "Checking for gcloud."
-  gcloud version
-  if [[ $? -ne 0 ]]; then
-    fail "gcloud is not installed."
-  fi
-
-  status "Checking for gsutil."
-  gsutil -v
-  if [[ $? -ne 0 ]]; then
-    fail "gsutil is not installed."
-  fi
+  check_gcloud
+  check_gsutil
 }
 
 # Check cloud-init if it exists.
