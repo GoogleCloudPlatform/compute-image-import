@@ -282,11 +282,11 @@ check_passwords_locked
 
 # Run tests.
 check_google_services
-check_google_cloud_sdk
 check_cloud_init
 check_package_install
 check_metadata_connectivity
 check_internet_connectivity
+check_google_cloud_sdk
 
 # Return results.
 if [[ ${FAIL} -eq 0 ]]; then
