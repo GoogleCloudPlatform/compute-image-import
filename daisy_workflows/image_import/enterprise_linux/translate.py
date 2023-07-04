@@ -226,7 +226,7 @@ def DistroSpecific(spec: TranslateSpec):
       run(g, ['yum', 'remove', '-y', '*rhui*'])
       logging.info('Adding in GCE RHUI package.')
       g.write('/etc/yum.repos.d/google-cloud.repo', repo_compute % el_release)
-      yum_install(g, 'google-rhui-client-rhel' + el_release)
+      yum_install(spec, 'google-rhui-client-rhel' + el_release)
 
   # Historically, translations have failed for corrupt dbcache and rpmdb.
   if yum_is_on_path(spec):
@@ -252,7 +252,7 @@ def DistroSpecific(spec: TranslateSpec):
       # Install Google Cloud SDK from the upstream tar and create links for the
       # python27 SCL environment.
       logging.info('Installing python27 from SCL.')
-      yum_install(g, 'python27')
+      yum_install(spec, 'python27')
       logging.info('Installing Google Cloud SDK from tar.')
       sdk_base_url = 'https://dl.google.com/dl/cloudsdk/channels/rapid'
       sdk_base_tar = '%s/google-cloud-sdk.tar.gz' % sdk_base_url
@@ -289,8 +289,8 @@ def DistroSpecific(spec: TranslateSpec):
     else:
       g.write_append(
           '/etc/yum.repos.d/google-cloud.repo', repo_sdk % el_release)
-      yum_install(g, 'google-cloud-sdk')
-    yum_install(g, 'google-compute-engine', 'google-osconfig-agent')
+      yum_install(spec, 'google-cloud-sdk')
+    yum_install(spec, 'google-compute-engine', 'google-osconfig-agent')
 
   utils.RebuildInitramfs(g)
 
@@ -312,7 +312,7 @@ def DistroSpecific(spec: TranslateSpec):
   reset_network_for_dhcp(spec)
 
 
-def yum_install(g, *packages):
+def yum_install(spec, *packages):
   """Install one or more packages using YUM.
 
   Args:
@@ -337,12 +337,16 @@ def yum_install(g, *packages):
            + ('--skip-broken ' if skip_broken else '')
            + ' '.join('"{0}"'.format(p) for p in packages))
 
-    p = run(g, cmd, raiseOnError=False)
+    p = run(spec.g, cmd, raiseOnError=False)
     if p.code == 0:
       return
     logging.debug('Yum install failed: {}'.format(p))
 
-    if 'try to add \'--skip-broken\'' in p.stdout:
+    # Do not add --skip-broken flag when -byol flag is enabled.
+    # This is because if yum install fails, it is likely due to this
+    # image doesn't have an active subscription.
+    if (spec.use_rhel_gce_license
+        and 'try to add \'--skip-broken\'' in p.stdout):
       logging.debug('Will try again to install packages [{}] with '
                     '\'--skip-broken\' flag.'.format(', '.join(packages)))
       skip_broken = True
