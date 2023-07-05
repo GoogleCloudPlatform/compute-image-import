@@ -341,8 +341,9 @@ def translate():
     _refresh_zypper(g)
     _install_packages(g, pkgs)
 
-    # Rebuilds initramfs to ensure that virtio drivers are present.
-    utils.RebuildInitramfs(g)
+  # Rebuilds initramfs to ensure that virtio drivers are present.
+  utils.RebuildInitramfs(g)
+
   if include_gce_packages:
     logging.info('Enabling google services.')
     for unit in g.ls('/usr/lib/systemd/system/'):
