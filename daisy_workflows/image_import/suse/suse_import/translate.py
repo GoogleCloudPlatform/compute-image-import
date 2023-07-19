@@ -111,6 +111,18 @@ _releases = [
         ]
     ),
     _SuseRelease(
+        product='opensuse',
+        major='15',
+        minor='3|4',
+        gce_packages=[
+          'google-guest-agent',
+          'google-guest-configs',
+          'google-guest-oslogin',
+          'google-osconfig-agent',
+          'rsyslog'
+        ]
+    ),
+    _SuseRelease(
         product='sles',
         major='15',
         minor='1|2|3|4',
