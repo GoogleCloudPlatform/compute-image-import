@@ -164,6 +164,16 @@ var basicCases = []*testCase{
 		os:                   "opensuse-15",
 		osConfigNotSupported: true,
 	},
+	{
+		caseName: "opensuse-15-3",
+		source:   "projects/compute-image-import-test/global/images/opensuse-15-3",
+		os:       "opensuse-15",
+	},
+	{
+		caseName: "opensuse-15-4",
+		source:   "projects/compute-image-import-test/global/images/opensuse-15-4",
+		os:       "opensuse-15",
+	},
 
 	// SLES: BYOL
 	// Uses a mixture of tactics for specifying BYOL, all of which should be successful.
