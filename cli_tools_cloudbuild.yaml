@@ -131,7 +131,7 @@ steps:
   - 'bash'
   - '-c'
   - |
-    GCP_PROJECTS=($_IMAGE_PROJECT_1 _IMAGE_PROJECT_2)
+    GCP_PROJECTS=($_IMAGE_PROJECT_1 $_IMAGE_PROJECT_2)
 
     REGIONS=()
     readarray -t REGIONS < ./supported-regions
