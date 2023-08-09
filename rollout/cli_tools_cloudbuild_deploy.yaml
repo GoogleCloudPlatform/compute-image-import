@@ -30,7 +30,7 @@ steps:
       fi
     }
 
-    for _PROJECT in $$GCP_PROJECTS_ARR
+    for _PROJECT in ${GCP_PROJECTS_ARR[@]}
     do
       for _REGION in $$REGIONS_ARR
       do
