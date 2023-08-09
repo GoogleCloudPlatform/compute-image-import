@@ -1,5 +1,7 @@
 # Build all the docker images and put them into container registry (gcr.io)
 # Later, these images will be copied to artifacts registry on demand.
+# NOTE: Wrappers will be pushed into 2 GCP projects. This is because we still
+# need to push to the old one for backward compatibility.
 
 timeout: 1800s
 
@@ -47,9 +49,12 @@ steps:
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_import:$_RELEASE
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_import:$COMMIT_SHA
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_import:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_import:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_import:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_import:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_import:$_WORKFLOW_EXECUTION_ID
   - --context=/workspace
   - --dockerfile=gce_vm_image_import.Dockerfile
 
@@ -60,9 +65,12 @@ steps:
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_onestep_image_import:$_RELEASE
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_onestep_image_import:$COMMIT_SHA
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_onestep_image_import:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_onestep_image_import:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_onestep_image_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_onestep_image_import:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_onestep_image_import:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_onestep_image_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_onestep_image_import:$_WORKFLOW_EXECUTION_ID
   - --context=/workspace
   - --dockerfile=gce_onestep_image_import.Dockerfile
 
@@ -73,9 +81,12 @@ steps:
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$_RELEASE
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$COMMIT_SHA
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_export:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_export:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_export:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_export:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_export:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_export:$_WORKFLOW_EXECUTION_ID
   - --context=/workspace
   - --dockerfile=gce_vm_image_export.Dockerfile
 
@@ -86,9 +97,12 @@ steps:
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_import:$_RELEASE
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_import:$COMMIT_SHA
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_import:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_import:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_import:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_import:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_import:$_WORKFLOW_EXECUTION_ID
   - --context=/workspace
   - --dockerfile=gce_ovf_import.Dockerfile
 
@@ -99,20 +113,31 @@ steps:
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_export:$_RELEASE
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_export:$COMMIT_SHA
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_export:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_export:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_export:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_export:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_export:$_RELEASE
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_export:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_export:$_WORKFLOW_EXECUTION_ID
   - --context=/workspace
   - --dockerfile=gce_ovf_export.Dockerfile
 
-# Copy Linux binaries to GCS
+# Copy Linux binaries to GCS - _IMAGE_PROJECT_1
 - name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT/$_RELEASE/linux/']
+  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT_1/$_RELEASE/linux/']
 
-# Copy Windows binaries to GCS
+# Copy Linux binaries to GCS - _IMAGE_PROJECT_2
 - name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT/$_RELEASE/windows/']
+  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT_2/$_RELEASE/linux/']
 
-# Make binaries world-readable.
+# Copy Windows binaries to GCS - _IMAGE_PROJECT_1
 - name: 'gcr.io/cloud-builders/gsutil'
-  args: ['-m', 'acl', '-r', 'ch', '-u', 'AllUsers:R', 'gs://$_IMAGE_PROJECT/$_RELEASE/*']
+  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT_1/$_RELEASE/windows/']
+
+# Copy Windows binaries to GCS - _IMAGE_PROJECT_2
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT_2/$_RELEASE/windows/']
+
+# Make binaries world-readable - _IMAGE_PROJECT_1
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['-m', 'acl', '-r', 'ch', '-u', 'AllUsers:R', 'gs://$_IMAGE_PROJECT_1/$_RELEASE/*']

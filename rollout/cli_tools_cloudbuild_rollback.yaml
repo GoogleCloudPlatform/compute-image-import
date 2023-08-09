@@ -11,6 +11,8 @@ steps:
 # It's specifically useful when the original workflow was failed and we resumed it.
 # 2. The commit SHA is used to track which version of source code produced the image.
 # 3. The "release" tag marks it as the current effective image.
+# NOTE: Rollout will be done on 2 GCP project, this is because wrappers are be pushed into 2 GCP projects as
+# we still need to push to the old one for backward compatibility.
 - name: 'google/cloud-sdk:alpine'
   args:
   - 'bash'
@@ -18,6 +20,7 @@ steps:
   - |
     REGIONS_ARR=$(echo "$_REGIONS" | tr ";" "\n")
     TOOLS_ARR=$(echo "$_TOOLS" | tr ";" "\n")
+    GCP_PROJECTS_ARR=($_IMAGE_PROJECT_1 $_IMAGE_PROJECT_2)
 
     exit_on_error() {
       ERR=$$1
@@ -27,23 +30,30 @@ steps:
       fi
     }
 
-    for _REGION in $$REGIONS_ARR
+
+    for _PROJECT in ${GCP_PROJECTS_ARR[@]}
+    do
+      echo "--> Start Rolling back for project $$_PROJECT .."
+      for _REGION in $$REGIONS_ARR
+      do
+        for _TOOL in $$TOOLS_ARR
+        do
+          echo "--> Rollback... $$_TOOL -> $$_REGION"
+
+          gcloud container images add-tag $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:prev-release $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:release -q
+          exit_on_error $$?
+        done
+        echo "----> Rollback all tools for $$_REGION done."
+      done
+    done
+
+    for _PROJECT in ${GCP_PROJECTS_ARR[@]}
     do
       for _TOOL in $$TOOLS_ARR
       do
-        echo "--> Rollback... $$_TOOL -> $$_REGION"
-
-        gcloud container images add-tag $$_REGION-docker.pkg.dev/$_IMAGE_PROJECT/wrappers/$$_TOOL:prev-release $$_REGION-docker.pkg.dev/$_IMAGE_PROJECT/wrappers/$$_TOOL:release -q
+        echo "--> Rollback... $$_TOOL -> gcr.io in project $$_PROJECT"
+        gcloud container images add-tag gcr.io/$$_PROJECT/$$_TOOL:prev-release gcr.io/$$_PROJECT/$$_TOOL:release -q
         exit_on_error $$?
       done
-      echo "----> Rollback all tools for $$_REGION done."
-    done
-
-    for _TOOL in $$TOOLS_ARR
-    do
-      echo "--> Rollback... $$_TOOL -> gcr.io"
-
-      gcloud container images add-tag gcr.io/$_IMAGE_PROJECT/$$_TOOL:prev-release gcr.io/$_IMAGE_PROJECT/$$_TOOL:release -q
-      exit_on_error $$?
     done
     echo "----> Rollback all tools for gcr.io done."
