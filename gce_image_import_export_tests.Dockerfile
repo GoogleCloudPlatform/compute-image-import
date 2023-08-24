@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-ARG PROJECT_ID=compute-image-tools-test
+ARG PROJECT_ID=compute-image-import-test
 FROM golang
 
 # Build test runner
