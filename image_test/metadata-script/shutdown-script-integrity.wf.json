@@ -26,7 +26,7 @@
             "startup_script_meta": "${SOURCESPATH}/startup_script_integrity.ps1",
             "shutdown_script_meta_key": "shutdown-script-url",
             "windows_shutdown_script_meta_key": "windows-shutdown-script-url",
-            "shutdown_script_meta": "https://raw.githubusercontent.com/GoogleCloudPlatform/compute-image-tools/master/image_test/metadata-script/${shutdown_script_name}"
+            "shutdown_script_meta": "https://raw.githubusercontent.com/GoogleCloudPlatform/compute-image-import/master/image_test/metadata-script/${shutdown_script_name}"
         }
       }
     },

@@ -5,7 +5,7 @@ steps:
 # 1. $_REGIONS="us;us-east1;us-east2"
 # 2. $_TOOLS="gve_vm_image_import;gce_vm_image_export"
 # The script will pull the built docker images with "prev-release" tag from gcr.io (container registry),
-# and then push to artifacts registry (e.g. us-east1-docker.pkg.dev/compute-image-tools/wrappers/gce_vm_image_import)
+# and then push to artifacts registry (e.g. us-east1-docker.pkg.dev/compute-image-import/wrappers/gce_vm_image_import)
 # with 3 tags: the workflow execution ID, the commit SHA, and the "release".
 # 1. The workflow execution ID is used to track which workflow produced the image.
 # It's specifically useful when the original workflow was failed and we resumed it.
