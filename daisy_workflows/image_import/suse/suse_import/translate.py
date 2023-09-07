@@ -79,7 +79,7 @@ class _SuseRelease:
 
 
 _on_demand_rpm_pattern = (
-    'https://storage.googleapis.com/compute-image-tools/linux_import_tools/'
+    'https://storage.googleapis.com/compute-image-import/linux_import_tools/'
     'sles/{timestamp}/late_instance_offline_update_gce_SLE{major}.tar.gz')
 
 # Packages for the GCE environment that are available in SLES's repo

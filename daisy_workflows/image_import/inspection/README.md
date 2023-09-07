@@ -55,7 +55,7 @@ boot-inspect --disk_file=/images/ubuntu-16.04-server-cloudimg-amd64-disk1.vmdk
 ## Running unit tests
 
 The safe and quick option is to run the prow job's container locally.
-From the root of the compute-image-tools repo:
+From the root of the compute-image-import repo:
 
 ```shell script
 rm -rf /tmp/artifacts && mkdir /tmp/artifacts

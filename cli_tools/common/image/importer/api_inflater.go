@@ -247,7 +247,7 @@ func (inflater *apiInflater) getCalculateChecksumWorkflow(diskURI string, daisyP
 				{
 					Disk: compute.Disk{
 						Name:        "disk-${NAME}",
-						SourceImage: "projects/compute-image-tools/global/images/family/debian-9-worker",
+						SourceImage: "projects/compute-image-import/global/images/debian-11-worker-v20221107",
 						Type:        "pd-ssd",
 					},
 				},
@@ -328,7 +328,7 @@ const (
 		}
 		CHECK_DEVICE=sdb
 		BLOCK_COUNT=$(cat /sys/class/block/$CHECK_DEVICE/size)
-	
+
 		# Check size = 200000*512 = 100MB
 		CHECK_COUNT=200000
 		CHECKSUM1=$(sudo dd if=/dev/$CHECK_DEVICE ibs=512 skip=0 count=$CHECK_COUNT | md5sum)

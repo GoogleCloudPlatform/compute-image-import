@@ -2,7 +2,7 @@ This package supports translating OpenSUSE and SLES distributions to run on Goog
 
 ## SLES subscriptions
 
-Bring-your-own-license (BYOL) and on-demand subscriptions are supported.  When using BYOL, 
+Bring-your-own-license (BYOL) and on-demand subscriptions are supported.  When using BYOL,
 the guest is imported without modifications to its license. During import, zypper is used
 to install packages, so the license must be active. If the subscription requires an entitlement
 server, then the server must reachable.
@@ -50,7 +50,7 @@ Check [SUSE-KB-000019633](https://www.suse.com/support/kb/doc/?id=000019633) for
 conversion steps. If SUSE updates their tarballs of offline packages, copy the new versions
 to the GCS mirror:
 
- - Project: compute-image-tools
+ - Project: compute-image-import
  - Bucket and path: linux_import_tools/sles/{timestamp}
 
 ### Working in a chroot
