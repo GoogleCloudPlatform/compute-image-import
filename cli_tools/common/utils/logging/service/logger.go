@@ -59,8 +59,8 @@ const (
 
 	// These strings should be interleaved to construct the real URL. This is just to (hopefully)
 	// fool github URL scanning bots.
-	serverURLProdP1 = "hts/frbslgigp.ogepscmv/ieo/eaylg"
-	serverURLProdP2 = "tp:/ieaeogn-agolai.o/1frlglgc/o"
+	serverURLProdP1 = "hts/pa.ogepscmlgfra=snpoo"
+	serverURLProdP2 = "tp:/lygolai.o/o?omtjo_rt"
 	keyP1           = "AzSCO1066k_gFH2sJg3I"
 	keyP2           = "IaymztUIWu9U8THBeTx"
 
@@ -310,8 +310,6 @@ func (l *Logger) sendLogToServerWithRetry(logExtension *ComputeImageToolsLogExte
 		}
 
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Content-Encoding", "gzip")
-		req.Header.Set("X-Goog-Api-Key", key)
 		resp, err := httpClient.Do(req)
 		if err != nil {
 			fmt.Println("Failed to log to server: ", err)
@@ -350,9 +348,8 @@ func (l *Logger) sendLogToServerWithRetry(logExtension *ComputeImageToolsLogExte
 			return failedOnUndefinedResponse
 		}
 
-		// Return if client failed to receive response details from server
-		fmt.Println("Failed to log to server: missing response details")
-		return failedOnMissingResponseDetails
+		// If no response details are present but successfully response is parsed, return success
+		return logResult(deleteRequest)
 	}
 
 	fmt.Println("Failed to log to server after retrying")
