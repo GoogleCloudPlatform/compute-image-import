@@ -32,7 +32,7 @@
       "Description": "SubNetwork to use for the import instance"
     },
     "import_license": {
-      "Value": "projects/compute-image-tools/global/licenses/virtual-disk-import",
+      "Value": "projects/compute-image-import/global/licenses/virtual-disk-import",
       "Description": "Import License used for tracking migration workflow use."
     },
     "compute_service_account": {

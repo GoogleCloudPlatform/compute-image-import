@@ -24,6 +24,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/imagefile"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	string_utils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/string"
 )
 
@@ -92,8 +93,9 @@ func newDaisyInflater(request ImageImportRequest, fileMetadata imagefile.Metadat
 	if isImage(request.Source) {
 		wfPath = inflateImagePath
 		vars = map[string]string{
-			"source_image": request.Source.Path(),
-			"disk_name":    diskName,
+			"source_image":   request.Source.Path(),
+			"disk_name":      diskName,
+			"import_license": fmt.Sprintf("projects/%s/global/licenses/virtual-disk-import", param.ReleaseProject),
 		}
 		inflationDiskIndex = 0 // Workflow only uses one disk.
 	} else {
@@ -170,6 +172,7 @@ func createDaisyVarsForFile(request ImageImportRequest,
 		"import_network":   request.Network,
 		"import_subnet":    request.Subnet,
 		"disk_name":        diskName,
+		"import_license":   fmt.Sprintf("projects/%s/global/licenses/virtual-disk-import", param.ReleaseProject),
 	}
 
 	if request.ComputeServiceAccount != "" {

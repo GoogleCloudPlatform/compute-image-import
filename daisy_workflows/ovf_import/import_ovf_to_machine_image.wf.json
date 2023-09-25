@@ -52,7 +52,7 @@
           "disk_name": "${translation_disk_name}",
           "import_network": "${network}",
           "import_subnet": "${subnet}",
-          "import_license": "projects/compute-image-tools/global/licenses/virtual-appliance-import"
+          "import_license": "projects/compute-image-import/global/licenses/virtual-appliance-import"
         }
       }
     },

@@ -49,7 +49,7 @@
           "disk_name": "${translation-disk-name}",
           "import_network": "${import_network}",
           "import_subnet": "${import_subnet}",
-          "import_license": "projects/compute-image-tools/global/licenses/virtual-disk-import"
+          "import_license": "projects/compute-image-import/global/licenses/virtual-disk-import"
         }
       }
     },

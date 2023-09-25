@@ -29,6 +29,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/imagefile"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
@@ -104,10 +105,20 @@ func TestCreateDaisyInflater_Image_HappyCase(t *testing.T) {
 
 	assert.Equal(t, "zones/us-west1-b/disks/disk-1234", inflater.inflatedDiskURI)
 	assert.Equal(t, "projects/test/uri/image", inflater.vars["source_image"])
-	daisyutils.CheckWorkflow(inflater.worker, func(wf *daisy.Workflow, err error) {
-		assert.Contains(t, getDisk(wf, 0).Licenses,
-			"projects/compute-image-tools/global/licenses/virtual-disk-import")
+	assert.Equal(t, "projects/compute-image-import/global/licenses/virtual-disk-import", inflater.vars["import_license"])
+}
+
+func TestCreateDaisyInflater_Image_HappyCaseWithChangeReleaseProject(t *testing.T) {
+	param.ReleaseProject = "compute-image-tools"
+	inflater := createDaisyInflaterForImageSafe(t, ImageImportRequest{
+		Source:      imageSource{uri: "projects/test/uri/image"},
+		Zone:        "us-west1-b",
+		ExecutionID: "1234",
 	})
+
+	assert.Equal(t, "zones/us-west1-b/disks/disk-1234", inflater.inflatedDiskURI)
+	assert.Equal(t, "projects/test/uri/image", inflater.vars["source_image"])
+	assert.Equal(t, "projects/compute-image-tools/global/licenses/virtual-disk-import", inflater.vars["import_license"])
 }
 
 func TestCreateDaisyInflater_Image_Windows(t *testing.T) {
@@ -176,6 +187,31 @@ func TestCreateDaisyInflater_File_HappyCase(t *testing.T) {
 		assert.Equal(t, "projects/subnet/subnet", wf.Vars["import_subnet"].Value)
 		assert.Equal(t, "projects/network/network", wf.Vars["import_network"].Value)
 		assert.Equal(t, "default", wf.Vars["compute_service_account"].Value)
+		assert.Equal(t, "projects/compute-image-import/global/licenses/virtual-disk-import", wf.Vars["import_license"].Value)
+
+		network := getWorkerNetwork(t, wf)
+		assert.Nil(t, network.AccessConfigs, "AccessConfigs must be nil to allow ExternalIP to be allocated.")
+	})
+}
+
+func TestCreateDaisyInflater_File_HappyCaseWithChangedReleaseProject(t *testing.T) {
+	source := fileSource{gcsPath: "gs://bucket/vmdk"}
+	param.ReleaseProject = "compute-image-tools"
+	inflater := createDaisyInflaterSafe(t, ImageImportRequest{
+		Source:       source,
+		Subnet:       "projects/subnet/subnet",
+		Network:      "projects/network/network",
+		Zone:         "us-west1-c",
+		ExecutionID:  "1234",
+		NoExternalIP: false,
+	}, imagefile.Metadata{})
+	daisyutils.CheckWorkflow(inflater.worker, func(wf *daisy.Workflow, err error) {
+		assert.Equal(t, "zones/us-west1-c/disks/disk-1234", inflater.inflatedDiskURI)
+		assert.Equal(t, "gs://bucket/vmdk", wf.Vars["source_disk_file"].Value)
+		assert.Equal(t, "projects/subnet/subnet", wf.Vars["import_subnet"].Value)
+		assert.Equal(t, "projects/network/network", wf.Vars["import_network"].Value)
+		assert.Equal(t, "default", wf.Vars["compute_service_account"].Value)
+		assert.Equal(t, "projects/compute-image-tools/global/licenses/virtual-disk-import", wf.Vars["import_license"].Value)
 
 		network := getWorkerNetwork(t, wf)
 		assert.Nil(t, network.AccessConfigs, "AccessConfigs must be nil to allow ExternalIP to be allocated.")

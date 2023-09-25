@@ -139,7 +139,7 @@ func TestCreateInflater_Image(t *testing.T) {
 		assert.Equal(t, "projects/test/uri/image", wf.Vars["source_image"].Value)
 		inflatedDisk := getDisk(wf, 0)
 		assert.Contains(t, inflatedDisk.Licenses,
-			"projects/compute-image-tools/global/licenses/virtual-disk-import")
+			wf.Vars["import_license"].Value)
 	})
 
 }

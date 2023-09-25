@@ -27,6 +27,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
 )
 
@@ -143,6 +144,7 @@ func (inflater *apiInflater) createDisk(diskName string) (compute.Disk, error) {
 		SourceStorageObject: inflater.request.Source.Path(),
 		GuestOsFeatures:     inflater.guestOsFeatures,
 		Type:                diskType,
+		Licenses:            []string{fmt.Sprintf("projects/%s/global/licenses/virtual-disk-import", param.ReleaseProject)},
 	}
 	err := inflater.computeClient.CreateDisk(inflater.request.Project, inflater.request.Zone, &cd)
 	return cd, err
