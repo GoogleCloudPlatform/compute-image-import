@@ -172,6 +172,7 @@ func TestCreateDaisyInflater_Image_NotUEFI(t *testing.T) {
 }
 
 func TestCreateDaisyInflater_File_HappyCase(t *testing.T) {
+	param.ReleaseProject = "compute-image-import"
 	source := fileSource{gcsPath: "gs://bucket/vmdk"}
 	inflater := createDaisyInflaterSafe(t, ImageImportRequest{
 		Source:       source,

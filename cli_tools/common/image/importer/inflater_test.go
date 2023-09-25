@@ -123,6 +123,7 @@ func TestCreateShadowTestInflater_File(t *testing.T) {
 }
 
 func TestCreateInflater_Image(t *testing.T) {
+	param.ReleaseProject = "compute-image-import"
 	inflater, err := NewInflater(ImageImportRequest{
 		Source:      imageSource{uri: "projects/test/uri/image"},
 		Zone:        "us-west1-b",
