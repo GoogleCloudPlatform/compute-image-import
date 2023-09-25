@@ -62,7 +62,6 @@ steps:
 - name: 'golang'
   dir: 'cli_tools/gce_onestep_image_import'
   args: ['go', 'build', '-o=/workspace/linux/gce_onestep_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
-  args: ['go', 'build', '-o=/workspace/linux/gce_onestep_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
@@ -77,7 +76,6 @@ steps:
 - name: 'golang'
   dir: 'cli_tools/gce_vm_image_export'
   args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
-  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
@@ -90,7 +88,6 @@ steps:
 # Build gce_ovf_import.
 - name: 'golang'
   dir: 'cli_tools/gce_ovf_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   args: ['go', 'build', '-o=/workspace/linux/gce_ovf_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
@@ -105,7 +102,6 @@ steps:
 # Build gce_ovf_export.
 - name: 'golang'
   dir: 'cli_tools/gce_ovf_export'
-  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   args: ['go', 'build', '-o=/workspace/linux/gce_ovf_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
