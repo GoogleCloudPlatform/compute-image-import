@@ -19,7 +19,6 @@ substitutions:
   _RELEASE: 'release'
   _PREV_RELEASE: 'prev-release'
   _RELEASE_PROJECT_FLAG: 'github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param.ReleaseProject'
-  _RELEASE_PROJECT_FLAG: 'github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param.ReleaseProject'
 
 steps:
 # Build import_precheck.
@@ -47,7 +46,6 @@ steps:
 # Build gce_vm_image_import.
 - name: 'golang'
   dir: 'cli_tools/gce_vm_image_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
