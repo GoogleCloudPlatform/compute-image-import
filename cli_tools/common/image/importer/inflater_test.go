@@ -27,6 +27,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/imagefile"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 	"github.com/GoogleCloudPlatform/compute-image-import/proto/go/pb"
@@ -137,8 +138,30 @@ func TestCreateInflater_Image(t *testing.T) {
 	daisyutils.CheckWorkflow(realInflater.worker, func(wf *daisy.Workflow, err error) {
 		assert.Equal(t, "zones/us-west1-b/disks/disk-1234", realInflater.inflatedDiskURI)
 		assert.Equal(t, "projects/test/uri/image", wf.Vars["source_image"].Value)
-		inflatedDisk := getDisk(wf, 0)
-		assert.Contains(t, inflatedDisk.Licenses,
+		assert.Equal(t, "projects/compute-image-import/global/licenses/virtual-disk-import",
+			wf.Vars["import_license"].Value)
+	})
+
+}
+
+func TestCreateInflater_ImageWithChangedReleaseProject(t *testing.T) {
+	param.ReleaseProject = "compute-image-tools"
+	inflater, err := NewInflater(ImageImportRequest{
+		Source:      imageSource{uri: "projects/test/uri/image"},
+		Zone:        "us-west1-b",
+		ExecutionID: "1234",
+		WorkflowDir: daisyWorkflows,
+		Tool: daisyutils.Tool{
+			ResourceLabelName: "image-import",
+		},
+	}, nil, &storage.Client{}, nil, logging.NewToolLogger("test"))
+	assert.NoError(t, err)
+	realInflater, ok := inflater.(*daisyInflater)
+	assert.True(t, ok)
+	daisyutils.CheckWorkflow(realInflater.worker, func(wf *daisy.Workflow, err error) {
+		assert.Equal(t, "zones/us-west1-b/disks/disk-1234", realInflater.inflatedDiskURI)
+		assert.Equal(t, "projects/test/uri/image", wf.Vars["source_image"].Value)
+		assert.Equal(t, "projects/compute-image-tools/global/licenses/virtual-disk-import",
 			wf.Vars["import_license"].Value)
 	})
 

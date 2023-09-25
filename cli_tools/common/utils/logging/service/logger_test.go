@@ -283,7 +283,7 @@ func TestSendLogToServerFailedOnUndefinedResponse(t *testing.T) {
 }
 
 func TestSendLogToServerFailedOnMissingResponseDetails(t *testing.T) {
-	testSendLogToServerWithResponses(t, failedOnMissingResponseDetails, []logResponse{{}})
+	testSendLogToServerWithResponses(t, logResult(deleteRequest), []logResponse{{}})
 }
 
 func TestSendLogToServerFailedAfterRetry(t *testing.T) {
