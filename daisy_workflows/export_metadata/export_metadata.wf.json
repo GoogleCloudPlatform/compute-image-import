@@ -41,7 +41,7 @@
       "CreateDisks": [
         {
           "Name": "disk-exporterprep",
-          "SourceImage": "projects/compute-image-tools/global/images/family/debian-10-worker",
+          "SourceImage": "projects/compute-image-import/global/images/debian-10-worker-v20230926",
           "Type": "pd-ssd"
         },
         {

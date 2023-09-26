@@ -247,7 +247,7 @@ func (inflater *apiInflater) getCalculateChecksumWorkflow(diskURI string, daisyP
 				{
 					Disk: compute.Disk{
 						Name:        "disk-${NAME}",
-						SourceImage: "projects/compute-image-tools/global/images/family/debian-9-worker",
+						SourceImage: "projects/compute-image-import/global/images/debian-9-worker-v20230926",
 						Type:        "pd-ssd",
 					},
 				},
