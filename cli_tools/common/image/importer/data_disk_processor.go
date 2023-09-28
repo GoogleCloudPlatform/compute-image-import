@@ -15,9 +15,11 @@
 package importer
 
 import (
+	"fmt"
 	"log"
 
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	"google.golang.org/api/compute/v1"
 )
 
@@ -49,7 +51,7 @@ func newDataDiskProcessor(pd persistentDisk, client daisyCompute.Client, project
 			Name:             imageName,
 			SourceDisk:       pd.uri,
 			StorageLocations: storageLocation,
-			Licenses:         []string{"projects/compute-image-tools/global/licenses/virtual-disk-import"},
+			Licenses:         []string{fmt.Sprintf("projects/%s/global/licenses/virtual-disk-import", param.ReleaseProject)},
 		},
 	}
 }

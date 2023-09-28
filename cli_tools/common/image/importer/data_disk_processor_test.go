@@ -19,11 +19,45 @@ import (
 	"testing"
 
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/compute/v1"
 )
 
 func Test_ImageIncludesTrackingLabelAndLicense(t *testing.T) {
+	param.ReleaseProject = "compute-image-import"
+	trackingLicense := "projects/compute-image-import/global/licenses/virtual-disk-import"
+	trackingLabelKey := "gce-image-import"
+	trackingLabelValue := "true"
+
+	mockClient := mockComputeClient{expectedProject: "project-1234", t: t}
+
+	processor := newDataDiskProcessor(
+		persistentDisk{uri: "global/projects/pid/pd/id"},
+		&mockClient,
+		"project-1234",
+		map[string]string{"user-key": "user-value"},
+		"northamerica",
+		"description-content",
+		"family-name",
+		"image-name")
+
+	_, err := processor.process(persistentDisk{})
+	assert.NoError(t, err)
+	assert.Equal(t, 1, mockClient.invocations)
+	assert.Equal(t, compute.Image{
+		SourceDisk:       "global/projects/pid/pd/id",
+		Labels:           map[string]string{trackingLabelKey: trackingLabelValue, "user-key": "user-value"},
+		StorageLocations: []string{"northamerica"},
+		Description:      "description-content",
+		Family:           "family-name",
+		Name:             "image-name",
+		Licenses:         []string{trackingLicense},
+	}, mockClient.actualImage, "Processor should add tracking license and tracking label.")
+}
+
+func Test_ImageIncludesTrackingLabelAndLicenseWithChangedReleaseProject(t *testing.T) {
+	param.ReleaseProject = "compute-image-tools"
 	trackingLicense := "projects/compute-image-tools/global/licenses/virtual-disk-import"
 	trackingLabelKey := "gce-image-import"
 	trackingLabelValue := "true"

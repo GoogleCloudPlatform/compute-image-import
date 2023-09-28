@@ -6,7 +6,11 @@
       "Required": true,
       "Description": "The GCE image to translate."
     },
-    "disk_name": "imported-disk-${ID}"
+    "disk_name": "imported-disk-${ID}",
+    "import_license": {
+      "Value": "projects/compute-image-import/global/licenses/virtual-disk-import",
+      "Description": "Import License used for tracking migration workflow use."
+    }
   },
   "Steps": {
     "create-disk": {
@@ -16,7 +20,7 @@
         "ExactName": true,
         "NoCleanup": true,
         "SourceImage": "${source_image}",
-        "Licenses": ["projects/compute-image-tools/global/licenses/virtual-disk-import"]
+        "Licenses": ["${import_license}"]
       }]
     }
   }
