@@ -43,7 +43,7 @@
         "CreateDisks": [
           {
             "Name": "disk-translator",
-            "SourceImage": "projects/compute-image-import/global/images/debian-11-worker-v20220706",
+            "SourceImage": "projects/compute-image-import/global/images/debian-11-worker-v20221031",
             "SizeGb": "10",
             "Type": "pd-ssd"
           }
@@ -73,7 +73,7 @@
             "Description": "${description}",
             "ExactName": true,
             "NoCleanup": true
-  
+
           }
         ]
       }
@@ -83,4 +83,3 @@
       "create-image": ["translate-disk"]
     }
   }
-  
