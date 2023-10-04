@@ -228,12 +228,12 @@ def DistroSpecific(spec: TranslateSpec):
       g.write('/etc/yum.repos.d/google-cloud.repo', repo_compute % el_release)
       yum_install(spec, 'google-rhui-client-rhel' + el_release)
 
-  # Historically, translations have failed for corrupt dbcache and rpmdb.
-  if yum_is_on_path(spec):
-    run(g, 'yum clean -y all')
-
   if spec.install_gce:
     logging.info('Installing GCE packages.')
+
+    # Historically, translations have failed for corrupt dbcache and rpmdb.
+    run(g, 'yum clean -y all')
+
     g.write('/etc/yum.repos.d/google-cloud.repo', repo_compute % el_release)
     if el_release == '6':
       # yum operations fail when the epel repo is used with stale

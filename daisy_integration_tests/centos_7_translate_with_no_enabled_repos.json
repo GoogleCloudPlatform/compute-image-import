@@ -1,0 +1,59 @@
+{
+  "Name": "centos-7-translate-test-with-no-enabled-repos",
+  "Vars": {
+    "image_name": {
+      "Value": "centos-7-translate-test-${ID}"
+    },
+    "source_image": {
+      "Value": "projects/compute-image-import-test/global/images/centos-7-missing-repo"
+    }
+  },
+  "Steps": {
+    "create-disk-from-image": {
+      "CreateDisks": [
+        {
+          "name": "translate-me",
+          "sourceImage": "${source_image}"
+        }
+      ]
+    },
+    "create-test-disk": {
+      "CreateDisks": [
+        {
+          "name": "disk-import-test",
+          "sourceImage": "${image_name}",
+          "type": "pd-ssd"
+        }
+      ]
+    },
+    "delete-image": {
+      "DeleteResources": {
+        "Images": [
+          "${image_name}"
+        ]
+      }
+    },
+    "translate-disk": {
+      "Timeout": "30m",
+      "IncludeWorkflow": {
+        "Path": "../daisy_workflows/image_import/enterprise_linux/translate_centos_7.wf.json",
+        "Vars": {
+          "image_name": "${image_name}",
+          "source_disk": "translate-me",
+          "install_gce_packages": "false"
+        }
+      }
+    }
+  },
+  "Dependencies": {
+    "create-test-disk": [
+      "translate-disk"
+    ],
+    "delete-image": [
+      "create-test-disk"
+    ],
+    "translate-disk": [
+      "create-disk-from-image"
+    ]
+  }
+}
