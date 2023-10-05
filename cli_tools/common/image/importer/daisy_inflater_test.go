@@ -109,7 +109,7 @@ func TestCreateDaisyInflater_Image_HappyCase(t *testing.T) {
 }
 
 func TestCreateDaisyInflater_Image_HappyCaseWithChangeReleaseProject(t *testing.T) {
-	param.ReleaseProject = "compute-image-tools"
+	param.ReleaseProject = "compute-image-import"
 	inflater := createDaisyInflaterForImageSafe(t, ImageImportRequest{
 		Source:      imageSource{uri: "projects/test/uri/image"},
 		Zone:        "us-west1-b",
@@ -118,7 +118,7 @@ func TestCreateDaisyInflater_Image_HappyCaseWithChangeReleaseProject(t *testing.
 
 	assert.Equal(t, "zones/us-west1-b/disks/disk-1234", inflater.inflatedDiskURI)
 	assert.Equal(t, "projects/test/uri/image", inflater.vars["source_image"])
-	assert.Equal(t, "projects/compute-image-tools/global/licenses/virtual-disk-import", inflater.vars["import_license"])
+	assert.Equal(t, "projects/compute-image-import/global/licenses/virtual-disk-import", inflater.vars["import_license"])
 }
 
 func TestCreateDaisyInflater_Image_Windows(t *testing.T) {
@@ -197,7 +197,7 @@ func TestCreateDaisyInflater_File_HappyCase(t *testing.T) {
 
 func TestCreateDaisyInflater_File_HappyCaseWithChangedReleaseProject(t *testing.T) {
 	source := fileSource{gcsPath: "gs://bucket/vmdk"}
-	param.ReleaseProject = "compute-image-tools"
+	param.ReleaseProject = "compute-image-import"
 	inflater := createDaisyInflaterSafe(t, ImageImportRequest{
 		Source:       source,
 		Subnet:       "projects/subnet/subnet",
@@ -212,7 +212,7 @@ func TestCreateDaisyInflater_File_HappyCaseWithChangedReleaseProject(t *testing.
 		assert.Equal(t, "projects/subnet/subnet", wf.Vars["import_subnet"].Value)
 		assert.Equal(t, "projects/network/network", wf.Vars["import_network"].Value)
 		assert.Equal(t, "default", wf.Vars["compute_service_account"].Value)
-		assert.Equal(t, "projects/compute-image-tools/global/licenses/virtual-disk-import", wf.Vars["import_license"].Value)
+		assert.Equal(t, "projects/compute-image-import/global/licenses/virtual-disk-import", wf.Vars["import_license"].Value)
 
 		network := getWorkerNetwork(t, wf)
 		assert.Nil(t, network.AccessConfigs, "AccessConfigs must be nil to allow ExternalIP to be allocated.")

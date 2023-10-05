@@ -146,7 +146,7 @@ func TestCreateInflater_Image(t *testing.T) {
 }
 
 func TestCreateInflater_ImageWithChangedReleaseProject(t *testing.T) {
-	param.ReleaseProject = "compute-image-tools"
+	param.ReleaseProject = "compute-image-import"
 	inflater, err := NewInflater(ImageImportRequest{
 		Source:      imageSource{uri: "projects/test/uri/image"},
 		Zone:        "us-west1-b",
@@ -162,7 +162,7 @@ func TestCreateInflater_ImageWithChangedReleaseProject(t *testing.T) {
 	daisyutils.CheckWorkflow(realInflater.worker, func(wf *daisy.Workflow, err error) {
 		assert.Equal(t, "zones/us-west1-b/disks/disk-1234", realInflater.inflatedDiskURI)
 		assert.Equal(t, "projects/test/uri/image", wf.Vars["source_image"].Value)
-		assert.Equal(t, "projects/compute-image-tools/global/licenses/virtual-disk-import",
+		assert.Equal(t, "projects/compute-image-import/global/licenses/virtual-disk-import",
 			wf.Vars["import_license"].Value)
 	})
 

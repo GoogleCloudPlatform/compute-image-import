@@ -57,8 +57,8 @@ func Test_ImageIncludesTrackingLabelAndLicense(t *testing.T) {
 }
 
 func Test_ImageIncludesTrackingLabelAndLicenseWithChangedReleaseProject(t *testing.T) {
-	param.ReleaseProject = "compute-image-tools"
-	trackingLicense := "projects/compute-image-tools/global/licenses/virtual-disk-import"
+	param.ReleaseProject = "compute-image-import"
+	trackingLicense := "projects/compute-image-import/global/licenses/virtual-disk-import"
 	trackingLabelKey := "gce-image-import"
 	trackingLabelValue := "true"
 
