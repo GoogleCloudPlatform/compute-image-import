@@ -13,12 +13,13 @@
 # limitations under the License.
 
 FROM launcher.gcr.io/google/debian11
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -q -y qemu-utils gnupg ca-certificates
-RUN echo "deb http://packages.cloud.google.com/apt gcsfuse-stretch main" > /etc/apt/sources.list.d/gcsfuse.list
-# gcsfuse, installed using instructions from:
-#  https://github.com/GoogleCloudPlatform/gcsfuse/blob/master/docs/installing.md
-COPY gcsfuse-apt-key.gpg .
-RUN apt-key add gcsfuse-apt-key.gpg
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -q -y qemu-utils gnupg ca-certificates curl
+
+# Install gcsfuse, installed using instructions from:
+# https://cloud.google.com/storage/docs/gcsfuse-install
+ENV GCSFUSE_REPO=gcsfuse-bullseye
+RUN echo "deb https://packages.cloud.google.com/apt $GCSFUSE_REPO main" > /etc/apt/sources.list.d/gcsfuse.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -q -y gcsfuse
 
 COPY linux/gce_onestep_image_import /gce_onestep_image_import
