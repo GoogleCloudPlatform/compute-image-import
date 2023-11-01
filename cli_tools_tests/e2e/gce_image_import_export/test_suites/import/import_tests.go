@@ -122,6 +122,10 @@ var basicCases = []*testCase{
 		caseName: "debian-11-without-wget-and-curl",
 		source:   "projects/compute-image-import-test/global/images/debian-11-without-wget-and-curl",
 	},
+	{
+		caseName: "debian-12",
+		source:   "projects/debian-cloud/global/images/family/debian-12",
+	},
 
 	// Ubuntu
 	{
