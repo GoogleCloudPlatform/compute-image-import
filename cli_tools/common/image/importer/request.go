@@ -76,6 +76,7 @@ type ImageImportRequest struct {
 	ExecutionID                 string `name:"execution_id" validate:"required"`
 	CloudLogsDisabled           bool
 	ComputeEndpoint             string
+	StorageEndpoint             string
 	ComputeServiceAccount       string
 	WorkflowDir                 string `name:"workflow_dir" validate:"required"`
 	CustomWorkflow              string

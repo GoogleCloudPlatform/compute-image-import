@@ -17,9 +17,8 @@ package cli
 import (
 	"context"
 	"fmt"
+	"log"
 	"strings"
-
-	"google.golang.org/api/option"
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
@@ -27,6 +26,7 @@ import (
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging/service"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/storage"
+	"google.golang.org/api/option"
 )
 
 // Main starts an image import.
@@ -49,8 +49,7 @@ func Main(args []string, toolLogger logging.ToolLogger, workflowDir string) erro
 	importArgs.WorkflowDir = workflowDir
 
 	// 2. Setup dependencies.
-	storageClient, err := storage.NewStorageClient(
-		ctx, toolLogger, option.WithCredentialsFile(importArgs.Oauth))
+	storageClient, err := createStorageClient(ctx, importArgs, toolLogger)
 	if err != nil {
 		logFailure(importArgs, err)
 		return err
@@ -98,6 +97,27 @@ func Main(args []string, toolLogger logging.ToolLogger, workflowDir string) erro
 		return err
 	}
 	return nil
+}
+
+// Create a new storageClient client object with option to override storage endpoint.
+func createStorageClient(ctx context.Context, importArgs imageImportArgs, toolLogger logging.ToolLogger) (*storage.Client, error) {
+	storageOptions := []option.ClientOption{}
+	if importArgs.Oauth != "" {
+		storageOptions = append(storageOptions, option.WithCredentialsFile(importArgs.Oauth))
+	}
+
+	if importArgs.StorageEndpoint != "" {
+		log.Printf("Default storage APIs endpoint is changed to: '%v'", importArgs.StorageEndpoint)
+		storageOptions = append(storageOptions, option.WithEndpoint(importArgs.StorageEndpoint))
+	}
+
+	storageClient, err := storage.NewStorageClient(ctx, toolLogger, storageOptions...)
+	if err != nil {
+		logFailure(importArgs, err)
+		return nil, err
+	}
+
+	return storageClient, nil
 }
 
 func userFriendlyError(err error, importArgs imageImportArgs) error {

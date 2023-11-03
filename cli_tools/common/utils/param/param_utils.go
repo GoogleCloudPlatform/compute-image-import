@@ -17,6 +17,7 @@ package param
 import (
 	"context"
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -127,6 +128,7 @@ func PopulateRegion(region *string, zone string) error {
 func CreateComputeClient(ctx *context.Context, oauth string, ce string) (daisyCompute.Client, error) {
 	computeOptions := []option.ClientOption{option.WithCredentialsFile(oauth)}
 	if ce != "" {
+		log.Printf("Default compute APIs endpoint is changed to: '%v'", ce)
 		computeOptions = append(computeOptions, option.WithEndpoint(ce))
 	}
 

@@ -126,7 +126,10 @@ func (args *imageImportArgs) registerFlags(flagSet *flag.FlagSet) {
 		"Path to oauth json file.")
 
 	flagSet.Var((*flags.TrimmedString)(&args.ComputeEndpoint), "compute_endpoint_override",
-		"API endpoint to override default.")
+		"API endpoint to override default for Compute.")
+
+	flagSet.Var((*flags.TrimmedString)(&args.StorageEndpoint), "storage_endpoint_override",
+		"API endpoint to override default for Storage.")
 
 	flagSet.Var((*flags.TrimmedString)(&args.ComputeServiceAccount), "compute_service_account",
 		"Compute service account to be used by importer Virtual Machine. When empty, the Compute Engine default service account is used.")
