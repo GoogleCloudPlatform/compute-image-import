@@ -25,10 +25,9 @@ import (
 	"strings"
 
 	"cloud.google.com/go/storage"
+	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
-
-	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
@@ -52,9 +51,9 @@ type Client struct {
 
 // NewStorageClient creates a Client
 func NewStorageClient(ctx context.Context,
-	logger logging.Logger, option ...option.ClientOption) (*Client, error) {
+	logger logging.Logger, storageOptions ...option.ClientOption) (*Client, error) {
 
-	client, err := storage.NewClient(ctx, option...)
+	client, err := storage.NewClient(ctx, storageOptions...)
 	if err != nil {
 		return nil, daisy.Errf("error creating storage client: %v", err)
 	}

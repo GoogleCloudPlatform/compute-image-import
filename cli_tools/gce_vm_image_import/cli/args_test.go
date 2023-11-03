@@ -105,6 +105,11 @@ func Test_populateAndValidate_TrimsComputeEndpoint(t *testing.T) {
 		parseAndPopulate(t, "-compute_endpoint_override", "  http://endpoint ").ComputeEndpoint)
 }
 
+func Test_populateAndValidate_TrimsStorageEndpoint(t *testing.T) {
+	assert.Equal(t, "http://endpoint",
+		parseAndPopulate(t, "-storage_endpoint_override", "  http://endpoint ").StorageEndpoint)
+}
+
 func Test_populateAndValidate_TrimsComputeServiceAccount(t *testing.T) {
 	assert.Equal(t, "",
 		parseAndPopulate(t, "-compute_service_account", " 	").ComputeServiceAccount)
