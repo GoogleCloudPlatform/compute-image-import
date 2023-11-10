@@ -107,6 +107,12 @@ var basicCases = []*testCase{
 		os:            "opensuse-15",
 		expectedError: "no operating systems found",
 	},
+	{
+		caseName:      "Fail with wrong overriden API",
+		source:        "projects/compute-image-import-test/global/images/debian-11-without-wget-and-curl",
+		extraArgs:     []string{"-storage_endpoint_override=https://fake-api-endpoint"},
+		expectedError: "dial tcp: lookup fake-api-endpoint on 8.8.8.8:53: no such host",
+	},
 
 	// Debian
 	{
@@ -370,6 +376,13 @@ var basicCases = []*testCase{
 		os:                      "windows-11-x64-byol",
 		requiredGuestOsFeatures: []string{"WINDOWS", "UEFI_COMPATIBLE"},
 		osConfigNotSupported:    true,
+	},
+
+	// Other
+	{
+		caseName:  "Import with overriden APIs endpoints",
+		source:    "projects/compute-image-import-test/global/images/ubuntu-2204",
+		extraArgs: []string{"-storage_endpoint_override=https://storage.googleapis.com/storage/v1/", "-compute_endpoint_override=https://compute.googleapis.com/compute/v1/"},
 	},
 }
 

@@ -23,29 +23,26 @@ import (
 
 func Test_ApplyEnvToWorkflow(t *testing.T) {
 	env := EnvironmentSettings{
-		Project:         "lucky-lemur",
-		Zone:            "us-west1-c",
-		GCSPath:         "new-path",
-		OAuth:           "new-oauth",
-		Timeout:         "new-timeout",
-		ComputeEndpoint: "new-endpoint",
+		Project: "lucky-lemur",
+		Zone:    "us-west1-c",
+		GCSPath: "new-path",
+		OAuth:   "new-oauth",
+		Timeout: "new-timeout",
 	}
 	original := &daisy.Workflow{
-		Project:         "original-project",
-		Zone:            "original-zone",
-		GCSPath:         "original-path",
-		OAuthPath:       "original-oauth",
-		DefaultTimeout:  "original-timeout",
-		ComputeEndpoint: "original-endpoint",
+		Project:        "original-project",
+		Zone:           "original-zone",
+		GCSPath:        "original-path",
+		OAuthPath:      "original-oauth",
+		DefaultTimeout: "original-timeout",
 	}
 	assert.NoError(t, (&ApplyEnvToWorkflow{env}).PreRunHook(original))
 	expected := &daisy.Workflow{
-		Project:         "lucky-lemur",
-		Zone:            "us-west1-c",
-		GCSPath:         "new-path",
-		OAuthPath:       "new-oauth",
-		DefaultTimeout:  "new-timeout",
-		ComputeEndpoint: "new-endpoint",
+		Project:        "lucky-lemur",
+		Zone:           "us-west1-c",
+		GCSPath:        "new-path",
+		OAuthPath:      "new-oauth",
+		DefaultTimeout: "new-timeout",
 	}
 	assert.Equal(t, original, expected)
 }

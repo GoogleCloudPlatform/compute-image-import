@@ -398,46 +398,41 @@ func Test_ApplyToWorkflow(t *testing.T) {
 		{
 			name: "always overwrite when source fields are non-empty",
 			env: EnvironmentSettings{
-				Project:         "lucky-lemur",
-				Zone:            "us-west1-c",
-				GCSPath:         "new-path",
-				OAuth:           "new-oauth",
-				Timeout:         "new-timeout",
-				ComputeEndpoint: "new-endpoint",
+				Project: "lucky-lemur",
+				Zone:    "us-west1-c",
+				GCSPath: "new-path",
+				OAuth:   "new-oauth",
+				Timeout: "new-timeout",
 			},
 			original: &daisy.Workflow{
-				Project:         "original-project",
-				Zone:            "original-zone",
-				GCSPath:         "original-path",
-				OAuthPath:       "original-oauth",
-				DefaultTimeout:  "original-timeout",
-				ComputeEndpoint: "original-endpoint",
+				Project:        "original-project",
+				Zone:           "original-zone",
+				GCSPath:        "original-path",
+				OAuthPath:      "original-oauth",
+				DefaultTimeout: "original-timeout",
 			},
 			expected: &daisy.Workflow{
-				Project:         "lucky-lemur",
-				Zone:            "us-west1-c",
-				GCSPath:         "new-path",
-				OAuthPath:       "new-oauth",
-				DefaultTimeout:  "new-timeout",
-				ComputeEndpoint: "new-endpoint",
+				Project:        "lucky-lemur",
+				Zone:           "us-west1-c",
+				GCSPath:        "new-path",
+				OAuthPath:      "new-oauth",
+				DefaultTimeout: "new-timeout",
 			},
 		},
 		{
 			name: "project and zone overwrite when empty",
 			env:  EnvironmentSettings{},
 			original: &daisy.Workflow{
-				Project:         "original-project",
-				Zone:            "original-zone",
-				GCSPath:         "original-path",
-				OAuthPath:       "original-oauth",
-				DefaultTimeout:  "original-timeout",
-				ComputeEndpoint: "original-endpoint",
+				Project:        "original-project",
+				Zone:           "original-zone",
+				GCSPath:        "original-path",
+				OAuthPath:      "original-oauth",
+				DefaultTimeout: "original-timeout",
 			},
 			expected: &daisy.Workflow{
-				GCSPath:         "original-path",
-				OAuthPath:       "original-oauth",
-				DefaultTimeout:  "original-timeout",
-				ComputeEndpoint: "original-endpoint",
+				GCSPath:        "original-path",
+				OAuthPath:      "original-oauth",
+				DefaultTimeout: "original-timeout",
 			},
 		},
 	} {
@@ -480,14 +475,14 @@ func Test_ParseWorkflow_HappyCase(t *testing.T) {
 	gcsPath := "gcspath"
 	oauth := "oauthpath"
 	dTimeout := "10m"
-	endpoint := "endpoint"
-	w, err := ParseWorkflow(path, varMap, project, zone, gcsPath, oauth, dTimeout, endpoint, true,
+	endpointsOverride := EndpointsOverride{Compute: "", Storage: "", CloudLogging: ""}
+	w, err := ParseWorkflow(path, varMap, project, zone, gcsPath, oauth, dTimeout, endpointsOverride, true,
 		true, true)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	assertWorkflow(t, w, project, zone, gcsPath, oauth, dTimeout, endpoint, varMap)
+	assertWorkflow(t, w, project, zone, gcsPath, oauth, dTimeout, varMap)
 }
 
 func Test_ParseWorkflow_RaisesErrorWhenInvalidPath(t *testing.T) {
@@ -497,8 +492,8 @@ func Test_ParseWorkflow_RaisesErrorWhenInvalidPath(t *testing.T) {
 	gcsPath := "gcspath"
 	oauth := "oauthpath"
 	dTimeout := "10m"
-	endpoint := "endpoint"
-	w, err := ParseWorkflow("/file/not/found", varMap, project, zone, gcsPath, oauth, dTimeout, endpoint,
+	endpointsOverride := EndpointsOverride{Compute: "", Storage: "", CloudLogging: ""}
+	w, err := ParseWorkflow("/file/not/found", varMap, project, zone, gcsPath, oauth, dTimeout, endpointsOverride,
 		true, true, true)
 	assert.Nil(t, w)
 	assert.NotNil(t, err)
@@ -543,7 +538,7 @@ func Test_GenerateValidDisksImagesName_ShortName(t *testing.T) {
 }
 
 func assertWorkflow(t *testing.T, w *daisy.Workflow, project string, zone string, gcsPath string,
-	oauth string, dTimeout string, endpoint string, varMap map[string]string) {
+	oauth string, dTimeout string, varMap map[string]string) {
 	t.Helper()
 	tests := []struct {
 		want, got interface{}
@@ -553,7 +548,6 @@ func assertWorkflow(t *testing.T, w *daisy.Workflow, project string, zone string
 		{w.GCSPath, gcsPath},
 		{w.OAuthPath, oauth},
 		{w.DefaultTimeout, dTimeout},
-		{w.ComputeEndpoint, endpoint},
 	}
 	for _, tt := range tests {
 		if tt.want != tt.got {

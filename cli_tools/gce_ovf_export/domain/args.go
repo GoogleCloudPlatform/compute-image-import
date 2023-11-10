@@ -162,7 +162,7 @@ func (args *OVFExportArgs) EnvironmentSettings(daisyLogLinePrefix string) daisyu
 		GCSPath:                     args.ScratchBucketGcsPath,
 		OAuth:                       args.Oauth,
 		Timeout:                     args.Timeout.String(),
-		ComputeEndpoint:             args.Ce,
+		EndpointsOverride:           daisyutils.EndpointsOverride{Compute: args.Ce},
 		DisableGCSLogs:              args.GcsLogsDisabled,
 		DisableCloudLogs:            args.CloudLogsDisabled,
 		DisableStdoutLogs:           args.StdoutLogsDisabled,

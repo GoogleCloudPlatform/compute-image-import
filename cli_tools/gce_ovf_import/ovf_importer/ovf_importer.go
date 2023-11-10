@@ -248,8 +248,8 @@ func toWorkingDir(dir string, params *ovfdomain.OVFImportParams) string {
 // creates a new Daisy Compute client
 func createComputeClient(ctx *context.Context, params *ovfdomain.OVFImportParams) (daisyCompute.Client, error) {
 	computeOptions := []option.ClientOption{option.WithCredentialsFile(params.Oauth)}
-	if params.Ce != "" {
-		computeOptions = append(computeOptions, option.WithEndpoint(params.Ce))
+	if params.EndpointsOverride.Compute != "" {
+		computeOptions = append(computeOptions, option.WithEndpoint(params.EndpointsOverride.Compute))
 	}
 
 	computeClient, err := daisyCompute.NewClient(*ctx, computeOptions...)
@@ -391,7 +391,7 @@ func (oi *OVFImporter) createWorkflowForFinalInstance() (workflow *daisy.Workflo
 	varMap := oi.buildDaisyVars(oi.images[0], oi.machineTypeString)
 
 	workflow, err = daisyutils.ParseWorkflow(oi.workflowPath, varMap, *oi.params.Project,
-		oi.params.Zone, oi.params.ScratchBucketGcsPath, oi.params.Oauth, oi.params.Timeout, oi.params.Ce,
+		oi.params.Zone, oi.params.ScratchBucketGcsPath, oi.params.Oauth, oi.params.Timeout, oi.params.EndpointsOverride,
 		oi.params.GcsLogsDisabled, oi.params.CloudLogsDisabled, oi.params.StdoutLogsDisabled)
 
 	if err != nil {
@@ -536,7 +536,7 @@ func (oi *OVFImporter) buildBootDiskImageImportRequest(imageName string, bootDis
 	request = importer.ImageImportRequest{
 		ExecutionID:                 imageName,
 		CloudLogsDisabled:           oi.params.CloudLogsDisabled,
-		ComputeEndpoint:             oi.params.Ce,
+		EndpointsOverride:           daisyutils.EndpointsOverride{Compute: oi.params.EndpointsOverride.Compute, Storage: oi.params.EndpointsOverride.Storage, CloudLogging: oi.params.EndpointsOverride.CloudLogging},
 		ComputeServiceAccount:       oi.params.ComputeServiceAccount,
 		WorkflowDir:                 oi.params.WorkflowDir,
 		GcsLogsDisabled:             oi.params.GcsLogsDisabled,

@@ -30,7 +30,6 @@ func (t *ApplyEnvToWorkflow) PreRunHook(wf *daisy.Workflow) error {
 	set(t.env.GCSPath, &wf.GCSPath)
 	set(t.env.OAuth, &wf.OAuthPath)
 	set(t.env.Timeout, &wf.DefaultTimeout)
-	set(t.env.ComputeEndpoint, &wf.ComputeEndpoint)
 	return nil
 }
 

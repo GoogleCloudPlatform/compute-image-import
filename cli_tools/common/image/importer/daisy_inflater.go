@@ -106,7 +106,7 @@ func newDaisyInflater(request ImageImportRequest, fileMetadata imagefile.Metadat
 
 	workflowProvider := func() (*daisy.Workflow, error) {
 		wf, err := daisyutils.ParseWorkflow(path.Join(request.WorkflowDir, wfPath), vars,
-			request.Project, request.Zone, request.ScratchBucketGcsPath, request.Oauth, request.Timeout.String(), request.ComputeEndpoint,
+			request.Project, request.Zone, request.ScratchBucketGcsPath, request.Oauth, request.Timeout.String(), request.EndpointsOverride,
 			request.GcsLogsDisabled, request.CloudLogsDisabled, request.StdoutLogsDisabled)
 
 		if err != nil {

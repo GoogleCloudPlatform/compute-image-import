@@ -70,7 +70,7 @@ func newBootableDiskProcessor(request ImageImportRequest, wfPath string, logger 
 	workflowProvider := func() (*daisy.Workflow, error) {
 		wf, err := daisyutils.ParseWorkflow(wfPath, vars,
 			request.Project, request.Zone, request.ScratchBucketGcsPath, request.Oauth, request.Timeout.String(),
-			request.ComputeEndpoint, request.GcsLogsDisabled, request.CloudLogsDisabled, request.StdoutLogsDisabled)
+			request.EndpointsOverride, request.GcsLogsDisabled, request.CloudLogsDisabled, request.StdoutLogsDisabled)
 
 		if err != nil {
 			return nil, err

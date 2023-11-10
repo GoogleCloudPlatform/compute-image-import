@@ -246,14 +246,12 @@ func Test_DaisyWorkerRun_AppliesEnvToWorkflow(t *testing.T) {
 	wf.Zone = "old-zone"
 	wf.GCSPath = "old-gcs-path"
 	wf.DefaultTimeout = "old-timeout"
-	wf.ComputeEndpoint = "old-endpoint"
 
 	env := EnvironmentSettings{
 		Project:            "lucky-lemur",
 		Zone:               "us-west1-c",
 		GCSPath:            "gs://test",
 		Timeout:            "60s",
-		ComputeEndpoint:    "new-endpoint",
 		DaisyLogLinePrefix: "import-image",
 		ExecutionID:        "b1234",
 		Tool:               Tool{ResourceLabelName: "unit-test"},
@@ -271,7 +269,6 @@ func Test_DaisyWorkerRun_AppliesEnvToWorkflow(t *testing.T) {
 	assert.Equal(t, wf.Zone, "us-west1-c")
 	assert.Equal(t, wf.GCSPath, "gs://test")
 	assert.Equal(t, wf.DefaultTimeout, "60s")
-	assert.Equal(t, wf.ComputeEndpoint, "new-endpoint")
 	assert.Equal(t, wf.Name, "import-image")
 }
 
@@ -336,7 +333,6 @@ func Test_DaisyWorkerRun_AppliesVariables(t *testing.T) {
 		Zone:               "us-west1-c",
 		GCSPath:            "gs://test",
 		Timeout:            "60s",
-		ComputeEndpoint:    "new-endpoint",
 		DaisyLogLinePrefix: "import-image",
 		ExecutionID:        "b1234",
 		Tool:               Tool{ResourceLabelName: "unit-test"},
@@ -360,7 +356,6 @@ func Test_DaisyWorkerRunAndReadSerialValue_HappyCase(t *testing.T) {
 		Zone:               "us-west1-c",
 		GCSPath:            "gs://test",
 		Timeout:            "60s",
-		ComputeEndpoint:    "new-endpoint",
 		DaisyLogLinePrefix: "import-image",
 		ExecutionID:        "b1234",
 		Tool:               Tool{ResourceLabelName: "unit-test"},

@@ -56,7 +56,7 @@ func Main(args []string, toolLogger logging.ToolLogger, workflowDir string) erro
 	}
 
 	computeClient, err := param.CreateComputeClient(
-		&ctx, importArgs.Oauth, importArgs.ComputeEndpoint)
+		&ctx, importArgs.Oauth, importArgs.EndpointsOverride.Compute)
 	if err != nil {
 		logFailure(importArgs, err)
 		return err
@@ -106,9 +106,9 @@ func createStorageClient(ctx context.Context, importArgs imageImportArgs, toolLo
 		storageOptions = append(storageOptions, option.WithCredentialsFile(importArgs.Oauth))
 	}
 
-	if importArgs.StorageEndpoint != "" {
-		log.Printf("Default storage APIs endpoint is changed to: '%v'", importArgs.StorageEndpoint)
-		storageOptions = append(storageOptions, option.WithEndpoint(importArgs.StorageEndpoint))
+	if importArgs.EndpointsOverride.Storage != "" {
+		log.Printf("Default storage APIs endpoint is changed to: '%v'", importArgs.EndpointsOverride.Storage)
+		storageOptions = append(storageOptions, option.WithEndpoint(importArgs.EndpointsOverride.Storage))
 	}
 
 	storageClient, err := storage.NewStorageClient(ctx, toolLogger, storageOptions...)
@@ -161,7 +161,7 @@ func initLoggingParams(args imageImportArgs) service.InputParams {
 				Labels:                  fmt.Sprintf("%v", args.Labels),
 				ScratchBucketGcsPath:    args.ScratchBucketGcsPath,
 				Oauth:                   args.Oauth,
-				ComputeEndpointOverride: args.ComputeEndpoint,
+				ComputeEndpointOverride: args.EndpointsOverride.Compute,
 				DisableGcsLogging:       args.GcsLogsDisabled,
 				DisableCloudLogging:     args.CloudLogsDisabled,
 				DisableStdoutLogging:    args.StdoutLogsDisabled,

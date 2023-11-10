@@ -24,6 +24,10 @@ import (
 	"sort"
 	"strings"
 
+	"cloud.google.com/go/storage"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
+	"google.golang.org/api/option"
+
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
 	stringutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/string"
@@ -454,7 +458,8 @@ func GetInstanceURI(project, zone, name string) string {
 }
 
 // ParseWorkflow parses Daisy workflow file and returns Daisy workflow object or error in case of failure
-func ParseWorkflow(path string, varMap map[string]string, project, zone, gcsPath, oauth, dTimeout, cEndpoint string, disableGCSLogs, disableCloudLogs, disableStdoutLogs bool) (*daisy.Workflow, error) {
+func ParseWorkflow(path string, varMap map[string]string, project, zone, gcsPath, oauth, dTimeout string,
+	endpointsOverride EndpointsOverride, disableGCSLogs, disableCloudLogs, disableStdoutLogs bool) (*daisy.Workflow, error) {
 	w, err := daisy.NewFromFile(path)
 	if err != nil {
 		return nil, err
@@ -470,17 +475,21 @@ Loop:
 		return nil, daisy.Errf("unknown workflow Var %q passed to Workflow %q", k, w.Name)
 	}
 
-	EnvironmentSettings{
+	err = EnvironmentSettings{
 		Project:           project,
 		Zone:              zone,
 		GCSPath:           gcsPath,
 		OAuth:             oauth,
 		Timeout:           dTimeout,
-		ComputeEndpoint:   cEndpoint,
+		EndpointsOverride: endpointsOverride,
 		DisableGCSLogs:    disableGCSLogs,
 		DisableCloudLogs:  disableCloudLogs,
 		DisableStdoutLogs: disableStdoutLogs,
 	}.ApplyToWorkflow(w)
+
+	if err != nil {
+		return nil, daisy.Errf("faield to apply env settings to \"%s\" workflow %q", w.Name, err)
+	}
 
 	return w, nil
 }
@@ -494,14 +503,23 @@ type Tool struct {
 	ResourceLabelName string
 }
 
+// EndpointsOverride is a type for google cloud APIs that may be overridden
+type EndpointsOverride struct {
+	Compute      string `json:",omitempty"`
+	Storage      string `json:",omitempty"`
+	CloudLogging string `json:",omitempty"`
+}
+
 // EnvironmentSettings controls the resources that are used during tool execution.
 type EnvironmentSettings struct {
 	// Location of workflows
 	WorkflowDirectory string
 
 	// Fields from daisy.Workflow
-	Project, Zone, GCSPath, OAuth, Timeout, ComputeEndpoint string
-	DisableGCSLogs, DisableCloudLogs, DisableStdoutLogs     bool
+	Project, Zone, GCSPath, OAuth, Timeout              string
+	DisableGCSLogs, DisableCloudLogs, DisableStdoutLogs bool
+
+	EndpointsOverride EndpointsOverride
 
 	// An optional prefix to include in the bracketed portion of daisy's stdout logs.
 	// Gcloud does a prefix match to determine whether to show a log line to a user.
@@ -523,7 +541,7 @@ type EnvironmentSettings struct {
 }
 
 // ApplyToWorkflow sets fields on daisy.Workflow from the environment settings.
-func (env EnvironmentSettings) ApplyToWorkflow(w *daisy.Workflow) {
+func (env EnvironmentSettings) ApplyToWorkflow(w *daisy.Workflow) (err error) {
 	w.Project = env.Project
 	w.Zone = env.Zone
 	if env.GCSPath != "" {
@@ -535,9 +553,7 @@ func (env EnvironmentSettings) ApplyToWorkflow(w *daisy.Workflow) {
 	if env.Timeout != "" {
 		w.DefaultTimeout = env.Timeout
 	}
-	if env.ComputeEndpoint != "" {
-		w.ComputeEndpoint = env.ComputeEndpoint
-	}
+
 	if env.DisableGCSLogs {
 		w.DisableGCSLogging()
 	}
@@ -547,6 +563,38 @@ func (env EnvironmentSettings) ApplyToWorkflow(w *daisy.Workflow) {
 	if env.DisableStdoutLogs {
 		w.DisableStdoutLogging()
 	}
+
+	// Populate Clients for daisy if needed.
+
+	// Create new context here as daisy clients shouldn't die if the main context is cancelled.
+	// It will need to cleaned up resources before terminating the clients.
+	ctx := context.Background()
+
+	if env.EndpointsOverride.Compute != "" {
+		daisyComputeClient, err := param.CreateComputeClient(&ctx, env.OAuth, env.EndpointsOverride.Compute)
+		if err != nil {
+			return err
+		}
+		w.ComputeClient = daisyComputeClient
+	}
+
+	if env.EndpointsOverride.Storage != "" {
+		storageOptions := []option.ClientOption{option.WithEndpoint(env.EndpointsOverride.Storage)}
+		if env.OAuth != "" {
+			storageOptions = append(storageOptions, option.WithCredentialsFile(env.OAuth))
+		}
+
+		storageClient, err := storage.NewClient(ctx, storageOptions...)
+		if err != nil {
+			return err
+		}
+
+		w.StorageClient = storageClient
+	}
+
+	// TODO: override w.cloudLoggingClient after changing to be public in daisy
+
+	return nil
 }
 
 // UpdateAllInstanceNoExternalIP updates all Create Instance steps in the workflow to operate
