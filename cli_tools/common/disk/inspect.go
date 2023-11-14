@@ -50,7 +50,11 @@ type Inspector interface {
 // for its network interface.
 func NewInspector(env daisyutils.EnvironmentSettings, logger logging.Logger) (Inspector, error) {
 	wfProvider := daisyutils.WorkflowProvider(func() (*daisy.Workflow, error) {
-		wf, err := daisy.NewFromFile(path.Join(env.WorkflowDirectory, workflowFile))
+
+		// Passing empty vars here because "pd_uri" var will be passed everytime when calling "Inspect" function
+		wf, err := daisyutils.ParseWorkflow(path.Join(env.WorkflowDirectory, workflowFile), map[string]string{},
+			env.Project, env.Zone, env.GCSPath, env.OAuth, env.Timeout,
+			env.EndpointsOverride, env.DisableGCSLogs, env.DisableCloudLogs, env.DisableStdoutLogs)
 		if err != nil {
 			return nil, err
 		}
