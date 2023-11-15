@@ -10,7 +10,6 @@ require (
 	github.com/GoogleCloudPlatform/compute-image-import/go/e2e_test_utils v0.0.0
 	github.com/GoogleCloudPlatform/compute-image-import/proto/go v0.0.0
 	github.com/aws/aws-sdk-go v1.37.5
-	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.9
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.1

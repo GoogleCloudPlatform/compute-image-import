@@ -16,7 +16,6 @@ require (
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/golang/mock v1.6.0
-	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.9
 	github.com/google/logger v1.1.0
 	github.com/google/uuid v1.3.0
@@ -28,7 +27,7 @@ require (
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.6.0
 	google.golang.org/api v0.114.0
-	google.golang.org/protobuf v1.29.1
+	google.golang.org/protobuf v1.31.0
 )
 
 replace github.com/GoogleCloudPlatform/compute-image-import/proto/go => ../proto/go
