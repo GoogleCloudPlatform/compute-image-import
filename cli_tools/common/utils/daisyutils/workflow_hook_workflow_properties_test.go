@@ -46,3 +46,39 @@ func Test_ApplyEnvToWorkflow(t *testing.T) {
 	}
 	assert.Equal(t, original, expected)
 }
+
+func Test_updateWorkflowClientsIfneeded_OverrideClients(t *testing.T) {
+	env := EnvironmentSettings{
+		EndpointsOverride: EndpointsOverride{Compute: "https://compute.googleapis.com/compute/v1/", Storage: "https://storage.googleapis.com/storage/v1/"},
+	}
+
+	wf := &daisy.Workflow{
+		Project:        "project",
+		Zone:           "zone",
+		GCSPath:        "path",
+		OAuthPath:      "oauth",
+		DefaultTimeout: "timeout",
+	}
+
+	err := updateWorkflowClientsIfneeded(env, wf)
+	assert.NoError(t, err)
+	assert.NotNil(t, wf.ComputeClient)
+	assert.NotNil(t, wf.StorageClient)
+}
+
+func Test_updateWorkflowClientsIfneeded_dontOverrideClients(t *testing.T) {
+	env := EnvironmentSettings{}
+
+	wf := &daisy.Workflow{
+		Project:        "project",
+		Zone:           "zone",
+		GCSPath:        "path",
+		OAuthPath:      "oauth",
+		DefaultTimeout: "timeout",
+	}
+
+	err := updateWorkflowClientsIfneeded(env, wf)
+	assert.NoError(t, err)
+	assert.Nil(t, wf.ComputeClient)
+	assert.Nil(t, wf.StorageClient)
+}

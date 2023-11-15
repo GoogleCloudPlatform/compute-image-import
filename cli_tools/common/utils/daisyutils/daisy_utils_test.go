@@ -475,8 +475,7 @@ func Test_ParseWorkflow_HappyCase(t *testing.T) {
 	gcsPath := "gcspath"
 	oauth := "oauthpath"
 	dTimeout := "10m"
-	endpointsOverride := EndpointsOverride{Compute: "", Storage: "", CloudLogging: ""}
-	w, err := ParseWorkflow(path, varMap, project, zone, gcsPath, oauth, dTimeout, endpointsOverride, true,
+	w, err := ParseWorkflow(path, varMap, project, zone, gcsPath, oauth, dTimeout, true,
 		true, true)
 	if err != nil {
 		t.Fatal(err)
@@ -492,8 +491,7 @@ func Test_ParseWorkflow_RaisesErrorWhenInvalidPath(t *testing.T) {
 	gcsPath := "gcspath"
 	oauth := "oauthpath"
 	dTimeout := "10m"
-	endpointsOverride := EndpointsOverride{Compute: "", Storage: "", CloudLogging: ""}
-	w, err := ParseWorkflow("/file/not/found", varMap, project, zone, gcsPath, oauth, dTimeout, endpointsOverride,
+	w, err := ParseWorkflow("/file/not/found", varMap, project, zone, gcsPath, oauth, dTimeout,
 		true, true, true)
 	assert.Nil(t, w)
 	assert.NotNil(t, err)

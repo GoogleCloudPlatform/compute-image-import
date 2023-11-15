@@ -14,7 +14,14 @@
 
 package daisyutils
 
-import daisy "github.com/GoogleCloudPlatform/compute-daisy"
+import (
+	"context"
+
+	"cloud.google.com/go/storage"
+	daisy "github.com/GoogleCloudPlatform/compute-daisy"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
+	"google.golang.org/api/option"
+)
 
 // ApplyEnvToWorkflow is a WorkflowHook that applies user-customizable values
 // to the top-level parent workflow.
@@ -30,11 +37,47 @@ func (t *ApplyEnvToWorkflow) PreRunHook(wf *daisy.Workflow) error {
 	set(t.env.GCSPath, &wf.GCSPath)
 	set(t.env.OAuth, &wf.OAuthPath)
 	set(t.env.Timeout, &wf.DefaultTimeout)
-	return nil
+
+	err := updateWorkflowClientsIfneeded(t.env, wf)
+
+	return err
 }
 
 func set(src string, dst *string) {
 	if src != "" {
 		*dst = src
 	}
+}
+
+func updateWorkflowClientsIfneeded(env EnvironmentSettings, wf *daisy.Workflow) error {
+
+	// Create new context here as daisy clients shouldn't die if the main context is cancelled.
+	// It will need to cleaned up resources before terminating the clients.
+	ctx := context.Background()
+
+	if env.EndpointsOverride.Compute != "" {
+		daisyComputeClient, err := param.CreateComputeClient(&ctx, env.OAuth, env.EndpointsOverride.Compute)
+		if err != nil {
+			return err
+		}
+		wf.ComputeClient = daisyComputeClient
+	}
+
+	if env.EndpointsOverride.Storage != "" {
+		storageOptions := []option.ClientOption{option.WithEndpoint(env.EndpointsOverride.Storage)}
+		if env.OAuth != "" {
+			storageOptions = append(storageOptions, option.WithCredentialsFile(env.OAuth))
+		}
+
+		storageClient, err := storage.NewClient(ctx, storageOptions...)
+		if err != nil {
+			return err
+		}
+
+		wf.StorageClient = storageClient
+	}
+
+	// TODO: override wf.cloudLoggingClient after changing to be public in daisy
+
+	return nil
 }

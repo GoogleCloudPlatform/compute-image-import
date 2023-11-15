@@ -391,7 +391,7 @@ func (oi *OVFImporter) createWorkflowForFinalInstance() (workflow *daisy.Workflo
 	varMap := oi.buildDaisyVars(oi.images[0], oi.machineTypeString)
 
 	workflow, err = daisyutils.ParseWorkflow(oi.workflowPath, varMap, *oi.params.Project,
-		oi.params.Zone, oi.params.ScratchBucketGcsPath, oi.params.Oauth, oi.params.Timeout, oi.params.EndpointsOverride,
+		oi.params.Zone, oi.params.ScratchBucketGcsPath, oi.params.Oauth, oi.params.Timeout,
 		oi.params.GcsLogsDisabled, oi.params.CloudLogsDisabled, oi.params.StdoutLogsDisabled)
 
 	if err != nil {
