@@ -19,9 +19,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_vm_image_import/cli"
