@@ -102,12 +102,17 @@ func Test_populateAndValidate_TrimsOauth(t *testing.T) {
 
 func Test_populateAndValidate_TrimsComputeEndpoint(t *testing.T) {
 	assert.Equal(t, "http://endpoint",
-		parseAndPopulate(t, "-compute_endpoint_override", "  http://endpoint ").ComputeEndpoint)
+		parseAndPopulate(t, "-compute_endpoint_override", "  http://endpoint ").EndpointsOverride.Compute)
 }
 
 func Test_populateAndValidate_TrimsStorageEndpoint(t *testing.T) {
 	assert.Equal(t, "http://endpoint",
-		parseAndPopulate(t, "-storage_endpoint_override", "  http://endpoint ").StorageEndpoint)
+		parseAndPopulate(t, "-storage_endpoint_override", "  http://endpoint ").EndpointsOverride.Storage)
+}
+
+func Test_populateAndValidate_TrimsCloudLoggingEndpoint(t *testing.T) {
+	assert.Equal(t, "http://endpoint",
+		parseAndPopulate(t, "-cloud_logging_endpoint_override", "  http://endpoint ").EndpointsOverride.CloudLogging)
 }
 
 func Test_populateAndValidate_TrimsComputeServiceAccount(t *testing.T) {

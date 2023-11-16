@@ -199,7 +199,7 @@ func TestBootDiskImageImport_buildBootDiskImageImportRequest(t *testing.T) {
 	assert.Equal(t, request.ImageName, imageName)
 	assert.Equal(t, request.ExecutionID, imageName)
 	assert.Equal(t, request.CloudLogsDisabled, params.CloudLogsDisabled)
-	assert.Equal(t, request.ComputeEndpoint, params.Ce)
+	assert.Equal(t, request.EndpointsOverride.Compute, params.EndpointsOverride.Compute)
 	assert.Equal(t, request.ComputeServiceAccount, params.ComputeServiceAccount)
 	assert.Equal(t, request.WorkflowDir, params.WorkflowDir)
 	assert.Equal(t, request.GcsLogsDisabled, params.GcsLogsDisabled)
@@ -530,7 +530,6 @@ func runImportAndVerify(t *testing.T, params *ovfdomain.OVFImportParams, mode *i
 		assert.Equal(t, params.Timeout, w.DefaultTimeout)
 		assert.Equal(t, params.Zone, w.Zone)
 		assert.Equal(t, params.Oauth, w.OAuthPath)
-		assert.Equal(t, params.Ce, w.ComputeEndpoint)
 		assert.Equal(t, params.ScratchBucketGcsPath, w.GCSPath)
 		if mode == gmiMode {
 			// Creating the machine image adds two steps:

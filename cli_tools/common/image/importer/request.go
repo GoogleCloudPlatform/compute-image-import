@@ -75,8 +75,6 @@ func (args *ImageImportRequest) checkRequiredArguments() error {
 type ImageImportRequest struct {
 	ExecutionID                 string `name:"execution_id" validate:"required"`
 	CloudLogsDisabled           bool
-	ComputeEndpoint             string
-	StorageEndpoint             string
 	ComputeServiceAccount       string
 	WorkflowDir                 string `name:"workflow_dir" validate:"required"`
 	CustomWorkflow              string
@@ -108,6 +106,7 @@ type ImageImportRequest struct {
 	DataDisks                   []domain.Disk
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
+	EndpointsOverride           daisyutils.EndpointsOverride
 }
 
 // FixBYOLAndOSArguments fixes the user's arguments for the --os and --byol flags
@@ -135,7 +134,7 @@ func (args ImageImportRequest) EnvironmentSettings() daisyutils.EnvironmentSetti
 		GCSPath:                     args.ScratchBucketGcsPath,
 		OAuth:                       args.Oauth,
 		Timeout:                     args.Timeout.String(),
-		ComputeEndpoint:             args.ComputeEndpoint,
+		EndpointsOverride:           args.EndpointsOverride,
 		DaisyLogLinePrefix:          args.DaisyLogLinePrefix,
 		DisableGCSLogs:              args.GcsLogsDisabled,
 		DisableCloudLogs:            args.CloudLogsDisabled,

@@ -76,7 +76,6 @@ type OVFImportParams struct {
 	Project                     *string
 	ScratchBucketGcsPath        string
 	Oauth                       string
-	Ce                          string
 	ComputeServiceAccount       string
 	InstanceServiceAccount      string
 	InstanceAccessScopesFlag    string
@@ -90,6 +89,7 @@ type OVFImportParams struct {
 	BuildID                     string
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
+	EndpointsOverride           daisyutils.EndpointsOverride
 
 	// Non-flags
 
@@ -148,7 +148,7 @@ func (oip *OVFImportParams) EnvironmentSettings() daisyutils.EnvironmentSettings
 		GCSPath:                     oip.ScratchBucketGcsPath,
 		OAuth:                       oip.Oauth,
 		Timeout:                     oip.Deadline.Sub(time.Now()).String(),
-		ComputeEndpoint:             oip.Ce,
+		EndpointsOverride:           oip.EndpointsOverride,
 		DisableGCSLogs:              oip.GcsLogsDisabled,
 		DisableCloudLogs:            oip.CloudLogsDisabled,
 		DisableStdoutLogs:           oip.StdoutLogsDisabled,

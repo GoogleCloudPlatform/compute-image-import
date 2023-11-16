@@ -41,7 +41,7 @@ func TestDaisyAttrs(t *testing.T) {
 			GCSPath:               params.ScratchBucketGcsPath,
 			OAuth:                 params.Oauth,
 			Timeout:               params.Timeout.String(),
-			ComputeEndpoint:       params.Ce,
+			EndpointsOverride:     daisyutils.EndpointsOverride{Compute: params.Ce},
 			WorkflowDirectory:     params.WorkflowDir,
 			DisableGCSLogs:        params.GcsLogsDisabled,
 			DisableCloudLogs:      params.CloudLogsDisabled,

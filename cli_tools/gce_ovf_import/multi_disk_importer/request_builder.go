@@ -45,7 +45,7 @@ func (r *requestBuilder) buildRequests(params *ovfdomain.OVFImportParams, dataDi
 			ExecutionID:                 imageName,
 			ImageName:                   imageName,
 			CloudLogsDisabled:           params.CloudLogsDisabled,
-			ComputeEndpoint:             params.Ce,
+			EndpointsOverride:           daisyutils.EndpointsOverride{Compute: params.EndpointsOverride.Compute, Storage: params.EndpointsOverride.Storage, CloudLogging: params.EndpointsOverride.CloudLogging},
 			ComputeServiceAccount:       params.ComputeServiceAccount,
 			WorkflowDir:                 r.workflowDir,
 			DaisyLogLinePrefix:          fmt.Sprintf("disk-%d", i+1),

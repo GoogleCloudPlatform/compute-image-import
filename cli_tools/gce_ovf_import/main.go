@@ -110,7 +110,7 @@ func buildOVFImportParams() *domain.OVFImportParams {
 		BootDiskKmsKeyring: *bootDiskKmsKeyring, BootDiskKmsLocation: *bootDiskKmsLocation,
 		BootDiskKmsProject: *bootDiskKmsProject, Timeout: *timeout, Project: project,
 		ScratchBucketGcsPath: *scratchBucketGcsPath, Oauth: *oauth,
-		Ce: *ce, ComputeServiceAccount: *computeServiceAccount, InstanceServiceAccount: *serviceAccount,
+		EndpointsOverride: daisyutils.EndpointsOverride{Compute: *ce}, ComputeServiceAccount: *computeServiceAccount, InstanceServiceAccount: *serviceAccount,
 		InstanceAccessScopesFlag: *scopes, GcsLogsDisabled: *gcsLogsDisabled, CloudLogsDisabled: *cloudLogsDisabled,
 		StdoutLogsDisabled: *stdoutLogsDisabled, NodeAffinityLabelsFlag: nodeAffinityLabelsFlag,
 		CurrentExecutablePath: currentExecutablePath, ReleaseTrack: *releaseTrack,

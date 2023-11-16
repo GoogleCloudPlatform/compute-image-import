@@ -226,7 +226,7 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		GCSPath:                     args.ScratchBucketGcsPath,
 		OAuth:                       args.Oauth,
 		Timeout:                     args.Timeout,
-		ComputeEndpoint:             args.ComputeEndpoint,
+		EndpointsOverride:           daisyutils.EndpointsOverride{Compute: args.ComputeEndpoint},
 		DisableGCSLogs:              args.GcsLogsDisabled,
 		DisableCloudLogs:            args.CloudLogsDisabled,
 		DisableStdoutLogs:           args.StdoutLogsDisabled,

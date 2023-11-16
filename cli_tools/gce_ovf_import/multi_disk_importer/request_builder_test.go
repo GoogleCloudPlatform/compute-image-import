@@ -26,6 +26,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
 	imagemocks "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer/mocks"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	ovfdomain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/gce_ovf_import/domain"
 )
 
@@ -66,7 +67,7 @@ func TestBuildRequests_InitsFields(t *testing.T) {
 	assertAllEqual(t, params.StdoutLogsDisabled, disk1Request.StdoutLogsDisabled, disk2Request.StdoutLogsDisabled)
 	assertAllEqual(t, params.UefiCompatible, disk1Request.UefiCompatible, disk2Request.UefiCompatible)
 	assertAllEqual(t, params.NoExternalIP, disk1Request.NoExternalIP, disk2Request.NoExternalIP)
-	assertAllEqual(t, params.Ce, disk1Request.ComputeEndpoint, disk2Request.ComputeEndpoint)
+	assertAllEqual(t, params.EndpointsOverride.Compute, disk1Request.EndpointsOverride.Compute, disk2Request.EndpointsOverride.Compute)
 	assertAllEqual(t, params.Oauth, disk1Request.Oauth, disk2Request.Oauth)
 	assertAllEqual(t, params.Network, disk1Request.Network, disk2Request.Network)
 	assertAllEqual(t, params.Subnet, disk1Request.Subnet, disk2Request.Subnet)
@@ -145,7 +146,7 @@ func makeDefaultParams() *ovfdomain.OVFImportParams {
 		Project:              &project,
 		ScratchBucketGcsPath: "gs://scratch/bucket",
 		CloudLogsDisabled:    true,
-		Ce:                   "https://compute-endpoint",
+		EndpointsOverride:    daisyutils.EndpointsOverride{Compute: "compute-endpoint", Storage: "storage-endpoint", CloudLogging: "cloudlogging-endpoint"},
 		GcsLogsDisabled:      true,
 		Network:              "global/network",
 		NoExternalIP:         true,

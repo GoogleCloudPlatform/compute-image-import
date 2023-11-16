@@ -454,7 +454,7 @@ func GetInstanceURI(project, zone, name string) string {
 }
 
 // ParseWorkflow parses Daisy workflow file and returns Daisy workflow object or error in case of failure
-func ParseWorkflow(path string, varMap map[string]string, project, zone, gcsPath, oauth, dTimeout, cEndpoint string, disableGCSLogs, disableCloudLogs, disableStdoutLogs bool) (*daisy.Workflow, error) {
+func ParseWorkflow(path string, varMap map[string]string, project, zone, gcsPath, oauth, dTimeout string, disableGCSLogs, disableCloudLogs, disableStdoutLogs bool) (*daisy.Workflow, error) {
 	w, err := daisy.NewFromFile(path)
 	if err != nil {
 		return nil, err
@@ -476,7 +476,6 @@ Loop:
 		GCSPath:           gcsPath,
 		OAuth:             oauth,
 		Timeout:           dTimeout,
-		ComputeEndpoint:   cEndpoint,
 		DisableGCSLogs:    disableGCSLogs,
 		DisableCloudLogs:  disableCloudLogs,
 		DisableStdoutLogs: disableStdoutLogs,
@@ -494,14 +493,23 @@ type Tool struct {
 	ResourceLabelName string
 }
 
+// EndpointsOverride is a type for google cloud APIs that may be overridden
+type EndpointsOverride struct {
+	Compute      string `json:",omitempty"`
+	Storage      string `json:",omitempty"`
+	CloudLogging string `json:",omitempty"`
+}
+
 // EnvironmentSettings controls the resources that are used during tool execution.
 type EnvironmentSettings struct {
 	// Location of workflows
 	WorkflowDirectory string
 
 	// Fields from daisy.Workflow
-	Project, Zone, GCSPath, OAuth, Timeout, ComputeEndpoint string
-	DisableGCSLogs, DisableCloudLogs, DisableStdoutLogs     bool
+	Project, Zone, GCSPath, OAuth, Timeout              string
+	DisableGCSLogs, DisableCloudLogs, DisableStdoutLogs bool
+
+	EndpointsOverride EndpointsOverride
 
 	// An optional prefix to include in the bracketed portion of daisy's stdout logs.
 	// Gcloud does a prefix match to determine whether to show a log line to a user.
@@ -534,9 +542,6 @@ func (env EnvironmentSettings) ApplyToWorkflow(w *daisy.Workflow) {
 	}
 	if env.Timeout != "" {
 		w.DefaultTimeout = env.Timeout
-	}
-	if env.ComputeEndpoint != "" {
-		w.ComputeEndpoint = env.ComputeEndpoint
 	}
 	if env.DisableGCSLogs {
 		w.DisableGCSLogging()

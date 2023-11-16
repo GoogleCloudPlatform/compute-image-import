@@ -663,7 +663,6 @@ func getAllInstanceImportParams() *domain.OVFImportParams {
 		Project:                     &project,
 		ScratchBucketGcsPath:        "gs://bucket/folder",
 		Oauth:                       "oAuthFilePath",
-		Ce:                          "us-east1-c",
 		GcsLogsDisabled:             true,
 		CloudLogsDisabled:           true,
 		StdoutLogsDisabled:          true,

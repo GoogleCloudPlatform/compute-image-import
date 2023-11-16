@@ -61,7 +61,7 @@ func TestBuildParams(t *testing.T) {
 	assert.Equal(t, cliArgs["project"], *params.Project)
 	assert.Equal(t, cliArgs["scratch-bucket-gcs-path"], params.ScratchBucketGcsPath)
 	assert.Equal(t, cliArgs["oauth"], params.Oauth)
-	assert.Equal(t, cliArgs["compute-endpoint-override"], params.Ce)
+	assert.Equal(t, cliArgs["compute-endpoint-override"], params.EndpointsOverride.Compute)
 	assert.Equal(t, cliArgs["disable-gcs-logging"], params.GcsLogsDisabled)
 	assert.Equal(t, cliArgs["disable-cloud-logging"], params.CloudLogsDisabled)
 	assert.Equal(t, cliArgs["disable-stdout-logging"], params.StdoutLogsDisabled)
