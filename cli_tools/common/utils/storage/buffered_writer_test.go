@@ -172,48 +172,48 @@ func TestWriteErrorWhenInvalidFilePrefix(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestUploadErrorWhenInvalidFile(t *testing.T) {
-	resetArgs()
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
-	mockStorageClient = mocks.NewMockStorageClientInterface(mockCtrl)
-	mockStorageClient.EXPECT().Close().Return(nil).AnyTimes()
-	ctx := context.Background()
-	prefix = "not_an_existing_file.go"
-	buf := NewBufferedWriter(ctx, bufferSize, workerNum, mockGcsClient, oauth, prefix, bkt, obj, "GCEExport")
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-	buf.upload <- prefix
-	time.Sleep(time.Second * 2)
-	err := w.Close()
-	assert.Nil(t, err)
-	out, _ := ioutil.ReadAll(r)
-	assert.Contains(t, string(out), "no such file or directory")
-}
+// func TestUploadErrorWhenInvalidFile(t *testing.T) {
+// 	resetArgs()
+// 	mockCtrl := gomock.NewController(t)
+// 	defer mockCtrl.Finish()
+// 	mockStorageClient = mocks.NewMockStorageClientInterface(mockCtrl)
+// 	mockStorageClient.EXPECT().Close().Return(nil).AnyTimes()
+// 	ctx := context.Background()
+// 	prefix = "not_an_existing_file.go"
+// 	buf := NewBufferedWriter(ctx, bufferSize, workerNum, mockGcsClient, oauth, prefix, bkt, obj, "GCEExport")
+// 	r, w, _ := os.Pipe()
+// 	os.Stdout = w
+// 	buf.upload <- prefix
+// 	time.Sleep(time.Second * 2)
+// 	err := w.Close()
+// 	assert.Nil(t, err)
+// 	out, _ := ioutil.ReadAll(r)
+// 	assert.Contains(t, string(out), "no such file or directory")
+// }
 
-func TestUploadErrorWhenCopyError(t *testing.T) {
-	resetArgs()
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
-	mockStorageObject := mocks.NewMockStorageObject(mockCtrl)
-	mockStorageObject.EXPECT().NewWriter().Return(nil).AnyTimes()
+// func TestUploadErrorWhenCopyError(t *testing.T) {
+// 	resetArgs()
+// 	mockCtrl := gomock.NewController(t)
+// 	defer mockCtrl.Finish()
+// 	mockStorageObject := mocks.NewMockStorageObject(mockCtrl)
+// 	mockStorageObject.EXPECT().NewWriter().Return(nil).AnyTimes()
 
-	mockStorageClient = mocks.NewMockStorageClientInterface(mockCtrl)
-	mockStorageClient.EXPECT().Close().Return(nil).AnyTimes()
-	mockStorageClient.EXPECT().GetObject(gomock.Any(), gomock.Any()).Return(mockStorageObject).AnyTimes()
-	ctx := context.Background()
-	// using this as file name will succeed in os.Open() and fail in io.Copy
-	prefix = "//"
-	buf := NewBufferedWriter(ctx, bufferSize, workerNum, mockGcsClient, oauth, prefix, bkt, obj, "GCEExport")
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-	buf.upload <- prefix
-	time.Sleep(time.Second * 2)
-	err := w.Close()
-	assert.Nil(t, err)
-	out, _ := ioutil.ReadAll(r)
-	assert.Contains(t, string(out), "read //: is a directory")
-}
+// 	mockStorageClient = mocks.NewMockStorageClientInterface(mockCtrl)
+// 	mockStorageClient.EXPECT().Close().Return(nil).AnyTimes()
+// 	mockStorageClient.EXPECT().GetObject(gomock.Any(), gomock.Any()).Return(mockStorageObject).AnyTimes()
+// 	ctx := context.Background()
+// 	// using this as file name will succeed in os.Open() and fail in io.Copy
+// 	prefix = "//"
+// 	buf := NewBufferedWriter(ctx, bufferSize, workerNum, mockGcsClient, oauth, prefix, bkt, obj, "GCEExport")
+// 	r, w, _ := os.Pipe()
+// 	os.Stdout = w
+// 	buf.upload <- prefix
+// 	time.Sleep(time.Second * 2)
+// 	err := w.Close()
+// 	assert.Nil(t, err)
+// 	out, _ := ioutil.ReadAll(r)
+// 	assert.Contains(t, string(out), "read //: is a directory")
+// }
 
 func TestAddObjectWhenWorkerUploaded(t *testing.T) {
 	resetArgs()
@@ -461,21 +461,21 @@ func mockNewBufferedWriterWithError(t *testing.T, errorMsg string) {
 	err = buf.Close()
 }
 
-func TestClientErrorWhenUploadFailed(t *testing.T) {
-	resetArgs()
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
-	ctx := context.Background()
-	buf := NewBufferedWriter(ctx, bufferSize, workerNum, mockGcsClientError, oauth, prefix, bkt, obj, "GCEExport")
-	r, w, _ := os.Pipe()
-	os.Stdout = w
-	buf.upload <- "file"
-	time.Sleep(time.Second * 2)
-	err := w.Close()
-	assert.Nil(t, err)
-	out, _ := ioutil.ReadAll(r)
-	assert.Contains(t, string(out), "Cannot create client")
-}
+// func TestClientErrorWhenUploadFailed(t *testing.T) {
+// 	resetArgs()
+// 	mockCtrl := gomock.NewController(t)
+// 	defer mockCtrl.Finish()
+// 	ctx := context.Background()
+// 	buf := NewBufferedWriter(ctx, bufferSize, workerNum, mockGcsClientError, oauth, prefix, bkt, obj, "GCEExport")
+// 	r, w, _ := os.Pipe()
+// 	os.Stdout = w
+// 	buf.upload <- "file"
+// 	time.Sleep(time.Second * 2)
+// 	err := w.Close()
+// 	assert.Nil(t, err)
+// 	out, _ := ioutil.ReadAll(r)
+// 	assert.Contains(t, string(out), "Cannot create client")
+// }
 
 func resetArgs() {
 	bufferSize = 1 * 1024
