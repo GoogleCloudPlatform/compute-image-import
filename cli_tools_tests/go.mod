@@ -14,7 +14,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.1
 	google.golang.org/api v0.114.0
-	google.golang.org/protobuf v1.29.1
+	google.golang.org/protobuf v1.31.0
 )
 
 replace github.com/GoogleCloudPlatform/compute-image-import/common => ../common
