@@ -20,6 +20,8 @@ import (
 	"log"
 	"strings"
 
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
+
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/image/importer"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/logging"
@@ -46,6 +48,9 @@ func Main(args []string, toolLogger logging.ToolLogger, workflowDir string) erro
 		logFailure(importArgs, err)
 		return err
 	}
+
+	printOverriddenAPIsInfo(importArgs.EndpointsOverride)
+
 	importArgs.WorkflowDir = workflowDir
 
 	// 2. Setup dependencies.
@@ -107,7 +112,6 @@ func createStorageClient(ctx context.Context, importArgs imageImportArgs, toolLo
 	}
 
 	if importArgs.EndpointsOverride.Storage != "" {
-		log.Printf("Default storage APIs endpoint is changed to: '%v'", importArgs.EndpointsOverride.Storage)
 		storageOptions = append(storageOptions, option.WithEndpoint(importArgs.EndpointsOverride.Storage))
 	}
 
@@ -178,5 +182,17 @@ func initLoggingParams(args imageImportArgs) service.InputParams {
 			StorageLocation:       args.StorageLocation,
 			ComputeServiceAccount: args.ComputeServiceAccount,
 		},
+	}
+}
+
+func printOverriddenAPIsInfo(endpointsOverride daisyutils.EndpointsOverride) {
+	if endpointsOverride.Storage != "" {
+		log.Printf("Default storage APIs endpoint is changed to: '%v'", endpointsOverride.Storage)
+	}
+	if endpointsOverride.Compute != "" {
+		log.Printf("Default compute APIs endpoint is changed to: '%v'", endpointsOverride.Compute)
+	}
+	if endpointsOverride.CloudLogging != "" {
+		log.Printf("Default cloud-logging APIs endpoint is changed to: '%v'", endpointsOverride.CloudLogging)
 	}
 }

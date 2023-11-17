@@ -17,7 +17,7 @@ package cli
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"strings"
 	"time"
 
@@ -46,7 +46,7 @@ func parseArgsFromUser(argsFromUser []string) (imageImportArgs, error) {
 	flagSet := flag.NewFlagSet("image-import", flag.ContinueOnError)
 	// Don't write parse errors to stdout, instead propagate them via an
 	// exception since we use flag.ContinueOnError.
-	flagSet.SetOutput(ioutil.Discard)
+	flagSet.SetOutput(io.Discard)
 	parsed := imageImportArgs{}
 	parsed.registerFlags(flagSet)
 	return parsed, flagSet.Parse(argsFromUser)

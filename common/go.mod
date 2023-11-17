@@ -3,7 +3,7 @@ module github.com/GoogleCloudPlatform/compute-image-import/common
 go 1.13
 
 require (
-	cloud.google.com/go/storage v1.30.1
-	github.com/GoogleCloudPlatform/compute-daisy v0.0.0-20220223233810-60345cd7065c
-	google.golang.org/api v0.114.0
+	cloud.google.com/go/storage v1.31.0
+	github.com/GoogleCloudPlatform/compute-daisy v0.0.0-20231114191308-36d2ee64eace
+	google.golang.org/api v0.129.0
 )

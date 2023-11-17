@@ -17,6 +17,7 @@ package daisyutils
 import (
 	"context"
 
+	"cloud.google.com/go/logging"
 	"cloud.google.com/go/storage"
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
@@ -77,7 +78,19 @@ func updateWorkflowClientsIfneeded(env EnvironmentSettings, wf *daisy.Workflow) 
 		wf.StorageClient = storageClient
 	}
 
-	// TODO: override wf.cloudLoggingClient after changing to be public in daisy
+	if env.EndpointsOverride.CloudLogging != "" {
+		cloudLoggingOptions := []option.ClientOption{option.WithEndpoint(env.EndpointsOverride.CloudLogging)}
+		if env.OAuth != "" {
+			cloudLoggingOptions = append(cloudLoggingOptions, option.WithCredentialsFile(env.OAuth))
+		}
+
+		cloudLoggingClient, err := logging.NewClient(ctx, wf.Project, cloudLoggingOptions...)
+		if err != nil {
+			return err
+		}
+
+		wf.CloudLoggingClient = cloudLoggingClient
+	}
 
 	return nil
 }
