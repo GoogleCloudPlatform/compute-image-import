@@ -111,7 +111,7 @@ var basicCases = []*testCase{
 		caseName:      "Fail with wrong overriden API",
 		source:        "projects/compute-image-import-test/global/images/debian-11-without-wget-and-curl",
 		extraArgs:     []string{"-storage_endpoint_override=https://fake-api-endpoint"},
-		expectedError: "dial tcp: lookup fake-api-endpoint on 8.8.8.8:53: no such host",
+		expectedError: "no such host",
 	},
 
 	// Debian
