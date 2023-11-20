@@ -380,9 +380,11 @@ var basicCases = []*testCase{
 
 	// Other
 	{
-		caseName:  "Import with overriden APIs endpoints",
-		source:    "projects/compute-image-import-test/global/images/ubuntu-2204",
-		extraArgs: []string{"-storage_endpoint_override=https://storage.googleapis.com/storage/v1/", "-compute_endpoint_override=https://compute.googleapis.com/compute/v1/"},
+		caseName: "Import with overriden APIs endpoints",
+		source:   "projects/compute-image-import-test/global/images/ubuntu-2204",
+		extraArgs: []string{"-storage_endpoint_override=https://storage.googleapis.com/storage/v1/",
+			"-compute_endpoint_override=https://compute.googleapis.com/compute/v1/",
+			"-cloud_logging_endpoint_override=https://logging.googleapis.com/logging/v1/"},
 	},
 }
 

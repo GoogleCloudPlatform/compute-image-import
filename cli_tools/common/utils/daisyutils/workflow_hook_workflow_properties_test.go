@@ -49,7 +49,8 @@ func Test_ApplyEnvToWorkflow(t *testing.T) {
 
 func Test_updateWorkflowClientsIfneeded_OverrideClients(t *testing.T) {
 	env := EnvironmentSettings{
-		EndpointsOverride: EndpointsOverride{Compute: "https://compute.googleapis.com/compute/v1/", Storage: "https://storage.googleapis.com/storage/v1/"},
+		EndpointsOverride: EndpointsOverride{Compute: "https://compute.googleapis.com/compute/v1/",
+			Storage: "https://storage.googleapis.com/storage/v1/", CloudLogging: "https://logging.googleapis.com/logging/v1/"},
 	}
 
 	wf := &daisy.Workflow{
@@ -64,6 +65,7 @@ func Test_updateWorkflowClientsIfneeded_OverrideClients(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, wf.ComputeClient)
 	assert.NotNil(t, wf.StorageClient)
+	assert.NotNil(t, wf.CloudLoggingClient)
 }
 
 func Test_updateWorkflowClientsIfneeded_dontOverrideClients(t *testing.T) {
@@ -81,4 +83,5 @@ func Test_updateWorkflowClientsIfneeded_dontOverrideClients(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Nil(t, wf.ComputeClient)
 	assert.Nil(t, wf.StorageClient)
+	assert.Nil(t, wf.CloudLoggingClient)
 }
