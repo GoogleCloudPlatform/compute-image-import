@@ -37,7 +37,8 @@
             {
               "initializeParams": {
                 "sourceImage": "${image_under_test}"
-              }
+              },
+              "AutoDelete": true
             }
           ],
           "machineType": "n1-standard-4",

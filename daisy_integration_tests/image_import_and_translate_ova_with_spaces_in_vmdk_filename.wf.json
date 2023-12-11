@@ -30,7 +30,8 @@
             {
               "initializeParams": {
                 "sourceImage": "${image}"
-              }
+              },
+              "AutoDelete": true
             }
           ],
           "machineType": "n1-standard-4",
