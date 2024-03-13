@@ -117,7 +117,7 @@ function ensureCapacityOfDisk() {
   echo "Resizing result: $out"
 
   echo "Import: Checking for ${devicePath} ${requiredGb}G"
-  for t in {1..60}; do
+  for t in {1..120}; do
     if deviceHasCapacity "$devicePath" "$requiredGb"; then
       echo "Import: ${devicePath} is attached and ready."
       return
