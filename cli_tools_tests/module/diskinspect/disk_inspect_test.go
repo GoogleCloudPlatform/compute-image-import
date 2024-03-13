@@ -177,7 +177,7 @@ func TestInspectDisk(t *testing.T) {
 			},
 		}, {
 			caseName: "UEFI inspection test for GPT UEFI - windows",
-			imageURI: "projects/gce-uefi-images/global/images/windows-server-2019-dc-core-v20200609",
+			imageURI: "projects/gce-uefi-images/global/images/windows-server-2019-dc-core-v20200512",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
 					CliFormatted: "windows-2019",
@@ -255,13 +255,12 @@ func TestInspectDisk(t *testing.T) {
 
 		// Windows Server
 		{
-			imageURI: "projects/windows-cloud/global/images/windows-server-2008-r2-dc-v20200114",
+			imageURI: "projects/windows-cloud/global/images/windows-server-2016-dc-core-v20170117",
 			expected: &pb.InspectionResults{
 				OsRelease: &pb.OsRelease{
-					CliFormatted: "windows-2008r2",
+					CliFormatted: "windows-2016",
 					Distro:       "windows",
-					MajorVersion: "2008",
-					MinorVersion: "r2",
+					MajorVersion: "2016",
 					Architecture: pb.Architecture_X64,
 					DistroId:     pb.Distro_WINDOWS,
 				},
