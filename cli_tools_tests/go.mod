@@ -11,11 +11,10 @@ require (
 	github.com/GoogleCloudPlatform/compute-image-import/proto/go v0.0.0
 	github.com/aws/aws-sdk-go v1.37.5
 	github.com/google/go-cmp v0.5.9
-	github.com/google/s2a-go v0.1.4 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.8.3
 	google.golang.org/api v0.129.0
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.33.0
 )
 
 replace github.com/GoogleCloudPlatform/compute-image-import/common => ../common
