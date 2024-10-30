@@ -83,6 +83,10 @@ func (c *ScratchBucketCreator) getBucketAttrs(fileGcsPath string, project string
 		bucketAttrs.UniformBucketLevelAccess.Enabled = enableUniformBucketLevelAccess
 	}
 
+	if bucketAttrs != nil {
+		bucketAttrs.SoftDeletePolicy = &storage.SoftDeletePolicy{RetentionDuration: 0}
+	}
+
 	return bucketAttrs, err
 }
 
