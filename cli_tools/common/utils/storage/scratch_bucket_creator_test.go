@@ -58,6 +58,10 @@ func TestCreateScratchBucketNoSourceFileDefaultBucketCreatedBasedOnDefaultRegion
 		SoftDeletePolicy:         &storage.SoftDeletePolicy{RetentionDuration: 0},
 	}).Return(nil)
 
+	mockStorageClient.EXPECT().UpdateBucket(expectedBucket, storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil)
+
 	c := ScratchBucketCreator{mockStorageClient, ctx, createMockBucketIteratorWithRandomBuckets(mockCtrl, &ctx, mockStorageClient, project)}
 	bucket, region, err := c.CreateScratchBucket("", project, "", true)
 	assert.Equal(t, expectedBucket, bucket)
@@ -83,6 +87,10 @@ func TestCreateScratchBucketNoSourceFileTranslateGoogleDomainDefaultBucketCreate
 		SoftDeletePolicy:         &storage.SoftDeletePolicy{RetentionDuration: 0},
 	}).Return(nil)
 
+	mockStorageClient.EXPECT().UpdateBucket(expectedBucket, storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil)
+
 	c := ScratchBucketCreator{mockStorageClient, ctx, createMockBucketIteratorWithRandomBuckets(mockCtrl, &ctx, mockStorageClient, project)}
 	bucket, region, err := c.CreateScratchBucket("", project, "", true)
 	assert.Equal(t, expectedBucket, bucket)
@@ -106,6 +114,10 @@ func TestCreateScratchBucketNoSourceFileBucketCreatedBasedOnInputZone(t *testing
 		StorageClass:             regionalStorageClass,
 		UniformBucketLevelAccess: storage.UniformBucketLevelAccess{Enabled: true},
 		SoftDeletePolicy:         &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil)
+
+	mockStorageClient.EXPECT().UpdateBucket(expectedBucket, storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
 	}).Return(nil)
 
 	c := ScratchBucketCreator{mockStorageClient, ctx, createMockBucketIteratorWithRandomBuckets(mockCtrl, &ctx, mockStorageClient, project)}
@@ -173,7 +185,9 @@ func TestCreateScratchBucketNewBucketCreatedProject(t *testing.T) {
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
 	mockStorageClient.EXPECT().GetBucketAttrs(sourceBucketAttrs.Name).Return(sourceBucketAttrs, nil).Times(1)
 	mockStorageClient.EXPECT().CreateBucket("project1-daisy-bkt-us-west2", project, scratchBucketAttrs).Return(nil).Times(1)
-
+	mockStorageClient.EXPECT().UpdateBucket("project1-daisy-bkt-us-west2", storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil).Times(1)
 	mockBucketIterator := mocks.NewMockBucketIteratorInterface(mockCtrl)
 	first := mockBucketIterator.EXPECT().Next().Return(anotherBucketAttrs, nil)
 	second := mockBucketIterator.EXPECT().Next().Return(sourceBucketAttrs, nil)
@@ -230,6 +244,9 @@ func TestCreateScratchBucketErrorRetrievingSourceFileBucketMetadataDefaultBucket
 		SoftDeletePolicy:         &storage.SoftDeletePolicy{RetentionDuration: 0},
 	}).Return(nil)
 
+	mockStorageClient.EXPECT().UpdateBucket(expectedBucket, storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil).Times(1)
 	c := ScratchBucketCreator{mockStorageClient, ctx, createMockBucketIteratorWithRandomBuckets(mockCtrl, &ctx, mockStorageClient, project)}
 	bucket, region, err := c.CreateScratchBucket("gs://sourcebucket/sourcefile", project, "", true)
 	assert.Equal(t, expectedBucket, bucket)
@@ -256,6 +273,10 @@ func TestCreateScratchBucketErrorRetrievingSourceFileBucketMetadataBucketCreated
 		SoftDeletePolicy:         &storage.SoftDeletePolicy{RetentionDuration: 0},
 	}).Return(nil)
 
+	mockStorageClient.EXPECT().UpdateBucket(expectedBucket, storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil)
+
 	c := ScratchBucketCreator{mockStorageClient, ctx, createMockBucketIteratorWithRandomBuckets(mockCtrl, &ctx, mockStorageClient, project)}
 	bucket, region, err := c.CreateScratchBucket("gs://sourcebucket/sourcefile", project, "asia-east1-b", true)
 	assert.Equal(t, expectedBucket, bucket)
@@ -280,6 +301,10 @@ func TestCreateScratchBucketNilSourceFileBucketMetadataDefaultBucketCreated(t *t
 		StorageClass:             defaultStorageClass,
 		UniformBucketLevelAccess: storage.UniformBucketLevelAccess{Enabled: true},
 		SoftDeletePolicy:         &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil)
+
+	mockStorageClient.EXPECT().UpdateBucket(expectedBucket, storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
 	}).Return(nil)
 
 	c := ScratchBucketCreator{mockStorageClient, ctx, createMockBucketIteratorWithRandomBuckets(mockCtrl, &ctx, mockStorageClient, project)}
@@ -356,6 +381,9 @@ func TestCreateScratchBucketReturnsExistingScratchBucketNoCreate(t *testing.T) {
 		Return(mockBucketIterator).
 		Times(1)
 
+	mockStorageClient.EXPECT().UpdateBucket("project1-daisy-bkt-us-west2", storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}).Return(nil).Times(1)
 	c := ScratchBucketCreator{mockStorageClient, ctx, mockBucketIteratorCreator}
 	bucket, region, err := c.CreateScratchBucket("gs://sourcebucket/sourcefile", projectID, "", true)
 	assert.Equal(t, "project1-daisy-bkt-us-west2", bucket)

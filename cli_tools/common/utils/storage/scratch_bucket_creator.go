@@ -81,9 +81,7 @@ func (c *ScratchBucketCreator) getBucketAttrs(fileGcsPath string, project string
 	if err == nil {
 		// Enable Uniform-Bucket-Level-Access by default in image-import/export tools.
 		bucketAttrs.UniformBucketLevelAccess.Enabled = enableUniformBucketLevelAccess
-	}
-
-	if bucketAttrs != nil {
+		// Disable soft delete.
 		bucketAttrs.SoftDeletePolicy = &storage.SoftDeletePolicy{RetentionDuration: 0}
 	}
 
@@ -134,14 +132,28 @@ func (c *ScratchBucketCreator) createBucketIfNotExisting(project string,
 	if err != nil {
 		return "", err
 	}
+
+	if foundBucketAttrs == nil {
+		log.Printf("Creating scratch bucket `%v` in %v region", bucketAttrs.Name, bucketAttrs.Location)
+		if err := c.StorageClient.CreateBucket(bucketAttrs.Name, project, bucketAttrs); err != nil {
+			return "", err
+		}
+	}
+	log.Printf("Updating soft delete property of scratch bucket `%v` in %v region", bucketAttrs.Name, bucketAttrs.Location)
+	if err = c.removeSoftDeleteFromBucket(bucketAttrs.Name); err != nil {
+		return "", err
+	}
 	if foundBucketAttrs != nil {
 		return foundBucketAttrs.Location, nil
 	}
-	log.Printf("Creating scratch bucket `%v` in %v region", bucketAttrs.Name, bucketAttrs.Location)
-	if err := c.StorageClient.CreateBucket(bucketAttrs.Name, project, bucketAttrs); err != nil {
-		return "", err
-	}
 	return bucketAttrs.Location, nil
+}
+
+func (c *ScratchBucketCreator) removeSoftDeleteFromBucket(bucketName string) error {
+	bucketAttrToUpdate := storage.BucketAttrsToUpdate{
+		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+	}
+	return c.StorageClient.UpdateBucket(bucketName, bucketAttrToUpdate)
 }
 
 // IsBucketInProject checks if bucket belongs to a project
