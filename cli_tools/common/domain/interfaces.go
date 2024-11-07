@@ -25,6 +25,7 @@ import (
 // StorageClientInterface represents GCS storage client
 type StorageClientInterface interface {
 	CreateBucket(bucketName string, project string, attrs *storage.BucketAttrs) error
+	UpdateBucket(bucketName string, attrs storage.BucketAttrsToUpdate) error
 	Buckets(projectID string) *storage.BucketIterator
 	GetBucketAttrs(bucket string) (*storage.BucketAttrs, error)
 	GetBucket(bucket string) *storage.BucketHandle
