@@ -77,13 +77,14 @@ func (c *ScratchBucketCreator) getBucketAttrs(fileGcsPath string, project string
 		// if file is not provided, fallback to input / default zone.
 		bucketAttrs, err = c.getBucketAttrsOnFallbackZone(project, fallbackZone)
 	}
-
-	if err == nil {
-		// Enable Uniform-Bucket-Level-Access by default in image-import/export tools.
-		bucketAttrs.UniformBucketLevelAccess.Enabled = enableUniformBucketLevelAccess
-		// Disable soft delete.
-		bucketAttrs.SoftDeletePolicy = &storage.SoftDeletePolicy{RetentionDuration: 0}
+	if err != nil {
+		return nil, err
 	}
+
+	// Enable Uniform-Bucket-Level-Access by default in image-import/export tools.
+	bucketAttrs.UniformBucketLevelAccess.Enabled = enableUniformBucketLevelAccess
+	// Disable soft delete.
+	bucketAttrs.SoftDeletePolicy = &storage.SoftDeletePolicy{RetentionDuration: 0}
 
 	return bucketAttrs, err
 }
