@@ -19,13 +19,15 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"cloud.google.com/go/storage"
-	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
-	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/api/iterator"
+
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/mocks"
 )
 
 func TestCreateScratchBucketErrorWhenProjectNotProvided(t *testing.T) {
@@ -173,7 +175,6 @@ func TestCreateScratchBucketNewBucketCreatedProject(t *testing.T) {
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
 	mockStorageClient.EXPECT().GetBucketAttrs(sourceBucketAttrs.Name).Return(sourceBucketAttrs, nil).Times(1)
 	mockStorageClient.EXPECT().CreateBucket("project1-daisy-bkt-us-west2", project, scratchBucketAttrs).Return(nil).Times(1)
-
 	mockBucketIterator := mocks.NewMockBucketIteratorInterface(mockCtrl)
 	first := mockBucketIterator.EXPECT().Next().Return(anotherBucketAttrs, nil)
 	second := mockBucketIterator.EXPECT().Next().Return(sourceBucketAttrs, nil)
@@ -322,6 +323,20 @@ func TestCreateScratchBucketReturnsExistingScratchBucketNoCreate(t *testing.T) {
 	defer mockCtrl.Finish()
 	ctx := context.Background()
 
+	tests := []struct {
+		name string
+
+		retentionDurationMilliSeconds int64
+	}{
+		{
+			name: "NoSoftDeletion",
+		},
+		{
+			name:                          "NoSoftDeletion",
+			retentionDurationMilliSeconds: 18,
+		},
+	}
+
 	projectID := "PROJECT1"
 
 	sourceBucketAttrs := &storage.BucketAttrs{
@@ -335,32 +350,48 @@ func TestCreateScratchBucketReturnsExistingScratchBucketNoCreate(t *testing.T) {
 		StorageClass: "regional",
 	}
 
-	scratchBucketAttrs := &storage.BucketAttrs{
-		Name:         "project1-daisy-bkt-us-west2",
-		Location:     "us-west2",
-		StorageClass: "regional",
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			scratchBucketAttrs := &storage.BucketAttrs{
+				Name:             "project1-daisy-bkt-us-west2",
+				Location:         "us-west2",
+				StorageClass:     "regional",
+				SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: time.Duration(tc.retentionDurationMilliSeconds)},
+			}
+
+			mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
+			mockStorageClient.EXPECT().GetBucketAttrs("sourcebucket").Return(sourceBucketAttrs, nil).Times(1)
+
+			mockBucketIterator := mocks.NewMockBucketIteratorInterface(mockCtrl)
+			first := mockBucketIterator.EXPECT().Next().Return(anotherBucketAttrs, nil)
+			second := mockBucketIterator.EXPECT().Next().Return(sourceBucketAttrs, nil)
+			third := mockBucketIterator.EXPECT().Next().Return(scratchBucketAttrs, nil)
+
+			gomock.InOrder(first, second, third)
+
+			mockBucketIteratorCreator := mocks.NewMockBucketIteratorCreatorInterface(mockCtrl)
+			mockBucketIteratorCreator.EXPECT().
+				CreateBucketIterator(ctx, mockStorageClient, projectID).
+				Return(mockBucketIterator).
+				Times(1)
+
+			updateCount := 0
+			if tc.retentionDurationMilliSeconds > 0 {
+				updateCount = 1
+			}
+
+			mockStorageClient.EXPECT().UpdateBucket("project1-daisy-bkt-us-west2", storage.BucketAttrsToUpdate{
+				SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
+			}).Return(nil).Times(updateCount)
+
+			c := ScratchBucketCreator{mockStorageClient, ctx, mockBucketIteratorCreator}
+			bucket, region, err := c.CreateScratchBucket("gs://sourcebucket/sourcefile", projectID, "", true)
+			assert.Equal(t, "project1-daisy-bkt-us-west2", bucket)
+			assert.Equal(t, "us-west2", region)
+			assert.Nil(t, err)
+		})
 	}
-	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	mockStorageClient.EXPECT().GetBucketAttrs("sourcebucket").Return(sourceBucketAttrs, nil).Times(1)
 
-	mockBucketIterator := mocks.NewMockBucketIteratorInterface(mockCtrl)
-	first := mockBucketIterator.EXPECT().Next().Return(anotherBucketAttrs, nil)
-	second := mockBucketIterator.EXPECT().Next().Return(sourceBucketAttrs, nil)
-	third := mockBucketIterator.EXPECT().Next().Return(scratchBucketAttrs, nil)
-
-	gomock.InOrder(first, second, third)
-
-	mockBucketIteratorCreator := mocks.NewMockBucketIteratorCreatorInterface(mockCtrl)
-	mockBucketIteratorCreator.EXPECT().
-		CreateBucketIterator(ctx, mockStorageClient, projectID).
-		Return(mockBucketIterator).
-		Times(1)
-
-	c := ScratchBucketCreator{mockStorageClient, ctx, mockBucketIteratorCreator}
-	bucket, region, err := c.CreateScratchBucket("gs://sourcebucket/sourcefile", projectID, "", true)
-	assert.Equal(t, "project1-daisy-bkt-us-west2", bucket)
-	assert.Equal(t, "us-west2", region)
-	assert.Nil(t, err)
 }
 
 func TestCreateScratchBucketErrorWhenCreatingBucket(t *testing.T) {

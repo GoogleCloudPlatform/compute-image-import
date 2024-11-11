@@ -23,8 +23,9 @@ import (
 	reflect "reflect"
 
 	storage "cloud.google.com/go/storage"
-	domain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 	gomock "github.com/golang/mock/gomock"
+
+	domain "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/domain"
 )
 
 // MockStorageClientInterface is a mock of StorageClientInterface interface.
@@ -90,6 +91,20 @@ func (m *MockStorageClientInterface) CreateBucket(arg0, arg1 string, arg2 *stora
 func (mr *MockStorageClientInterfaceMockRecorder) CreateBucket(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateBucket", reflect.TypeOf((*MockStorageClientInterface)(nil).CreateBucket), arg0, arg1, arg2)
+}
+
+// CreateBucket mocks base method.
+func (m *MockStorageClientInterface) UpdateBucket(arg0 string, arg1 storage.BucketAttrsToUpdate) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateBucket", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateBucket indicates an expected call of UpdateBucket.
+func (mr *MockStorageClientInterfaceMockRecorder) UpdateBucket(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBucket", reflect.TypeOf((*MockStorageClientInterface)(nil).UpdateBucket), arg0, arg1)
 }
 
 // DeleteGcsPath mocks base method.

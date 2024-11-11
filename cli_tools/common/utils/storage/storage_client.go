@@ -73,6 +73,15 @@ func (sc *Client) CreateBucket(
 	return nil
 }
 
+// UpdateBucket updates a GCS bucket
+func (sc *Client) UpdateBucket(
+	bucketName string, attrs storage.BucketAttrsToUpdate) error {
+	if _, err := sc.StorageClient.Bucket(bucketName).Update(sc.Ctx, attrs); err != nil {
+		return daisy.Errf("Error updating bucket `%v` : %v", bucketName, err)
+	}
+	return nil
+}
+
 // Buckets returns a bucket iterator for all buckets within a project
 func (sc *Client) Buckets(projectID string) *storage.BucketIterator {
 	return sc.StorageClient.Buckets(sc.Ctx, projectID)
