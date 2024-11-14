@@ -99,9 +99,15 @@ func populateScratchBucketGcsPath(scratchBucketGcsPath *string, zone string, mgc
 		}
 
 		scratchBucketAttrs, err := storageClient.GetBucketAttrs(scratchBucketName)
-		if err == nil {
-			scratchBucketRegion = scratchBucketAttrs.Location
+		if err != nil {
+			return "", err
 		}
+
+		if err := scratchBucketCreator.RemoveSoftDeleteFromBucket(scratchBucketAttrs); err != nil {
+			return "", err
+		}
+
+		scratchBucketRegion = scratchBucketAttrs.Location
 	}
 	return scratchBucketRegion, nil
 }
