@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/distroless/base
+FROM launcher.gcr.io/google/debian12
 
 COPY linux/gce_vm_image_export /gce_vm_image_export
 COPY daisy_workflows/ /daisy_workflows/
