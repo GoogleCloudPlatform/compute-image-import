@@ -26,7 +26,7 @@
           "destination": "${gcs_export}",
           "export_instance_disk_image": "projects/compute-image-import-test/global/images/family/debian-10-worker",
           "format": "vmdk",
-          "source_image": "projects/debian-cloud/global/images/family/debian-10",
+          "source_image": "projects/debian-cloud/global/images/family/debian-11",
           "export_instance_disk_type": "pd-standard"
         }
       }
