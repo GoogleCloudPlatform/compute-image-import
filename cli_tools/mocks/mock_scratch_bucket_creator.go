@@ -19,8 +19,10 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
+
+	"cloud.google.com/go/storage"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockScratchBucketCreatorInterface is a mock of ScratchBucketCreatorInterface interface.
@@ -60,6 +62,24 @@ func (m *MockScratchBucketCreatorInterface) CreateScratchBucket(arg0, arg1, arg2
 func (mr *MockScratchBucketCreatorInterfaceMockRecorder) CreateScratchBucket(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateScratchBucket", reflect.TypeOf((*MockScratchBucketCreatorInterface)(nil).CreateScratchBucket), arg0, arg1, arg2, arg3)
+}
+
+// RemoveSoftDeleteFromBucket removed the soft deletion protection from the given bucket.
+// CreateScratchBucket mocks base method.
+func (m *MockScratchBucketCreatorInterface) RemoveSoftDeleteFromBucket(arg *storage.BucketAttrs) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveSoftDeleteFromBucket", arg)
+	var err error
+	if ret[0] != nil {
+		err = ret[0].(error)
+	}
+	return err
+}
+
+// CreateScratchBucket indicates an expected call of CreateScratchBucket.
+func (mr *MockScratchBucketCreatorInterfaceMockRecorder) RemoveSoftDeleteFromBucket(arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveSoftDeleteFromBucket", reflect.TypeOf((*MockScratchBucketCreatorInterface)(nil).RemoveSoftDeleteFromBucket), arg)
 }
 
 // IsBucketInProject mocks base method.
