@@ -1,3 +1,4 @@
+
 {
   "Name": "image-export-test",
   "Vars": {
@@ -65,7 +66,7 @@
         "Vars": {
           "destination": "${gcs_export}",
           "export_instance_disk_image": "projects/compute-image-import-test/global/images/family/debian-10-worker",
-          "source_image": "projects/debian-cloud/global/images/family/debian-10",
+          "source_image": "projects/debian-cloud/global/images/family/debian-11",
           "export_network": "my-network",
           "export_subnet": "my-subnetwork"
         }
