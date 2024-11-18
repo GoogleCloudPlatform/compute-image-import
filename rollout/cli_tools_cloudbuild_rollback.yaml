@@ -11,8 +11,6 @@ steps:
 # It's specifically useful when the original workflow was failed and we resumed it.
 # 2. The commit SHA is used to track which version of source code produced the image.
 # 3. The "release" tag marks it as the current effective image.
-# NOTE: Rollout will be done on 2 GCP project, this is because wrappers are be pushed into 2 GCP projects as
-# we still need to push to the old one for backward compatibility.
 - name: 'google/cloud-sdk:alpine'
   args:
   - 'bash'
@@ -20,7 +18,7 @@ steps:
   - |
     REGIONS_ARR=$(echo "$_REGIONS" | tr ";" "\n")
     TOOLS_ARR=$(echo "$_TOOLS" | tr ";" "\n")
-    GCP_PROJECTS_ARR=($_IMAGE_PROJECT_1 $_IMAGE_PROJECT_2)
+    GCP_PROJECTS_ARR=($_IMAGE_PROJECT)
 
     exit_on_error() {
       ERR=$$1

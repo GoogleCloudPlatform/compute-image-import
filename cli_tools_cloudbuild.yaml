@@ -13,8 +13,7 @@ options:
 substitutions:
   _TAG: 'latest'
   _RELEASE_PROJECT_FLAG: 'github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param.ReleaseProject'
-  _IMAGE_PROJECT_1: 'compute-image-import'
-  _IMAGE_PROJECT_2: 'compute-image-tools'
+  _IMAGE_PROJECT: 'compute-image-import'
 
 steps:
 
@@ -43,139 +42,70 @@ steps:
 # Build gce_vm_image_import.
 - name: 'golang'
   dir: 'cli_tools/gce_vm_image_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
+  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_import:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_import:$_TAG
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_import:$COMMIT_SHA
   - --context=/workspace
   - --dockerfile=gce_vm_image_import.Dockerfile
 
 # Build gce_onestep_image_import.
 - name: 'golang'
   dir: 'cli_tools/gce_onestep_image_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_onestep_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
+  args: ['go', 'build', '-o=/workspace/linux/gce_onestep_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_onestep_image_import:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_onestep_image_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_onestep_image_import:$_TAG
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_onestep_image_import:$COMMIT_SHA
   - --context=/workspace
   - --dockerfile=gce_onestep_image_import.Dockerfile
 
 # Build gce_vm_image_export.
 - name: 'golang'
   dir: 'cli_tools/gce_vm_image_export'
-  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
+  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_export:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_vm_image_export:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$_TAG
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$COMMIT_SHA
   - --context=/workspace
   - --dockerfile=gce_vm_image_export.Dockerfile
 
 # Build gce_ovf_import.
 - name: 'golang'
   dir: 'cli_tools/gce_ovf_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
+  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_import:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_import:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_import:$_TAG
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_import:$COMMIT_SHA
   - --context=/workspace
   - --dockerfile=gce_ovf_import.Dockerfile
 
 # Build gce_ovf_export.
 - name: 'golang'
   dir: 'cli_tools/gce_ovf_export'
-  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_1']
+  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT']
   env: ['CGO_ENABLED=0']
 - name: 'gcr.io/kaniko-project/executor:v1.1.0'
   args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_export:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_1/gce_ovf_export:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_export:$_TAG
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_ovf_export:$COMMIT_SHA
   - --context=/workspace
   - --dockerfile=gce_ovf_export.Dockerfile
 
 # Copy Linux binaries to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT_1/$_TAG/linux/']
+  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT/$_TAG/linux/']
 
 # Copy Windows binaries to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT_1/$_TAG/windows/']
-
-# IMAGE_PROJECT_2 specific binaries
-# Build gce_vm_image_import.
-- name: 'golang'
-  dir: 'cli_tools/gce_vm_image_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_2']
-  env: ['CGO_ENABLED=0']
-- name: 'gcr.io/kaniko-project/executor:v1.1.0'
-  args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_import:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_import:$COMMIT_SHA
-  - --context=/workspace
-  - --dockerfile=gce_vm_image_import.Dockerfile
-
-# Build gce_onestep_image_import.
-- name: 'golang'
-  dir: 'cli_tools/gce_onestep_image_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_onestep_image_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_2']
-  env: ['CGO_ENABLED=0']
-- name: 'gcr.io/kaniko-project/executor:v1.1.0'
-  args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_onestep_image_import:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_onestep_image_import:$COMMIT_SHA
-  - --context=/workspace
-  - --dockerfile=gce_onestep_image_import.Dockerfile
-
-# Build gce_vm_image_export.
-- name: 'golang'
-  dir: 'cli_tools/gce_vm_image_export'
-  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_2']
-  env: ['CGO_ENABLED=0']
-- name: 'gcr.io/kaniko-project/executor:v1.1.0'
-  args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_export:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_vm_image_export:$COMMIT_SHA
-  - --context=/workspace
-  - --dockerfile=gce_vm_image_export.Dockerfile
-
-# Build gce_ovf_import.
-- name: 'golang'
-  dir: 'cli_tools/gce_ovf_import'
-  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_import', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_2']
-  env: ['CGO_ENABLED=0']
-- name: 'gcr.io/kaniko-project/executor:v1.1.0'
-  args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_import:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_import:$COMMIT_SHA
-  - --context=/workspace
-  - --dockerfile=gce_ovf_import.Dockerfile
-
-# Build gce_ovf_export.
-- name: 'golang'
-  dir: 'cli_tools/gce_ovf_export'
-  args: ['go', 'build', '-o=/workspace/linux/gce_ovf_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT_2']
-  env: ['CGO_ENABLED=0']
-- name: 'gcr.io/kaniko-project/executor:v1.1.0'
-  args:
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_export:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT_2/gce_ovf_export:$COMMIT_SHA
-  - --context=/workspace
-  - --dockerfile=gce_ovf_export.Dockerfile
-
-# Copy Linux binaries to GCS - (To be deleted after fully moved to compute-image-import project)
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT_2/$_TAG/linux/']
-
-# Copy Windows binaries to GCS  - (To be deleted after fully moved to compute-image-import project)
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT_2/$_TAG/windows/']
+  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT/$_TAG/windows/']
 
 # Push Wrappers to all the Artifact Registry regions
 - name: 'google/cloud-sdk:alpine'
@@ -183,7 +113,7 @@ steps:
   - 'bash'
   - '-c'
   - |
-    GCP_PROJECTS=($_IMAGE_PROJECT_1 $_IMAGE_PROJECT_2)
+    GCP_PROJECTS=($_IMAGE_PROJECT)
 
     REGIONS=()
     readarray -t REGIONS < ./supported-regions
@@ -202,7 +132,3 @@ steps:
         done
       echo "----> Deployed all tools for all regions in $$_PROJECT project"
     done
-
-# Make binaries world-readable (To be deleted after fully moved to compute-image-import project).
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: ['-m', 'acl', '-r', 'ch', '-u', 'AllUsers:R', 'gs://$_IMAGE_PROJECT_2/$_TAG/*']
