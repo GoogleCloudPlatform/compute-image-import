@@ -73,6 +73,7 @@
       }
     },
     "verify-output": {
+      "Timeout": "30m",
       "WaitForInstancesSignal": [
         {
           "Name": "tester",
