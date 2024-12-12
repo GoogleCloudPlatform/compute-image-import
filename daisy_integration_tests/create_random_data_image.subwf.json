@@ -5,7 +5,7 @@
       "Required": true
     },
     "export_instance_disk_image": {
-      "Value": "projects/compute-image-import/global/images/debian-11-worker-v20221107",
+      "Value": "projects/compute-image-import/global/images/debian-11-worker-v20241212",
       "Description": "image to use for the worker instance"
     }
   },
