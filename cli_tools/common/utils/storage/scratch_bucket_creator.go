@@ -134,26 +134,14 @@ func (c *ScratchBucketCreator) createBucketIfNotExisting(project string,
 	if err != nil {
 		return "", err
 	}
-
 	if foundBucketAttrs != nil {
-		return foundBucketAttrs.Location, c.RemoveSoftDeleteFromBucket(foundBucketAttrs)
-
+		return foundBucketAttrs.Location, nil
 	}
-
 	log.Printf("Creating scratch bucket `%v` in %v region", bucketAttrs.Name, bucketAttrs.Location)
-	return bucketAttrs.Location, c.StorageClient.CreateBucket(bucketAttrs.Name, project, bucketAttrs)
-}
-
-// RemoveSoftDeleteFromBucket removed the soft deletion protection from the given bucket.
-func (c *ScratchBucketCreator) RemoveSoftDeleteFromBucket(bucketAttrs *storage.BucketAttrs) error {
-	if bucketAttrs.SoftDeletePolicy.RetentionDuration == 0 {
-		return nil
+	if err := c.StorageClient.CreateBucket(bucketAttrs.Name, project, bucketAttrs); err != nil {
+		return "", err
 	}
-	log.Printf("Updating soft delete property of scratch bucket `%v` in %v region", bucketAttrs.Name, bucketAttrs.Location)
-	bucketAttrsToUpdate := storage.BucketAttrsToUpdate{
-		SoftDeletePolicy: &storage.SoftDeletePolicy{RetentionDuration: 0},
-	}
-	return c.StorageClient.UpdateBucket(bucketAttrs.Name, bucketAttrsToUpdate)
+	return bucketAttrs.Location, nil
 }
 
 // IsBucketInProject checks if bucket belongs to a project

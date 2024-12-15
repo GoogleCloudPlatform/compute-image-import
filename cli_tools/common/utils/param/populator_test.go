@@ -50,10 +50,7 @@ func TestPopulator_PopulateMissingParametersReturnsErrorWhenZoneCantBeRetrieved(
 	mockResourceLocationRetriever.EXPECT().GetZone("us-west2", project).Return("",
 		daisy.Errf("zone not found")).Times(1)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	bucketAttrs := &storage.BucketAttrs{Location: "us-west2"}
-	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(bucketAttrs, nil).Times(1)
-	mockScratchBucketCreator.EXPECT().RemoveSoftDeleteFromBucket(bucketAttrs).Return(nil).Times(1)
-
+	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(&storage.BucketAttrs{Location: "us-west2"}, nil).Times(1)
 	mockNetworkResolver := newNoOpNetworkResolver(mockCtrl)
 	mockMachineSeriesDetector := newMockN2N1MachineSeriesDetector(mockCtrl)
 	err := NewPopulator(
@@ -87,9 +84,7 @@ func TestPopulator_PropagatesErrorFromNetworkResolver(t *testing.T) {
 	mockScratchBucketCreator.EXPECT().IsBucketInProject(project, "scratchbucket").Return(true)
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	bucketAttrs := &storage.BucketAttrs{Location: "us-west2"}
-	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(bucketAttrs, nil).Times(1)
-	mockScratchBucketCreator.EXPECT().RemoveSoftDeleteFromBucket(bucketAttrs).Return(nil).Times(1)
+	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(&storage.BucketAttrs{Location: "us-west2"}, nil).Times(1)
 	mockNetworkResolver := mocks.NewMockNetworkResolver(mockCtrl)
 	mockNetworkResolver.EXPECT().ResolveAndValidateNetworkAndSubnet("original-network", "original-subnet", "us-west2", "a_project").Return("", "", daisy.Errf("network cannot be found"))
 	mockMachineSeriesDetector := newMockN2N1MachineSeriesDetector(mockCtrl)
@@ -124,9 +119,7 @@ func TestPopulator_UsesReturnValuesFromNetworkResolver(t *testing.T) {
 	mockScratchBucketCreator.EXPECT().IsBucketInProject(project, "scratchbucket").Return(true)
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	bucketAttrs := &storage.BucketAttrs{Location: "us-west2"}
-	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(bucketAttrs, nil).Times(1)
-	mockScratchBucketCreator.EXPECT().RemoveSoftDeleteFromBucket(bucketAttrs).Return(nil).Times(1)
+	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(&storage.BucketAttrs{Location: "us-west2"}, nil).Times(1)
 	mockNetworkResolver := mocks.NewMockNetworkResolver(mockCtrl)
 	mockNetworkResolver.EXPECT().ResolveAndValidateNetworkAndSubnet(
 		"original-network", "original-subnet", "us-west2", "a_project").Return("fixed-network", "fixed-subnet", nil)
@@ -330,10 +323,7 @@ func TestPopulator_PopulateMissingParametersReturnsErrorWhenPopulateRegionFails(
 	mockScratchBucketCreator.EXPECT().IsBucketInProject(project, "scratchbucket").Return(true)
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	bucketAttrs := &storage.BucketAttrs{Location: region}
-	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(bucketAttrs, nil).Times(1)
-	mockScratchBucketCreator.EXPECT().RemoveSoftDeleteFromBucket(bucketAttrs).Return(nil).Times(1)
-
+	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(&storage.BucketAttrs{Location: region}, nil)
 	mockNetworkResolver := newNoOpNetworkResolver(mockCtrl)
 	mockMachineSeriesDetector := newMockN2N1MachineSeriesDetector(mockCtrl)
 	err := NewPopulator(
@@ -372,9 +362,7 @@ func TestPopulator_PopulateMissingParametersDoesNotChangeProvidedScratchBucketAn
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)
 	mockResourceLocationRetriever.EXPECT().GetZone(expectedRegion, project).Return(expectedZone, nil).Times(1)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	bucketAttrs := &storage.BucketAttrs{Location: expectedRegion}
-	mockStorageClient.EXPECT().GetBucketAttrs(expectedBucketName).Return(bucketAttrs, nil).Times(1)
-	mockScratchBucketCreator.EXPECT().RemoveSoftDeleteFromBucket(bucketAttrs).Return(nil).Times(1)
+	mockStorageClient.EXPECT().GetBucketAttrs(expectedBucketName).Return(&storage.BucketAttrs{Location: expectedRegion}, nil)
 	mockNetworkResolver := newNoOpNetworkResolver(mockCtrl)
 	mockMachineSeriesDetector := newMockN2N1MachineSeriesDetector(mockCtrl)
 	err := NewPopulator(
@@ -607,9 +595,7 @@ func TestPopulator_PopulateMissingParametersPopulatesStorageLocationWithScratchB
 	mockScratchBucketCreator.EXPECT().IsBucketInProject(project, "scratchbucket").Return(true)
 	mockResourceLocationRetriever := mocks.NewMockResourceLocationRetrieverInterface(mockCtrl)
 	mockStorageClient := mocks.NewMockStorageClientInterface(mockCtrl)
-	bucketAttrs := &storage.BucketAttrs{Location: region}
-	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(bucketAttrs, nil).Times(1)
-	mockScratchBucketCreator.EXPECT().RemoveSoftDeleteFromBucket(bucketAttrs).Return(nil).Times(1)
+	mockStorageClient.EXPECT().GetBucketAttrs("scratchbucket").Return(&storage.BucketAttrs{Location: region}, nil)
 	mockResourceLocationRetriever.EXPECT().GetLargestStorageLocation(region).Return("US")
 	mockNetworkResolver := newNoOpNetworkResolver(mockCtrl)
 	mockMachineSeriesDetector := newMockN2N1MachineSeriesDetector(mockCtrl)
