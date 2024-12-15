@@ -136,7 +136,7 @@ func (c *ScratchBucketCreator) createBucketIfNotExisting(project string,
 	}
 
 	if foundBucketAttrs != nil {
-		return foundBucketAttrs.Location, c.RemoveSoftDeleteFromBucket(foundBucketAttrs)
+		return foundBucketAttrs.Location, c.removeSoftDeleteFromBucket(foundBucketAttrs)
 
 	}
 
@@ -144,8 +144,7 @@ func (c *ScratchBucketCreator) createBucketIfNotExisting(project string,
 	return bucketAttrs.Location, c.StorageClient.CreateBucket(bucketAttrs.Name, project, bucketAttrs)
 }
 
-// RemoveSoftDeleteFromBucket removed the soft deletion protection from the given bucket.
-func (c *ScratchBucketCreator) RemoveSoftDeleteFromBucket(bucketAttrs *storage.BucketAttrs) error {
+func (c *ScratchBucketCreator) removeSoftDeleteFromBucket(bucketAttrs *storage.BucketAttrs) error {
 	if bucketAttrs.SoftDeletePolicy.RetentionDuration == 0 {
 		return nil
 	}
