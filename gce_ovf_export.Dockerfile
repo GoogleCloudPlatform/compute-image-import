@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM launcher.gcr.io/google/debian12
+FROM launcher.gcr.io/google/debian11
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -q -y qemu-utils gnupg ca-certificates curl
 
 # Install gcsfuse, installed using instructions from:
 # https://cloud.google.com/storage/docs/gcsfuse-install
-ENV GCSFUSE_REPO=gcsfuse-bookworm
+ENV GCSFUSE_REPO=gcsfuse-bullseye
 RUN echo "deb https://packages.cloud.google.com/apt $GCSFUSE_REPO main" > /etc/apt/sources.list.d/gcsfuse.list
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -q -y gcsfuse
