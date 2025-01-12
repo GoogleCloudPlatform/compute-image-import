@@ -39,7 +39,7 @@ mkdir -p "/gs/${OUTS_PATH}"
 
 # Prepare disk size info.
 # 1. Disk image size info.
-SIZE_BYTES=$(lsblk /dev/sdb --output=size -b | sed -n 2p)
+SIZE_BYTES=$(lsblk ${SOURCE_DEVICE} --output=size -b | sed -n 2p)
 # 2. Round up to the next GB.
 SIZE_OUTPUT_GB=$(awk "BEGIN {print int(((${SIZE_BYTES}-1)/${BYTES_1GB}) + 1)}")
 # 3. Add 5GB of additional space to max size to prevent the corner case that output
@@ -52,8 +52,10 @@ set -x
 
 # Prepare buffer disk.
 echo "GCEExport: Initializing buffer disk for qemu-img output..."
-mkfs.ext4 /dev/sdc
-mount /dev/sdc "/gs/${OUTS_PATH}"
+BUFFER_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-export-disk-buffer*)
+SOURCE_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-image-export-ext)
+mkfs.ext4 ${BUFFER_DEVICE}
+mount ${BUFFER_DEVICE} "/gs/${OUTS_PATH}"
 if [[ $? -ne 0 ]]; then
   echo "ExportFailed: Failed to prepare buffer disk by mkfs + mount."
 fi
@@ -73,7 +75,7 @@ chmod +x ${DISK_RESIZING_MON_LOCAL_PATH}
 ${DISK_RESIZING_MON_LOCAL_PATH} ${MAX_BUFFER_DISK_SIZE_GB} &
 
 echo "GCEExport: Exporting disk of size ${SIZE_OUTPUT_GB}GB and format ${FORMAT}."
-if ! out=$(qemu-img convert /dev/sdb "/gs/${IMAGE_OUTPUT_PATH}" -p -O $FORMAT 2>&1); then
+if ! out=$(qemu-img convert ${SOURCE_DEVICE} "/gs/${IMAGE_OUTPUT_PATH}" -p -O $FORMAT 2>&1); then
   echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to qemu-img error: [Privacy-> ${out} <-Privacy]"
   exit
 fi

@@ -31,16 +31,17 @@ LICENSES=$(curl -f -H Metadata-Flavor:Google ${URL}/licenses)
 
 mkdir ~/upload
 
+SOURCE_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-image-export-ext)
 # Source disk size info.
-SOURCE_SIZE_BYTES=$(lsblk /dev/sdb --output=size -b | sed -n 2p)
+SOURCE_SIZE_BYTES=$(lsblk $SOURCE_DEVICE --output=size -b | sed -n 2p)
 SOURCE_SIZE_GB=$(awk "BEGIN {print int(((${SOURCE_SIZE_BYTES}-1)/${BYTES_1GB}) + 1)}")
 serialOutputPrefixedKeyValue "GCEExport" "source-size-gb" "${SOURCE_SIZE_GB}"
 
 echo "GCEExport: Running export tool."
 if [[ -n $LICENSES ]]; then
-  gce_export -buffer_prefix ~/upload -gcs_path "$GCS_PATH" -disk /dev/sdb -licenses "$LICENSES" -y
+  gce_export -buffer_prefix ~/upload -gcs_path "$GCS_PATH" -disk "$SOURCE_DEVICE" -licenses "$LICENSES" -y
 else
-  gce_export -buffer_prefix ~/upload -gcs_path "$GCS_PATH" -disk /dev/sdb -y
+  gce_export -buffer_prefix ~/upload -gcs_path "$GCS_PATH" -disk "$SOURCE_DEVICE" -y
 fi
 GCE_EXPORT_RESULT=$?
 if [[ ${GCE_EXPORT_RESULT} -eq 2 ]]; then
