@@ -31,7 +31,7 @@ LICENSES=$(curl -f -H Metadata-Flavor:Google ${URL}/licenses)
 
 mkdir ~/upload
 
-SOURCE_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-image-export-ext)
+SOURCE_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-image-export)
 # Source disk size info.
 SOURCE_SIZE_BYTES=$(lsblk $SOURCE_DEVICE --output=size -b | sed -n 2p)
 SOURCE_SIZE_GB=$(awk "BEGIN {print int(((${SOURCE_SIZE_BYTES}-1)/${BYTES_1GB}) + 1)}")
