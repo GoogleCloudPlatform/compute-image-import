@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BYTES_1GB=1073741824
-METADATA_URL="http://metadata/computeMetadata/v1/instance"
+METADATA_URL="http:/169.254.169.254/computeMetadata/v1/instance"
 
 MAX_SIZE=$1
 BUFFER_MIN_SIZE=10
