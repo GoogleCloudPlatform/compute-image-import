@@ -25,7 +25,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 BYTES_1GB=1073741824
-URL="http://metadata/computeMetadata/v1/instance/attributes"
+URL="http://169.254.169.254/computeMetadata/v1/instance/attributes"
 GCS_PATH=$(curl -f -H Metadata-Flavor:Google ${URL}/gcs-path)
 LICENSES=$(curl -f -H Metadata-Flavor:Google ${URL}/licenses)
 
