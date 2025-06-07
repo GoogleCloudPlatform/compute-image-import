@@ -30,6 +30,7 @@ def main():
                                             raise_on_not_found=True)
   uefi = utils.GetMetadataAttribute('uefi', 'false').lower() == 'true'
   outs_path = utils.GetMetadataAttribute('daisy-outs-path')
+  kms_key = utils.GetMetadataAttribute('kms_key')
 
   logging.info('Creating upload metadata of the image and packages.')
 
@@ -61,7 +62,11 @@ def main():
   if uefi and 'debian-10' not in image_family:
     mount_disk = '/dev/sdb2'
   else:
-    mount_disk = '/dev/sdb1'
+    mount_disk = unmounted_root_fs()
+    if mount_disk is None:
+      logging.error('Could not find scanned disk root fs')
+      return
+
   subprocess.run(['mount', mount_disk, '/mnt'], check=False)
   logging.info('Mount %s device to /mnt', mount_disk)
 
@@ -111,7 +116,8 @@ def main():
   # troubleshooting.
   logging.info('Uploading image metadata to daisy outs path.')
   try:
-    utils.UploadFile(f.name, outs_path + "/metadata.json")
+    utils.UploadFile(f.name, outs_path + "/metadata.json",
+                     kms_key_name=kms_key)
   except Exception as e:
     logging.error('Failed uploading metadata file %s', e)
     return

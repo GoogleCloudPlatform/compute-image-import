@@ -463,7 +463,7 @@ def DownloadFile(gcs_source_file, dest_file):
   blob.download_to_filename(dest_file)
 
 
-def UploadFile(source_file, gcs_dest_file):
+def UploadFile(source_file, gcs_dest_file, kms_key_name=None):
   """Uploads a file to GCS.
 
   Expects a local source file and a destination bucket and GCS path.
@@ -473,6 +473,7 @@ def UploadFile(source_file, gcs_dest_file):
         ex: /path/to/local/orig_file.tar.gz
     gcs_dest_file: string, the path to the resulting file in GCS
         ex: gs://new/path/orig_file.tar.gz
+    kms_key_name: The KMS key used to encrypt objects server side.
   """
   # import 'google.cloud.storage' locally as 'google-cloud-storage' pip package
   # is not a mandatory package for all utils users
@@ -489,7 +490,7 @@ def UploadFile(source_file, gcs_dest_file):
   client = storage.Client()
   bucket = client.get_bucket(match.group('bucket'))
   blob = bucket.blob(match.group('obj'))
-  blob.upload_from_filename(source_file)
+  blob.upload_from_filename(source_file, kms_key_name=kms_key_name)
 
 
 class LogFormatter(logging.Formatter):
