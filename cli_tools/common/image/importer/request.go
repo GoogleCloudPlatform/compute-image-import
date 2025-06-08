@@ -107,6 +107,10 @@ type ImageImportRequest struct {
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
 	EndpointsOverride           daisyutils.EndpointsOverride
+	KmsKey                      string
+	KmsKeyring                  string
+	KmsLocation                 string
+	KmsProject                  string
 }
 
 // FixBYOLAndOSArguments fixes the user's arguments for the --os and --byol flags

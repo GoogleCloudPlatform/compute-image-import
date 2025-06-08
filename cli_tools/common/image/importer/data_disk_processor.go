@@ -19,6 +19,7 @@ import (
 	"log"
 
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
+	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/daisyutils"
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/param"
 	"google.golang.org/api/compute/v1"
 )
@@ -31,7 +32,8 @@ type dataDiskProcessor struct {
 
 func newDataDiskProcessor(pd persistentDisk, client daisyCompute.Client, project string,
 	userLabels map[string]string, userStorageLocation string,
-	description string, family string, imageName string) processor {
+	description string, family string, imageName string,
+	kmsKey, kmsKeyring, kmsLocation, kmsProject string) processor {
 	labels := map[string]string{"gce-image-import": "true"}
 	for k, v := range userLabels {
 		labels[k] = v
@@ -39,6 +41,19 @@ func newDataDiskProcessor(pd persistentDisk, client daisyCompute.Client, project
 	var storageLocation []string
 	if userStorageLocation != "" {
 		storageLocation = []string{userStorageLocation}
+	}
+
+	var diskEncryptionKey *compute.CustomerEncryptionKey
+	if kmsKey != "" {
+		key, err := daisyutils.GetKmsKey(kmsKey, kmsKeyring, kmsLocation, kmsProject)
+		if err != nil {
+			// This should not happen since params are already validated.
+			log.Printf("Failed to get KMS key: %v", err)
+		} else {
+			diskEncryptionKey = &compute.CustomerEncryptionKey{
+				KmsKeyName: key,
+			}
+		}
 	}
 
 	return &dataDiskProcessor{
@@ -52,6 +67,7 @@ func newDataDiskProcessor(pd persistentDisk, client daisyCompute.Client, project
 			SourceDisk:       pd.uri,
 			StorageLocations: storageLocation,
 			Licenses:         []string{fmt.Sprintf("projects/%s/global/licenses/virtual-disk-import", param.ReleaseProject)},
+			DiskEncryptionKey: diskEncryptionKey,
 		},
 	}
 }

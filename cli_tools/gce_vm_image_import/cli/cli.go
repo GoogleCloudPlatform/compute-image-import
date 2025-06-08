@@ -181,6 +181,10 @@ func initLoggingParams(args imageImportArgs) service.InputParams {
 			NoExternalIP:          args.NoExternalIP,
 			StorageLocation:       args.StorageLocation,
 			ComputeServiceAccount: args.ComputeServiceAccount,
+			HasKmsKey:             args.KmsKey != "",
+			HasKmsKeyring:         args.KmsKeyring != "",
+			HasKmsLocation:        args.KmsLocation != "",
+			HasKmsProject:         args.KmsProject != "",
 		},
 	}
 }

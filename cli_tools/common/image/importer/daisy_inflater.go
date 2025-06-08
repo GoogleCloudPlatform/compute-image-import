@@ -112,6 +112,9 @@ func newDaisyInflater(request ImageImportRequest, fileMetadata imagefile.Metadat
 		if err != nil {
 			return nil, err
 		}
+		if err := daisyutils.UpdateAllDiskKmsKey(wf, request.KmsKey, request.KmsKeyring, request.KmsLocation, request.KmsProject); err != nil {
+			return nil, err
+		}
 		// If there's a failure during inflation, remove the PD that would otherwise
 		// be left for translation.
 		wf.ForceCleanupOnError = true

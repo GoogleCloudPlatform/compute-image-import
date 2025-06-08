@@ -16,6 +16,7 @@ package daisyutils
 
 import (
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
+	computeBeta "google.golang.org/api/compute/v0.beta"
 )
 
 // ResourceLabeler is responsible for labelling GCE resources (instances, disks and images) with
@@ -94,6 +95,17 @@ func (rl *ResourceLabeler) labelResourcesInStep(step *daisy.Step) {
 
 			image.Image.Labels =
 				rl.updateResourceLabels(image.Image.Labels, rl.ImageLabelKeyRetriever(image.Name))
+
+		}
+
+		for _, image := range step.CreateImages.ImagesBeta {
+			if rl.ImageLocation != "" {
+				image.Image.StorageLocations = []string{rl.ImageLocation}
+			}
+
+			image.Image.Labels =
+				rl.updateResourceLabels(image.Image.Labels, rl.ImageLabelKeyRetriever(image.Name))
+				
 		}
 	}
 }

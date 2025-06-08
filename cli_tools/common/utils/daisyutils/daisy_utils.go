@@ -25,7 +25,8 @@ import (
 	"strings"
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
-
+	computeBeta "google.golang.org/api/compute/v0.beta"
+	"google.golang.org/api/compute/v1"
 	stringutils "github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/string"
 )
 
@@ -389,6 +390,78 @@ func PostProcessDErrorForNetworkFlag(action string, err error, network string, w
 	}
 }
 
+
+// GetKmsKey returns a fully-qualified KMS key name.
+func GetKmsKey(kmsKey, kmsKeyring, kmsLocation, kmsProject string) (string, error) {
+	if kmsKey == "" {
+		return "", nil
+	}
+
+	if strings.Contains(kmsKey, "/") {
+		return kmsKey, nil
+	}
+
+	if kmsProject == "" || kmsLocation == "" || kmsKeyring == "" {
+		return "", daisy.Errf(
+			"the following flags must be specified: kms-key, kms-keyring, kms-location, kms-project")
+	}
+
+	return fmt.Sprintf("projects/%s/locations/%s/keyRings/%s/cryptoKeys/%s",
+		kmsProject, kmsLocation, kmsKeyring, kmsKey), nil
+}
+
+// UpdateAllDiskKmsKey updates all CreateDisks steps in the workflow to use the specified CMEK key.
+func UpdateAllDiskKmsKey(workflow *daisy.Workflow, kmsKey, kmsKeyring, kmsLocation, kmsProject string) error {
+	if kmsKey == "" {
+		return nil
+	}
+
+	key, err := GetKmsKey(kmsKey, kmsKeyring, kmsLocation, kmsProject)
+	if err != nil {
+		return err
+	}
+	workflow.IterateWorkflowSteps(func(step *daisy.Step) {
+		if step.CreateDisks != nil {
+			for _, disk := range *step.CreateDisks {
+				if disk.Disk.DiskEncryptionKey == nil {
+					disk.Disk.DiskEncryptionKey = &compute.CustomerEncryptionKey{}
+				}
+				disk.Disk.DiskEncryptionKey.KmsKeyName = key
+			}
+		}
+	})
+	return nil
+}
+
+// UpdateAllImageKmsKey updates all CreateImages steps in the workflow to use the specified CMEK key.
+func UpdateAllImageKmsKey(workflow *daisy.Workflow, kmsKey, kmsKeyring, kmsLocation, kmsProject string) error {
+	if kmsKey == "" {
+		return nil
+	}
+
+	key, err := GetKmsKey(kmsKey, kmsKeyring, kmsLocation, kmsProject)
+	if err != nil {
+		return err
+	}
+	workflow.IterateWorkflowSteps(func(step *daisy.Step) {
+		if step.CreateImages != nil {
+			for _, image := range step.CreateImages.Images {
+				if image.Image.DiskEncryptionKey == nil {
+					image.Image.DiskEncryptionKey = &compute.CustomerEncryptionKey{}
+				}
+				image.Image.DiskEncryptionKey.KmsKeyName = key
+			}
+			for _, image := range step.CreateImages.ImagesBeta {
+				if image.Image.DiskEncryptionKey == nil {
+					image.Image.DiskEncryptionKey = &computeBeta.CustomerEncryptionKey{}
+				}
+				image.Image.DiskEncryptionKey.KmsKeyName = key
+			}
+		}
+	})
+	return nil
+}
+
 // RunWorkflowWithCancelSignal runs a Daisy workflow, and allows for cancellation from two sources:
 //  1. The user types Ctrl-C on their keyboard.
 //  2. The caller sends a cancellation reason on the cancel channel (or closes it).
@@ -528,6 +601,10 @@ type EnvironmentSettings struct {
 	Tool                        Tool
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
+	KmsKey                      string
+	KmsKeyring                  string
+	KmsLocation                 string
+	KmsProject                  string
 }
 
 // ApplyToWorkflow sets fields on daisy.Workflow from the environment settings.
@@ -592,4 +669,17 @@ func hasIDAtTheEnd(name string) (bool, int) {
 		return true, allIndices[len(allIndices)-1][0]
 	}
 	return false, 0
+}
+
+// ApplyCMEKHook is a workflow hook that applies a CMEK key to all disk and image creations.
+type ApplyCMEKHook struct {
+	KmsKey, KmsKeyring, KmsLocation, KmsProject string
+}
+
+// PreRunHook adds the CMEK key to all CreateDisks and CreateImages steps.
+func (c *ApplyCMEKHook) PreRunHook(wf *daisy.Workflow) error {
+	if err := UpdateAllDiskKmsKey(wf, c.KmsKey, c.KmsKeyring, c.KmsLocation, c.KmsProject); err != nil {
+		return err
+	}
+	return UpdateAllImageKmsKey(wf, c.KmsKey, c.KmsKeyring, c.KmsLocation, c.KmsProject)
 }

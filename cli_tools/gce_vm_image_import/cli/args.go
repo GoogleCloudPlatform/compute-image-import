@@ -154,10 +154,10 @@ func (args *imageImportArgs) registerFlags(flagSet *flag.FlagSet) {
 	flagSet.Var((*flags.TrimmedString)(&args.ExecutionID), "execution_id",
 		"The execution ID to differentiate GCE resources of each imports.")
 
-	flagSet.Bool("kms_key", false, "Reserved for future use.")
-	flagSet.Bool("kms_keyring", false, "Reserved for future use.")
-	flagSet.Bool("kms_location", false, "Reserved for future use.")
-	flagSet.Bool("kms_project", false, "Reserved for future use.")
+	flagSet.Var((*flags.TrimmedString)(&args.KmsKey), "kms_key", "ID of the KMS-key. See https://cloud.google.com/compute/docs/disks/customer-managed-encryption for more details.")
+	flagSet.Var((*flags.TrimmedString)(&args.KmsKeyring), "kms_keyring", "The KMS key-ring of the KMS-key.")
+	flagSet.Var((*flags.TrimmedString)(&args.KmsLocation), "kms_location", "The Cloud location for the KMS-key.")
+	flagSet.Var((*flags.TrimmedString)(&args.KmsProject), "kms_project", "The Cloud project for the KMS-key.")
 
 	flagSet.Var((*flags.LowerTrimmedString)(&args.ImageName), importer.ImageFlag,
 		"Name of the disk image to create.")

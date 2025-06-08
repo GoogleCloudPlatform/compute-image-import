@@ -79,6 +79,10 @@ type ImageExportRequest struct {
 	CurrentExecutablePath       string
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
+	KmsKey                      string
+	KmsKeyring                  string
+	KmsLocation                 string
+	KmsProject                  string
 }
 
 func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string) (map[string]string, error) {
@@ -243,10 +247,20 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		},
 	}
 
+	hooks := []interface{}{
+		&daisyutils.ApplyCMEKHook{
+			KmsKey:      args.KmsKey,
+			KmsKeyring:  args.KmsKeyring,
+			KmsLocation: args.KmsLocation,
+			KmsProject:  args.KmsProject,
+		},
+	}
+
+
 	if env.ExecutionID == "" {
 		env.ExecutionID = path.RandString(5)
 	}
-	values, err := daisyutils.NewDaisyWorker(workflowProvider, env, logger).RunAndReadSerialValues(
+	values, err := daisyutils.NewDaisyWorker(workflowProvider, env, logger, hooks...).RunAndReadSerialValues(
 		varMap, targetSizeGBKey, sourceSizeGBKey)
 	logger.Metric(&pb.OutputInfo{
 		SourcesSizeGb: []int64{stringutils.SafeStringToInt(values[sourceSizeGBKey])},

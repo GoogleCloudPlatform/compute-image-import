@@ -121,6 +121,10 @@ type ImageExportParams struct {
 	DestinationURI        string `json:"destination_uri,omitempty"`
 	SourceImage           string `json:"source_image,omitempty"`
 	Format                string `json:"format,omitempty"`
+	HasKmsKey             bool   `json:"has_kms_key"`
+	HasKmsKeyring         bool   `json:"has_kms_keyring"`
+	HasKmsLocation        bool   `json:"has_kms_location"`
+	HasKmsProject         bool   `json:"has_kms_project"`
 	ComputeServiceAccount string `json:"compute_service_account,omitempty"`
 	SourceDiskSnapshot    string `json:"source_disk_snapshot,omitempty"`
 }

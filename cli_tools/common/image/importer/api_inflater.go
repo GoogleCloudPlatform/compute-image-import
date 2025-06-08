@@ -146,6 +146,15 @@ func (inflater *apiInflater) createDisk(diskName string) (compute.Disk, error) {
 		Type:                diskType,
 		Licenses:            []string{fmt.Sprintf("projects/%s/global/licenses/virtual-disk-import", param.ReleaseProject)},
 	}
+	if inflater.request.KmsKey != "" {
+		key, err := daisyutils.GetKmsKey(inflater.request.KmsKey, inflater.request.KmsKeyring, inflater.request.KmsLocation, inflater.request.KmsProject)
+		if err != nil {
+			return compute.Disk{}, err
+		}
+		cd.DiskEncryptionKey = &compute.CustomerEncryptionKey{
+			KmsKeyName: key,
+		}
+	}
 	err := inflater.computeClient.CreateDisk(inflater.request.Project, inflater.request.Zone, &cd)
 	return cd, err
 }

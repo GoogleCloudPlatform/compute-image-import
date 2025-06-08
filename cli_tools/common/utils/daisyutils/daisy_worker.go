@@ -72,6 +72,13 @@ func NewDaisyWorker(wf WorkflowProvider, env EnvironmentSettings,
 		logger.Debug("UpdateMachineTypesHook is not activated because machine series are not specified.")
 	}
 
+	hooks = append(hooks, &ApplyCMEKHook{
+		KmsKey:      env.KmsKey,
+		KmsKeyring:  env.KmsKeyring,
+		KmsLocation: env.KmsLocation,
+		KmsProject:  env.KmsProject,
+	})
+
 	for _, hook := range hooks {
 		switch hook.(type) {
 		case WorkflowPreHook:

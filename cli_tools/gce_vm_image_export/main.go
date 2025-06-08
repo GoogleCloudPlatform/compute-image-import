@@ -49,6 +49,10 @@ var (
 	labels                      = flag.String("labels", "", "List of label KEY=VALUE pairs to add. Keys must start with a lowercase character and contain only hyphens (-), underscores (_), lowercase characters, and numbers. Values must contain only hyphens (-), underscores (_), lowercase characters, and numbers.")
 	nestedVirtualizationEnabled = flag.Bool("enable_nested_virtualization", true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	workerMachineSeries         flags.StringArrayFlag
+	kmsKey                      = flag.String("kms_key", "", "ID of the KMS-key. See https://cloud.google.com/compute/docs/disks/customer-managed-encryption for more details.")
+	kmsKeyring                  = flag.String("kms_keyring", "", "The KMS key-ring of the KMS-key.")
+	kmsLocation                 = flag.String("kms_location", "", "The Cloud location for the KMS-key.")
+	kmsProject                  = flag.String("kms_project", "", "The Cloud project for the KMS-key.")
 )
 
 func init() {
@@ -82,6 +86,10 @@ func exportEntry() (service.Loggable, error) {
 		CurrentExecutablePath:       currentExecutablePath,
 		WorkerMachineSeries:         *&workerMachineSeries,
 		NestedVirtualizationEnabled: *nestedVirtualizationEnabled,
+		KmsKey:                      *kmsKey,
+		KmsKeyring:                  *kmsKeyring,
+		KmsLocation:                 *kmsLocation,
+		KmsProject:                  *kmsProject,
 	}
 
 	err := exporter.Run(logger, args)
@@ -109,6 +117,10 @@ func main() {
 				DisableGcsLogging:       *gcsLogsDisabled,
 				DisableCloudLogging:     *cloudLogsDisabled,
 				DisableStdoutLogging:    *stdoutLogsDisabled,
+				HasKmsKey:               *kmsKey != "",
+				HasKmsKeyring:           *kmsKeyring != "",
+				HasKmsLocation:          *kmsLocation != "",
+				HasKmsProject:           *kmsProject != "",
 			},
 			DestinationURI:        *destinationURI,
 			SourceImage:           *sourceImage,

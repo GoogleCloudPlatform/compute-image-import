@@ -49,7 +49,8 @@ func (d defaultProcessorProvider) provide(pd persistentDisk) ([]processor, error
 		return []processor{
 			newDataDiskProcessor(pd, d.computeClient, d.Project,
 				d.Labels, d.StorageLocation, d.Description,
-				d.Family, d.ImageName)}, nil
+				d.Family, d.ImageName, d.KmsKey, d.KmsKeyring,
+				d.KmsLocation, d.KmsProject)}, nil
 	}
 
 	plan, err := d.planner.plan(pd)

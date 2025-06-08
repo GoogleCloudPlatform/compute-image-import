@@ -79,6 +79,10 @@ var (
 	machineImageStorageLocation = flag.String(ovfimporter.MachineImageStorageLocationFlagKey, "", "GCS bucket storage location of the machine image being imported (regional or multi-regional)")
 	buildID                     = flag.String("build-id", "", "Cloud Build ID override. This flag should be used if auto-generated or build ID provided by Cloud Build is not appropriate. For example, if running multiple imports in parallel in a single Cloud Build run, sharing build ID could cause premature temporary resource clean-up resulting in import failures.")
 	workerMachineSeries         flags.StringArrayFlag
+	kmsKey                      = flag.String("kms-key", "", "ID of the KMS-key. See https://cloud.google.com/compute/docs/disks/customer-managed-encryption for more details.")
+	kmsKeyring                  = flag.String("kms-keyring", "", "The KMS key-ring of the KMS-key.")
+	kmsLocation                 = flag.String("kms-location", "", "The Cloud location for the KMS-key.")
+	kmsProject                  = flag.String("kms-project", "", "The Cloud project for the KMS-key.")
 	nestedVirtualizationEnabled = flag.Bool(ovfimporter.EnableNestedVirtualizationFlagKey, true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	nodeAffinityLabelsFlag      flags.StringArrayFlag
 	currentExecutablePath       string

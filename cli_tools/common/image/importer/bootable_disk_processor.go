@@ -75,6 +75,13 @@ func newBootableDiskProcessor(request ImageImportRequest, wfPath string, logger 
 		if err != nil {
 			return nil, err
 		}
+
+		if err := daisyutils.UpdateAllDiskKmsKey(wf, request.KmsKey, request.KmsKeyring, request.KmsLocation, request.KmsProject); err != nil {
+			return nil, err
+			}
+			if err := daisyutils.UpdateAllImageKmsKey(wf, request.KmsKey, request.KmsKeyring, request.KmsLocation, request.KmsProject); err != nil {
+			return nil, err
+		}
 		updateWorkflowWithDataDisks(wf, request)
 
 		return wf, err
