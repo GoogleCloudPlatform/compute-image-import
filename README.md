@@ -3,9 +3,9 @@
 This repository contains various tools for managing disk images on Google
 Compute Engine using Daisy.
 
-Note: Google Compute Engine supports importing virtual disks and virtual appliances
-by using the **image import** tool. For more information, see the
-[import tool documentation](https://cloud.google.com/compute/docs/import/importing-virtual-disks).
+**Note:** Google no longer provides support for the import of virtual disks and appliances using this tool,
+as it reached EOL in July 2025. 
+Please use [M2VM Image Import](https://cloud.google.com/migrate/virtual-machines/docs/5.0/migrate/image_import) for virtual disks and [M2VM Machine Image Import](https://cloud.google.com/migrate/virtual-machines/docs/5.0/migrate/machine-image-import) for virtual appliances.
 
 The documentation for the tools in this repository can be found on our
 [GitHub.io page](https://googlecloudplatform.github.io/compute-image-import/image-import.html).
