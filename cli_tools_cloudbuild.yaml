@@ -117,7 +117,7 @@ steps:
 
     REGIONS=()
     readarray -t REGIONS < ./supported-regions
-    TOOLS=("gce_vm_image_import" "gce_onestep_image_import" "gce_vm_image_export" "gce_ovf_import" "gce_ovf_export")
+    TOOLS=("gce_vm_image_export")
 
     for _PROJECT in ${GCP_PROJECTS[@]}
       do
