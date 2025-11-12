@@ -47,6 +47,7 @@ var (
 	cloudLogsDisabled           = flag.Bool("disable_cloud_logging", false, "do not stream logs to Cloud Logging.")
 	stdoutLogsDisabled          = flag.Bool("disable_stdout_logging", false, "do not display individual workflow logs on stdout.")
 	labels                      = flag.String("labels", "", "List of label KEY=VALUE pairs to add. Keys must start with a lowercase character and contain only hyphens (-), underscores (_), lowercase characters, and numbers. Values must contain only hyphens (-), underscores (_), lowercase characters, and numbers.")
+	noExternalIP                = flag.Bool("no_external_ip", false, "Temporary VMs are created in your project during image export. Set this flag so that these temporary VMs are not assigned external IP addresses.")
 	nestedVirtualizationEnabled = flag.Bool("enable_nested_virtualization", true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	workerMachineSeries         flags.StringArrayFlag
 )
@@ -82,6 +83,7 @@ func exportEntry() (service.Loggable, error) {
 		CurrentExecutablePath:       currentExecutablePath,
 		WorkerMachineSeries:         *&workerMachineSeries,
 		NestedVirtualizationEnabled: *nestedVirtualizationEnabled,
+		NoExternalIP:                 *noExternalIP,
 	}
 
 	err := exporter.Run(logger, args)
@@ -115,6 +117,7 @@ func main() {
 			Format:                *format,
 			ComputeServiceAccount: *computeServiceAccount,
 			SourceDiskSnapshot:    *sourceDiskSnapshot,
+			NoExternalIP:           *noExternalIP,
 		},
 	}
 
