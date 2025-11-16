@@ -83,7 +83,7 @@ func exportEntry() (service.Loggable, error) {
 		CurrentExecutablePath:       currentExecutablePath,
 		WorkerMachineSeries:         *&workerMachineSeries,
 		NestedVirtualizationEnabled: *nestedVirtualizationEnabled,
-		NoExternalIP:                 *noExternalIP,
+		NoExternalIP:                *noExternalIP,
 	}
 
 	err := exporter.Run(logger, args)
@@ -117,7 +117,7 @@ func main() {
 			Format:                *format,
 			ComputeServiceAccount: *computeServiceAccount,
 			SourceDiskSnapshot:    *sourceDiskSnapshot,
-			NoExternalIP:           *noExternalIP,
+			NoExternalIP:          *noExternalIP,
 		},
 	}
 
