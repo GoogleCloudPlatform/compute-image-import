@@ -70,6 +70,18 @@ if ! out=$(gsutil cp "${DISK_RESIZING_MON_GCS_PATH}" "${DISK_RESIZING_MON_LOCAL_
 fi
 echo ${out}
 
+echo "GCEExport: Verifying checksum of disk size monitor script..."
+
+# Define the expected SHA256 checksum for disk size monitor script.
+EXPECTED_CHECKSUM="1427d3881d38240d1b196b055a8091d8f8a0c0ce28edf49dd833eebd4a798877"
+
+# Verify the checksum.
+echo "${EXPECTED_CHECKSUM}  ${DISK_RESIZING_MON_LOCAL_PATH}" | sha256sum -c -
+if [[ $? -ne 0 ]]; then
+ echo "ExportFailed: Checksum verification failed for ${DISK_RESIZING_MON_LOCAL_PATH}. The file may have been tampered with or corrupted."
+ exit 1
+fi
+
 echo "GCEExport: Launching disk size monitor in background..."
 chmod +x ${DISK_RESIZING_MON_LOCAL_PATH}
 ${DISK_RESIZING_MON_LOCAL_PATH} ${MAX_BUFFER_DISK_SIZE_GB} &
