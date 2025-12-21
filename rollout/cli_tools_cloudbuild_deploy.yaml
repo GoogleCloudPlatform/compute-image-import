@@ -43,6 +43,8 @@ steps:
           exit_on_error $$?
           gcloud container images add-tag $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:release $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:$COMMIT_SHA -q
           exit_on_error $$?
+          gcloud container images add-tag $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:release $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:legacy
+          exit_on_error $$?
         done
         echo "----> Deployed all tools for $$_REGION"
       done

@@ -48,6 +48,7 @@ steps:
   args:
   - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$_TAG
   - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$COMMIT_SHA
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:legacy
   - --context=/workspace
   - --dockerfile=gce_vm_image_export.Dockerfile
 
@@ -80,6 +81,7 @@ steps:
             echo "--> Deploying... $$_TOOL -> $$_REGION in $$_PROJECT project."
             gcloud container images add-tag gcr.io/$$_PROJECT/$$_TOOL:$_TAG $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:$_TAG -q
             gcloud container images add-tag gcr.io/$$_PROJECT/$$_TOOL:$COMMIT_SHA $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:$COMMIT_SHA -q
+            gcloud container images add-tag gcr.io/$$_PROJECT/$$_TOOL:$COMMIT_SHA $$_REGION-docker.pkg.dev/$$_PROJECT/wrappers/$$_TOOL:legacy -q
           done
         done
       echo "----> Deployed all tools for all regions in $$_PROJECT project"
