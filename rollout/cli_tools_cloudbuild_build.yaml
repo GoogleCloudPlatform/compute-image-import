@@ -51,6 +51,7 @@ steps:
   - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$_RELEASE
   - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$COMMIT_SHA
   - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$_WORKFLOW_EXECUTION_ID
+  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:legacy
   - --context=/workspace
   - --dockerfile=gce_vm_image_export.Dockerfile
 
