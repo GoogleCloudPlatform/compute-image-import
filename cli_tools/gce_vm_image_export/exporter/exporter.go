@@ -136,8 +136,9 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 	}
 
 	if imageDiskSizeGb > 0 {
-		//add 5% for the buffer disk for disk file format/file system overhead if image contains truly random data
-		bufferDiskSizeGb := int64(math.Ceil(float64(imageDiskSizeGb) * 1.05))
+		// We want the size to allow for a 2 step (dd and tar) packaging of the image.
+		// In addition, we want to allow for some overhead (5%) in case of completely random data.
+		bufferDiskSizeGb := int64(math.Ceil(float64(imageDiskSizeGb) * 2.05))
 		varMap["export_instance_disk_size"] = strconv.FormatInt(bufferDiskSizeGb, 10)
 	}
 
