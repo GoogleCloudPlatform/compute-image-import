@@ -15,6 +15,7 @@
 package importer
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -63,7 +64,37 @@ func (args *ImageImportRequest) validate() error {
 }
 
 func (args *ImageImportRequest) checkRequiredArguments() error {
-	return validation.ValidateStruct(args)
+	if args.ExecutionID == "" {
+		return errors.New("execution_id has to be specified")
+	}
+	if args.WorkflowDir == "" {
+		return errors.New("workflow_dir has to be specified")
+	}
+	if args.ImageName == "" {
+		return errors.New("image_name has to be specified")
+	}
+	if err := validation.ValidateImageName(args.ImageName); err != nil {
+		return err
+	}
+	if args.Project == "" {
+		return errors.New("project has to be specified")
+	}
+	if args.ScratchBucketGcsPath == "" {
+		return errors.New("scratch_bucket_gcs_path has to be specified")
+	}
+	if args.Source == nil {
+		return errors.New("source has to be specified")
+	}
+	if args.Tool.HumanReadableName == "" || args.Tool.ResourceLabelName == "" {
+		return errors.New("tool has to be specified")
+	}
+	if args.Timeout == 0 {
+		return errors.New("timeout has to be specified")
+	}
+	if args.Zone == "" {
+		return errors.New("zone has to be specified")
+	}
+	return nil
 }
 
 // ImageImportRequest includes the parameters required to perform an image import.

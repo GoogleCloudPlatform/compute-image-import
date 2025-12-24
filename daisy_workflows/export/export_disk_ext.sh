@@ -51,7 +51,7 @@ serialOutputPrefixedKeyValue "GCEExport" "source-size-gb" "${SIZE_OUTPUT_GB}"
 set -x
 
 # Prepare buffer disk.
-echo "GCEExport: Initializing buffer disk for qemu-img output..."
+echo "GCEExport: Initializing buffer disk for output..."
 BUFFER_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-export-disk-buffer*)
 SOURCE_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-image-export-ext)
 mkfs.ext4 ${BUFFER_DEVICE}
@@ -86,12 +86,26 @@ echo "GCEExport: Launching disk size monitor in background..."
 chmod +x ${DISK_RESIZING_MON_LOCAL_PATH}
 ${DISK_RESIZING_MON_LOCAL_PATH} ${MAX_BUFFER_DISK_SIZE_GB} &
 
-echo "GCEExport: Exporting disk of size ${SIZE_OUTPUT_GB}GB and format ${FORMAT}."
-if ! out=$(qemu-img convert ${SOURCE_DEVICE} "/gs/${IMAGE_OUTPUT_PATH}" -p -O $FORMAT 2>&1); then
-  echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to qemu-img error: [Privacy-> ${out} <-Privacy]"
-  exit
+# If format is tar.gz, dd the source device to a raw disk file and then tar it.
+# Otherwise, use docker to run qemu-img convert.
+if [[ "${FORMAT}" == "tar.gz" ]]; then
+  RAW_DISK_PATH="/gs/${OUTS_PATH}/disk.raw"
+  if ! out=$(dd if="${SOURCE_DEVICE}" of="${RAW_DISK_PATH}" bs=4M); then
+    echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to dd error: [Privacy-> ${out} <-Privacy]"
+    exit
+  fi
+  if ! out=$(tar --create --format=gnu --owner=0 --group=0 --mode=0600 --gzip --file "/gs/${IMAGE_OUTPUT_PATH}" -C "/gs/${OUTS_PATH}" "disk.raw" 2>&1); then
+    echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to tar error: [Privacy-> ${out} <-Privacy]"
+    exit
+  fi
+else
+  echo "GCEExport: Exporting disk of size ${SIZE_OUTPUT_GB}GB and format ${FORMAT}."
+  if ! out=$(qemu-img convert ${SOURCE_DEVICE} "/gs/${IMAGE_OUTPUT_PATH}" -p -O $FORMAT 2>&1); then
+    echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to qemu-img error: [Privacy-> ${out} <-Privacy]"
+    exit
+  fi
 fi
-echo ${out}
+echo "${out}"
 
 # Exported image size info.
 TARGET_SIZE_BYTES=$(du -b /gs/${IMAGE_OUTPUT_PATH} | awk '{print $1}')

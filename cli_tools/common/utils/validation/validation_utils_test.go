@@ -245,28 +245,3 @@ func TestValidateProjectID_ExpectInvalid(t *testing.T) {
 		})
 	}
 }
-
-func TestValidateStruct_SupportsCustomFieldNames(t *testing.T) {
-	type User struct {
-		Firstname string `name:"first_name" validate:"required"`
-	}
-
-	assert.EqualError(t, ValidateStruct(User{}), "first_name has to be specified")
-}
-
-func TestValidateStruct_UsesFieldStructNameByDefault(t *testing.T) {
-	type User struct {
-		Name string `validate:"required"`
-	}
-
-	assert.EqualError(t, ValidateStruct(User{}), "Name has to be specified")
-}
-
-func TestValidateStruct_SupportsImageNameValidation(t *testing.T) {
-	type Disk struct {
-		ImageName string `validate:"gce_disk_image_name"`
-	}
-
-	d := Disk{"uri/disk/path"}
-	assert.Equal(t, ValidateImageName(d.ImageName), ValidateStruct(d))
-}
