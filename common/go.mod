@@ -1,6 +1,6 @@
 module github.com/GoogleCloudPlatform/compute-image-import/common
 
-go 1.13
+go 1.23.0
 
 require (
 	cloud.google.com/go/storage v1.31.0
