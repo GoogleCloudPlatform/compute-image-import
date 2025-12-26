@@ -61,8 +61,8 @@ type onestepImportAWSTestProperties struct {
 
 // setAWSAuth downloads AWS credentials and sets access keys.
 func setAWSAuth(logger *log.Logger, testCase *junitxml.TestCase) error {
-	cmd := "gsutil"
-	args := []string{"cp", awsCredFilePath, "."}
+	cmd := "gcloud"
+	args := []string{"storage", "cp", awsCredFilePath, "."}
 	if err := e2e.RunCliTool(logger, testCase, cmd, args); err != nil {
 		e2e.Failure(testCase, logger, fmt.Sprintf("Error running cmd: %v\n", err))
 		return err

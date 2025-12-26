@@ -56,10 +56,9 @@ steps:
   - --dockerfile=gce_vm_image_export.Dockerfile
 
 # Copy Linux binaries to GCS - _IMAGE_PROJECT
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT/$_RELEASE/linux/']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['storage', 'cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT/$_RELEASE/linux/']
 
 # Copy Windows binaries to GCS - _IMAGE_PROJECT
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT/$_RELEASE/windows/']
-
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['storage', 'cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT/$_RELEASE/windows/']
