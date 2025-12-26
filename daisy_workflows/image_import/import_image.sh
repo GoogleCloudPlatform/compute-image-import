@@ -35,7 +35,7 @@ SCRATCH_DISK_NAME="$(curl -f -H Metadata-Flavor:Google ${URL}/attributes/scratch
 ME="$(curl -f -H Metadata-Flavor:Google ${URL}/name)"
 ZONE=$(curl -f -H Metadata-Flavor:Google ${URL}/zone)
 
-SOURCE_SIZE_BYTES="$(gsutil du "${SOURCE_URL}" | grep -o '^[0-9]\+')"
+SOURCE_SIZE_BYTES="$(gcloud storage du "${SOURCE_URL}" | grep -o '^[0-9]\+')"
 SOURCE_SIZE_GB=$(awk "BEGIN {print int(((${SOURCE_SIZE_BYTES}-1)/${BYTES_1GB}) + 1)}")
 IMAGE_PATH="/daisy-scratch/$(basename "${SOURCE_URL}")"
 
@@ -156,17 +156,17 @@ function copyImageToScratchDisk() {
     echo "ImportFailed: Failed to prepare scratch disk."
   fi
 
-  # Standard error for `gsutil cp` contains a progress meter that when written
+  # Standard error for `gcloud storage cp` contains a progress meter that when written
   # to the console will exceed the logging daemon's buffer for large files.
   # The stream may contain useful debugging messages, however, so if there's an
   # error we print any lines that don't have ascii control characters, which
   # are used to generate the progress meter.
-  if ! out=$(gsutil cp "${SOURCE_URL}" "${IMAGE_PATH}" 2> gsutil.cp.err); then
-    echo "Import: Failure while executing gsutil cp:"
-    grep -v '[[:cntrl:]]' gsutil.cp.err | while read line; do
+  if ! out=$(gcloud storage cp "${SOURCE_URL}" "${IMAGE_PATH}" 2> gcloud.cp.err); then
+    echo "Import: Failure while executing gcloud storage cp:"
+    grep -v '[[:cntrl:]]' gcloud.cp.err | while read line; do
       echo "Import: ${line}"
     done
-    if grep -qP "storage\.objects\.(list|get)" gsutil.cp.err; then
+    if grep -qP "storage\.objects\.(list|get)" gcloud.cp.err; then
       echo "ImportFailed: Failed to download image to worker instance. The Compute Engine default service account needs the role: roles/storage.objectViewer"
     else
       echo "ImportFailed: Failed to download image to worker instance [Privacy-> from ${SOURCE_URL} to ${IMAGE_PATH} <-Privacy]."
