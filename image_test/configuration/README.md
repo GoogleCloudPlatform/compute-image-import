@@ -46,7 +46,7 @@ Several system configurations:
  - CheckSecurityParameter('net.ipv4.tcp\_rfc1337', 1)
  - CheckSecurityParameter('kernel.randomize\_va\_space', 2)
 
-- Test for gcloud/gsutil (some distros won’t have this) and validate that
+- Test for gcloud (some distros won’t have this) and validate that
   versions are up to date.
 
 # How this test works?
