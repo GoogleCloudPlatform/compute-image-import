@@ -297,15 +297,14 @@ class GenericDistroTests(object):
 
   def TestGcloudUpToDate(self):
     """
-    Test for gcloud/gsutil (some distros won't have this) and validate that
+    Test for gcloud (some distros won't have this) and validate that
     versions are up to date.
 
     https://github.com/GoogleCloudPlatform/compute-image-tools/issues/400
     """
-    # firstly check if gcloud and gsutil are available
+    # firstly check if gcloud is available
     try:
       rc_gcloud, output = utils.Execute(['gcloud'], raise_errors=False)
-      rc_gsutil, output = utils.Execute(['gsutil'], raise_errors=False)
     except OSError as e:
       if e.errno == 2:  # No such file or directory
         # command is not available, skip this test
