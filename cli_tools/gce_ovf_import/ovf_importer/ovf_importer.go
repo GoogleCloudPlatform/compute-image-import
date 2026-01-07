@@ -101,7 +101,7 @@ type OVFImporter struct {
 // such as compute/storage clients. workflowDir is the filesystem path to `daisy_workflows`.
 func NewOVFImporter(params *ovfdomain.OVFImportParams, logger logging.ToolLogger) (*OVFImporter, error) {
 	ctx := context.Background()
-	storageClient, err := storageutils.NewStorageClient(ctx, logger)
+	storageClient, err := storageutils.NewStorageClient(ctx, logger, option.WithCredentialsFile(params.Oauth))
 	if err != nil {
 		return nil, err
 	}
