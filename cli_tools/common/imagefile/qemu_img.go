@@ -16,7 +16,7 @@ package imagefile
 
 import (
 	"context"
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -142,13 +142,13 @@ func (client defaultInfoClient) getFileChecksum(ctx context.Context, filename st
 		// Calculate checksum for the 100MB file.
 		f, fileErr := os.Open(tmpOutFileName)
 		if fileErr != nil {
-			err = daisy.Errf("Failed to open file '%v' for QEMU md5 checksum calculation: %v", tmpOutFileName, fileErr)
+			err = daisy.Errf("Failed to open file '%v' for QEMU sha256 checksum calculation: %v", tmpOutFileName, fileErr)
 			return
 		}
 		defer f.Close()
-		h := md5.New()
-		if _, md5Err := io.Copy(h, f); md5Err != nil {
-			err = daisy.Errf("Failed to copy data from file '%v' for QEMU md5 checksum calculation: %v", tmpOutFileName, md5Err)
+		h := sha256.New()
+		if _, hashErr := io.Copy(h, f); hashErr != nil {
+			err = daisy.Errf("Failed to copy data from file '%v' for QEMU sha256 checksum calculation: %v", tmpOutFileName, hashErr)
 			return
 		}
 		newChecksum := fmt.Sprintf("%x", h.Sum(nil))
