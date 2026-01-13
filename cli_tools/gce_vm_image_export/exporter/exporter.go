@@ -20,6 +20,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -40,9 +41,8 @@ import (
 
 // Make file paths mutable
 var (
-	WorkflowDir              = "daisy_workflows/export/"
-	ExportWorkflow           = "image_export.wf.json"
-	ExportAndConvertWorkflow = "image_export_ext.wf.json"
+	WorkflowDir    = "daisy_workflows/export/"
+	ExportWorkflow = "image_export_ext.wf.json"
 )
 
 // Parameter key shared with external packages
@@ -102,12 +102,12 @@ func validateAndParseFlags(destinationURI string, sourceImage string, sourceDisk
 	return nil, nil
 }
 
-func getWorkflowPath(format string, currentExecutablePath string) string {
-	if format == "" {
-		return path.ToWorkingDir(WorkflowDir+ExportWorkflow, currentExecutablePath)
+func getWorkflowPath(currentExecutablePath string) string {
+	if basePath := os.Getenv("WORKFLOW_BASE_PATH"); basePath != "" {
+		return filepath.Join(basePath, ExportWorkflow)
 	}
 
-	return path.ToWorkingDir(WorkflowDir+ExportAndConvertWorkflow, currentExecutablePath)
+	return path.ToWorkingDir(WorkflowDir+ExportWorkflow, currentExecutablePath)
 }
 
 func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapshot string, imageDiskSizeGb int64, format string, network string,
@@ -218,7 +218,7 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		args.Format, args.Network, args.Subnet, *region, args.ComputeServiceAccount)
 
 	workflowProvider := func() (*daisy.Workflow, error) {
-		return daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
+		return daisy.NewFromFile(getWorkflowPath(args.CurrentExecutablePath))
 	}
 
 	env := daisyutils.EnvironmentSettings{
