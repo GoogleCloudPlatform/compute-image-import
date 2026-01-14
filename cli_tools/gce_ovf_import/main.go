@@ -96,6 +96,9 @@ func buildOVFImportParams() *domain.OVFImportParams {
 	//    ├── gce_ovf_import
 	//    └── daisy_workflows/
 	workflowDir := path.Join(filepath.Dir(os.Args[0]), "daisy_workflows")
+	if basePath := os.Getenv("WORKFLOW_BASE_PATH"); basePath != "" {
+		workflowDir = basePath
+	}
 
 	flag.Parse()
 	return &domain.OVFImportParams{InstanceNames: *instanceNames,
