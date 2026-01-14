@@ -79,6 +79,7 @@ type ImageExportRequest struct {
 	CurrentExecutablePath       string
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
+	NoExternalIP                bool
 }
 
 func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string) (map[string]string, error) {
@@ -238,6 +239,7 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		ExecutionID:                 os.Getenv(os.Getenv(daisyutils.BuildIDOSEnvVarName)),
 		WorkerMachineSeries:         args.WorkerMachineSeries,
 		NestedVirtualizationEnabled: args.NestedVirtualizationEnabled,
+		NoExternalIP:                args.NoExternalIP,
 		Tool: daisyutils.Tool{
 			HumanReadableName: "gce image export",
 			ResourceLabelName: "gce-image-export",
