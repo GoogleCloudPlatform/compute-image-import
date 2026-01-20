@@ -53,12 +53,12 @@ steps:
   - --dockerfile=gce_vm_image_export.Dockerfile
 
 # Copy Linux binaries to GCS
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT/$_TAG/linux/']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['storage', 'cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT/$_TAG/linux/']
 
 # Copy Windows binaries to GCS
-- name: 'gcr.io/cloud-builders/gsutil'
-  args: ['cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT/$_TAG/windows/']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['storage', 'cp', '/workspace/windows/*', 'gs://$_IMAGE_PROJECT/$_TAG/windows/']
 
 # Push Wrappers to all the Artifact Registry regions
 - name: 'google/cloud-sdk:alpine'
