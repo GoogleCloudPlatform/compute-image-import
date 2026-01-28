@@ -134,7 +134,7 @@ function check_google_cloud_sdk {
     fi
   fi
 
-  # Skip for SUSE (gcloud and gsutil aren't in all of their repos)
+  # Skip for SUSE (gcloud isn't in all of their repos)
   if [ -f /etc/os-release ]; then
     grep -qi "suse" /etc/os-release
     if [ $? -eq 0 ]; then
@@ -146,12 +146,6 @@ function check_google_cloud_sdk {
   gcloud version
   if [[ $? -ne 0 ]]; then
     fail "gcloud is not installed."
-  fi
-
-  status "Checking for gsutil."
-  gsutil -v
-  if [[ $? -ne 0 ]]; then
-    fail "gsutil is not installed."
   fi
 }
 
