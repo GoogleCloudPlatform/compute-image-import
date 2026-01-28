@@ -39,19 +39,6 @@ steps:
   - GOOS=windows
   - GOARCH=386
 
-# Build gce_vm_image_export.
-- name: 'golang'
-  dir: 'cli_tools/gce_vm_image_export'
-  args: ['go', 'build', '-o=/workspace/linux/gce_vm_image_export', '-ldflags=-X $_RELEASE_PROJECT_FLAG=$_IMAGE_PROJECT']
-  env: ['CGO_ENABLED=0']
-- name: 'gcr.io/kaniko-project/executor:v1.1.0'
-  args:
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$_TAG
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:$COMMIT_SHA
-  - --destination=gcr.io/$_IMAGE_PROJECT/gce_vm_image_export:legacy
-  - --context=/workspace
-  - --dockerfile=gce_vm_image_export.Dockerfile
-
 # Copy Linux binaries to GCS
 - name: 'gcr.io/cloud-builders/gsutil'
   args: ['cp', '/workspace/linux/*', 'gs://$_IMAGE_PROJECT/$_TAG/linux/']
