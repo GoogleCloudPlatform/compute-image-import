@@ -123,6 +123,7 @@ type ImageExportParams struct {
 	Format                string `json:"format,omitempty"`
 	ComputeServiceAccount string `json:"compute_service_account,omitempty"`
 	SourceDiskSnapshot    string `json:"source_disk_snapshot,omitempty"`
+	NoExternalIP          bool   `json:"no_external_ip,omitempty"`
 }
 
 // OnestepImageImportParams contains all input params for onestep image import
