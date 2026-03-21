@@ -19,9 +19,10 @@ setup(
     name="suse_import",
     version="0.1",
     packages=["on_demand"],
-    install_requires=[
-        "linux_common",
-    ],
+    # linux_common is an internal package not published to PyPI.
+    # Install it locally before installing this package:
+    #   pip install -e ../../../../linux_common
+    install_requires=[],
     py_modules=["translate"],
     package_data={
         "on_demand": ["*.sh"],

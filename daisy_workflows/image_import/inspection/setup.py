@@ -19,9 +19,10 @@ setup(
   name="boot_inspect",
   version="0.1",
   package_dir={"": "src"},
-  install_requires=[
-    'compute_image_tools_proto',
-  ],
+  # compute_image_tools_proto is an internal package not published to PyPI.
+  # Install it locally before installing this package:
+  #   pip install -e ../../../proto/py
+  install_requires=[],
   packages=find_namespace_packages(where="src"),
   entry_points={
     "console_scripts": [
