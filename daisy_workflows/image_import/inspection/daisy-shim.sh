@@ -26,7 +26,7 @@ set -eufx -o pipefail
 ROOT="/tmp/build-root-$RANDOM"
 SOURCE=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/attributes/daisy-sources-path" -H "Metadata-Flavor: Google")
 mkdir -p "$ROOT" && cd "$ROOT"
-gsutil cp -R "$SOURCE/*" .
+gcloud storage cp --recursive "$SOURCE/*" .
 pip3 install ./compute_image_tools_proto ./boot_inspect
 
 if boot-inspect --format=daisy --device=/dev/sdb; then
