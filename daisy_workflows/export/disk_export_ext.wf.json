@@ -15,7 +15,7 @@
       "Description": "Format to export disk as"
     },
     "export_instance_disk_image": {
-      "Value": "projects/compute-image-import/global/images/debian-10-worker-v20230926",
+      "Value": "projects/cos-cloud/global/images/family/cos-stable",
       "Description": "image to use for the exporter instance"
     },
     "export_instance_disk_size": {
@@ -42,14 +42,13 @@
       "Value": "./export_disk_ext.sh",
       "Description": "Path to export_disk_ext.sh script"
     },
-    "disk_resizing_mon.sh": {
-      "Value": "./disk_resizing_mon.sh",
-      "Description": "Path to disk_resizing_mon.sh script"
+    "qemu_img_docker_image": {
+      "Value": "gcr.io/prod-vmmig-images-public/qemu_img@sha256:36e85412fcde1ed1886e0eebaa868d614356054f0fae761e02573d8a486a99b4",
+      "Description": "The container image to deploy"
     }
   },
   "Sources": {
-    "${NAME}_export_disk_ext.sh": "${export_disk_ext.sh}",
-    "${NAME}_disk_resizing_mon.sh": "${disk_resizing_mon.sh}"
+    "${NAME}_export_disk_ext.sh": "${export_disk_ext.sh}"
   },
   "Steps": {
     "setup-disks": {
@@ -82,7 +81,7 @@
             "gcs-path": "${OUTSPATH}/${NAME}",
             "format": "${format}",
             "buffer-disk": "disk-${NAME}-buffer-${ID}",
-            "resizing-script-name": "${NAME}_disk_resizing_mon.sh",
+            "qemu-img-docker-image": "${qemu_img_docker_image}",
             "startup-script": "${SOURCE:${NAME}_export_disk_ext.sh}"
           },
           "networkInterfaces": [
@@ -95,9 +94,13 @@
           "ServiceAccounts": [
             {
               "Email": "${compute_service_account}",
-              "Scopes": ["https://www.googleapis.com/auth/devstorage.full_control", "https://www.googleapis.com/auth/compute"]
+              "Scopes": [
+                "https://www.googleapis.com/auth/devstorage.full_control",
+                "https://www.googleapis.com/auth/compute"
+                ]
             }
-          ]
+          ],
+          "AutoDelete": true
         }
       ]
     },

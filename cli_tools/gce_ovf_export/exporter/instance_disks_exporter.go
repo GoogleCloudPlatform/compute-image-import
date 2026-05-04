@@ -149,7 +149,6 @@ func (ide *instanceDisksExporterImpl) addExportDisksSteps(w *daisy.Workflow, ins
 			"export_network":             params.Network,
 			"export_subnet":              params.Subnet,
 			"export_disk_ext.sh":         "../export/export_disk_ext.sh",
-			"disk_resizing_mon.sh":       "../export/disk_resizing_mon.sh",
 		}
 		if params.ComputeServiceAccount != "" {
 			varMap["compute_service_account"] = params.ComputeServiceAccount
