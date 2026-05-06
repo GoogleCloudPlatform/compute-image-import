@@ -17,7 +17,7 @@
       "Description": "Format to export image as"
     },
     "export_instance_disk_image": {
-      "Value": "projects/compute-image-import/global/images/debian-10-worker-v20230926",
+      "Value": "projects/cos-cloud/global/images/family/cos-stable",
       "Description": "image to use for the exporter instance"
     },
     "export_instance_disk_size": {
@@ -39,6 +39,10 @@
     "compute_service_account": {
       "Value": "default",
       "Description": "Service account that will be used by the created worker instance"
+    },
+    "qemu_img_docker_image": {
+      "Value": "gcr.io/prod-vmmig-images-public/qemu_img@sha256:36e85412fcde1ed1886e0eebaa868d614356054f0fae761e02573d8a486a99b4",
+      "Description": "The container image to deploy"
     }
   },
   "Steps": {
@@ -64,6 +68,7 @@
           "export_instance_disk_type": "${export_instance_disk_type}",
           "export_network": "${export_network}",
           "export_subnet": "${export_subnet}",
+          "qemu_img_docker_image": "${qemu_img_docker_image}",
           "compute_service_account": "${compute_service_account}"
         }
       }
