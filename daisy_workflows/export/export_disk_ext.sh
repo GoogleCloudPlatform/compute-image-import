@@ -139,34 +139,20 @@ echo "GCEExport: Launching disk size monitor in background..."
 disk_resizing_monitor "${MAX_BUFFER_DISK_SIZE_GB}" &
 
 echo "GCEExport: Exporting disk of size ${SIZE_OUTPUT_GB}GB and format ${FORMAT}."
-# If format is tar.gz, dd the source device to a raw disk file and then tar it.
-# Otherwise, use docker to run qemu-img convert.
-if [[ "${FORMAT}" == "tar.gz" ]]; then
-  RAW_DISK_PATH="/var/gs/${OUTS_PATH}/disk.raw"
-  if ! out=$(dd if="${SOURCE_DEVICE}" of="${RAW_DISK_PATH}" bs=4M); then
-    echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to dd error: [Privacy-> ${out} <-Privacy]"
-    exit
-  fi
-  if ! out=$(tar --create --format=gnu --owner=0 --group=0 --mode=0600 --gzip --file "/var/gs/${IMAGE_OUTPUT_PATH}" -C "/var/gs/${OUTS_PATH}" "disk.raw" 2>&1); then
-    echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to tar error: [Privacy-> ${out} <-Privacy]"
-    exit
-  fi
-  echo "${out}"
-else
-  QEMU_IMG_DOCKER_IMAGE=$(curl -f -H Metadata-Flavor:Google ${ATTRIBUTES_URL}/qemu-img-docker-image)
-  echo "GCEExport: Pulling docker image ${QEMU_IMG_DOCKER_IMAGE}..."
-  if ! out=$(docker pull "${QEMU_IMG_DOCKER_IMAGE}" 2>&1); then
-    echo "ExportFailed: Failed to pull docker image [Privacy-> ${QEMU_IMG_DOCKER_IMAGE} <-Privacy]. Error: [Privacy-> ${out} <-Privacy]"
-    exit
-  fi
-  echo "${out}"
 
-  echo "GCEExport: Running qemu-img convert..."
-  docker run --rm -v /tmp:/t -e HOME=/root -v /var/gs:/var/gs --device="${SOURCE_DEVICE}":"${SOURCE_DEVICE}" --privileged "${QEMU_IMG_DOCKER_IMAGE}" /qemu-img convert "${SOURCE_DEVICE}" "/var/gs/${IMAGE_OUTPUT_PATH}" -p -O "${FORMAT}" 2> >(tee /var/gs/qemu_err.txt >&2)
-  if [[ $? -ne 0 ]]; then
-    echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to qemu-img error: [Privacy-> $(</var/gs/qemu_err.txt) <-Privacy]"
-    exit
-  fi
+QEMU_IMG_DOCKER_IMAGE=$(curl -f -H Metadata-Flavor:Google ${ATTRIBUTES_URL}/qemu-img-docker-image)
+echo "GCEExport: Pulling docker image ${QEMU_IMG_DOCKER_IMAGE}..."
+if ! out=$(docker pull "${QEMU_IMG_DOCKER_IMAGE}" 2>&1); then
+  echo "ExportFailed: Failed to pull docker image [Privacy-> ${QEMU_IMG_DOCKER_IMAGE} <-Privacy]. Error: [Privacy-> ${out} <-Privacy]"
+  exit
+fi
+echo "${out}"
+
+echo "GCEExport: Running qemu-img convert..."
+docker run --rm -v /tmp:/t -e HOME=/root -v /var/gs:/var/gs --device="${SOURCE_DEVICE}":"${SOURCE_DEVICE}" --privileged "${QEMU_IMG_DOCKER_IMAGE}" /qemu-img convert "${SOURCE_DEVICE}" "/var/gs/${IMAGE_OUTPUT_PATH}" -p -O "${FORMAT}" 2> >(tee /var/gs/qemu_err.txt >&2)
+if [[ $? -ne 0 ]]; then
+  echo "ExportFailed: Failed to export disk source to GCS [Privacy-> ${GS_PATH} <-Privacy] due to qemu-img error: [Privacy-> $(</var/gs/qemu_err.txt) <-Privacy]"
+  exit
 fi
 
 # Exported image size info.
@@ -182,6 +168,7 @@ if [[ $? -ne 0 ]] ; then
   echo "ExportFailed: Failed to copy output image to GCS [Privacy-> ${GS_PATH}, error: $(</var/gs/gcloud_err.txt) <-Privacy]"
   exit
 fi
+
 # TODO(b/460360483): Change the success/failure signal as sometimes the last
 # lines are not printed. Use another signal - https://github.com/GoogleCloudPlatform/compute-daisy/blob/master/step_wait_for_instances_signal.go#L81.
 echo "export success"
