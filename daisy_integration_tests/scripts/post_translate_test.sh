@@ -131,17 +131,6 @@ function check_gcloud {
   fail "gcloud is not installed."
 }
 
-# Check gsutil.
-function check_gsutil {
-  status "Checking for gsutil."
-  for i in $(seq 1 10) ; do
-    gsutil -v && return 0
-    status "Waiting until Google Cloud SDK being installed."
-    sleep $((i**2))
-  done
-  fail "gsutil is not installed."
-}
-
 # Check Google Cloud SDK.
 function check_google_cloud_sdk {
   # Skip for EL6
@@ -160,7 +149,7 @@ function check_google_cloud_sdk {
     fi
   fi
 
-  # Skip for SUSE (gcloud and gsutil aren't in all of their repos)
+  # Skip for SUSE (gcloud isn't in all of their repos)
   if [ -f /etc/os-release ]; then
     grep -qi "suse" /etc/os-release
     if [ $? -eq 0 ]; then
@@ -169,7 +158,6 @@ function check_google_cloud_sdk {
   fi
 
   check_gcloud
-  check_gsutil
 }
 
 # Check cloud-init if it exists.

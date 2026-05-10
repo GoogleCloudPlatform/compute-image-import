@@ -277,7 +277,7 @@ def DistroSpecific(spec: TranslateSpec):
       sdk_bin_path = '/usr/local/share/google/google-cloud-sdk/bin'
       g.ln_s(os.path.join(sdk_bin_path, 'git-credential-gcloud.sh'),
              os.path.join('/usr/bin', 'git-credential-gcloud.sh'))
-      for binary in ['bq', 'gcloud', 'gsutil']:
+      for binary in ['bq', 'gcloud']:
         binary_path = os.path.join(sdk_bin_path, binary)
         new_bin_path = os.path.join('/usr/bin', binary)
         bin_str = '#!/bin/bash\nsource /opt/rh/python27/enable\n%s $@' % \
