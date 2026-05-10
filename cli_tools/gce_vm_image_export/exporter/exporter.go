@@ -41,8 +41,9 @@ import (
 
 // Make file paths mutable
 var (
-	WorkflowDir    = "daisy_workflows/export/"
-	ExportWorkflow = "image_export_ext.wf.json"
+	WorkflowDir       = "daisy_workflows/export/"
+	ExportWorkflow    = "image_export_ext.wf.json"
+	ExportTarWorkflow = "image_export_ext_tar.wf.json"
 )
 
 // Parameter key shared with external packages
@@ -102,12 +103,16 @@ func validateAndParseFlags(destinationURI string, sourceImage string, sourceDisk
 	return nil, nil
 }
 
-func getWorkflowPath(currentExecutablePath string) string {
+func getWorkflowPath(format string, currentExecutablePath string) string {
+	workflow := ExportWorkflow
+	if format == "tar.gz" {
+		workflow = ExportTarWorkflow
+	}
 	if basePath := os.Getenv("WORKFLOW_BASE_PATH"); basePath != "" {
-		return filepath.Join(basePath, ExportWorkflow)
+		return filepath.Join(basePath, workflow)
 	}
 
-	return path.ToWorkingDir(WorkflowDir+ExportWorkflow, currentExecutablePath)
+	return path.ToWorkingDir(WorkflowDir+workflow, currentExecutablePath)
 }
 
 func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapshot string, imageDiskSizeGb int64, format string, network string,
@@ -135,7 +140,7 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 		varMap["source_disk_snapshot"] = param.GetGlobalResourcePath("snapshots", sourceDiskSnapshot)
 	}
 
-	if imageDiskSizeGb > 0 {
+	if imageDiskSizeGb > 0 && format != "tar.gz" {
 		// We want the size to allow for a 2 step (dd and tar) packaging of the image.
 		// In addition, we want to allow for some overhead (5%) in case of completely random data.
 		bufferDiskSizeGb := int64(math.Ceil(float64(imageDiskSizeGb) * 2.05))
@@ -218,7 +223,7 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		args.Format, args.Network, args.Subnet, *region, args.ComputeServiceAccount)
 
 	workflowProvider := func() (*daisy.Workflow, error) {
-		return daisy.NewFromFile(getWorkflowPath(args.CurrentExecutablePath))
+		return daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
 	}
 
 	env := daisyutils.EnvironmentSettings{
