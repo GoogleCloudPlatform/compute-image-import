@@ -48,6 +48,8 @@ Exactly one of these must be specified:
 + `-disable_gcs_logging` Do not stream logs to GCS
 + `-disable_cloud_logging` Do not stream logs to Cloud Logging
 + `-disable_stdout_logging` Do not display individual workflow logs on stdout
++ `-no_external_ip` Temporary VMs are created in your project during image export.
+  Set this flag so that these temporary VMs are not assigned external IP addresses.
 + `-labels=[KEY=VALUE,...]` labels: List of label KEY=VALUE pairs to add. Keys must start with a
   lowercase character and contain only hyphens (-), underscores (_), lowercase characters, and 
   numbers. Values must contain only hyphens (-), underscores (_), lowercase characters, and numbers.
@@ -63,6 +65,6 @@ gce_vm_image_export -destination_uri=DESTINATION_URI [-client_id=CLIENT_ID]
         [-format=FORMAT] [-project=PROJECT] [-network=NETWORK]
         [-subnet=SUBNET] [-zone=ZONE] [-timeout=TIMEOUT] [-scratch_bucket_gcs_path=PATH]
         [-oauth=OAUTH_PATH] [-compute_endpoint_override=ENDPOINT] [-disable_gcs_logging]
-        [-disable_cloud_logging] [-disable_stdout_logging] [-labels=KEY=VALUE,...]
+        [-disable_cloud_logging] [-disable_stdout_logging] [-no_external_ip] [-labels=KEY=VALUE,...]
         [-compute_service_account=COMPUTE_SERVICE_ACCOUNT] [-client_version]
 ```
