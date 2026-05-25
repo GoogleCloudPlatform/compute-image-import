@@ -49,6 +49,7 @@ var (
 	labels                      = flag.String("labels", "", "List of label KEY=VALUE pairs to add. Keys must start with a lowercase character and contain only hyphens (-), underscores (_), lowercase characters, and numbers. Values must contain only hyphens (-), underscores (_), lowercase characters, and numbers.")
 	nestedVirtualizationEnabled = flag.Bool("enable_nested_virtualization", true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	workerMachineSeries         flags.StringArrayFlag
+	qemuImgDockerImage          = flag.String("qemu_img_docker_image", "", "Override the default qemu-img container image tag used in the workflow.")
 )
 
 func init() {
@@ -82,6 +83,7 @@ func exportEntry() (service.Loggable, error) {
 		CurrentExecutablePath:       currentExecutablePath,
 		WorkerMachineSeries:         *&workerMachineSeries,
 		NestedVirtualizationEnabled: *nestedVirtualizationEnabled,
+		QemuImgDockerImage:          *qemuImgDockerImage,
 	}
 
 	err := exporter.Run(logger, args)

@@ -41,7 +41,7 @@
       "Description": "Service account that will be used by the created worker instance"
     },
     "qemu_img_docker_image": {
-      "Value": "gcr.io/prod-vmmig-images-public/qemu_img@sha256:36e85412fcde1ed1886e0eebaa868d614356054f0fae761e02573d8a486a99b4",
+      "Value": "gcr.io/prod-vmmig-images-public/qemu_img:latest",
       "Description": "The container image to deploy"
     }
   },
