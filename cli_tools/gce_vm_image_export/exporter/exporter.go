@@ -80,6 +80,7 @@ type ImageExportRequest struct {
 	CurrentExecutablePath       string
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
+	QemuImgDockerImage          string
 }
 
 func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string) (map[string]string, error) {
@@ -116,7 +117,7 @@ func getWorkflowPath(format string, currentExecutablePath string) string {
 }
 
 func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapshot string, imageDiskSizeGb int64, format string, network string,
-	subnet string, region string, computeServiceAccount string) map[string]string {
+	subnet string, region string, computeServiceAccount string, qemuImgDockerImage string) map[string]string {
 
 	destinationURI = strings.TrimSpace(destinationURI)
 	sourceImage = strings.TrimSpace(sourceImage)
@@ -126,6 +127,7 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 	subnet = strings.TrimSpace(subnet)
 	region = strings.TrimSpace(region)
 	computeServiceAccount = strings.TrimSpace(computeServiceAccount)
+	qemuImgDockerImage = strings.TrimSpace(qemuImgDockerImage)
 
 	varMap := map[string]string{}
 
@@ -165,6 +167,9 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 	}
 	if computeServiceAccount != "" {
 		varMap["compute_service_account"] = computeServiceAccount
+	}
+	if qemuImgDockerImage != "" && format != "tar.gz" {
+		varMap["qemu_img_docker_image"] = qemuImgDockerImage
 	}
 	return varMap
 }
@@ -220,7 +225,7 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 
 	varMap := buildDaisyVars(
 		args.DestinationURI, args.SourceImage, args.SourceDiskSnapshot, imageDiskSizeGb,
-		args.Format, args.Network, args.Subnet, *region, args.ComputeServiceAccount)
+		args.Format, args.Network, args.Subnet, *region, args.ComputeServiceAccount, args.QemuImgDockerImage)
 
 	workflowProvider := func() (*daisy.Workflow, error) {
 		return daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
