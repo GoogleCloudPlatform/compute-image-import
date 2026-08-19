@@ -12,11 +12,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -x
-
 function serialOutputPrefixedKeyValue() {
   stdbuf -oL echo "$1: <serial-output key:'$2' value:'$3'>"
 }
+
+# Prevent udev from probing the source disk being exported so it doesn't collide with COS's STATE/OEM partitions (b/546612258)
+# We set an ignore rule for the by-id symlink before the disk is even attached by Daisy's AttachDisks step!
+echo "ACTION==\"add|change\", ENV{DEVLINKS}==\"*/dev/disk/by-id/google-disk-image-export-ext*\", OPTIONS+=\"ignore_device\"" > /etc/udev/rules.d/99-ignore-export-source.rules
+udevadm control --reload-rules 2>/dev/null || true
+serialOutputPrefixedKeyValue "GCEExport" "udev-rule" "created"
+
 
 GCLOUD_CLI_IMAGE="gcr.io/google.com/cloudsdktool/google-cloud-cli:545.0.0-slim"
 
@@ -92,6 +97,11 @@ mkdir -p "/var/gs/${OUTS_PATH}"
 
 # Prepare disk size info.
 # 1. Disk image size info.
+# Wait for the source disk to be attached by Daisy's AttachDisks step
+echo "GCEExport: Waiting for source disk (google-disk-image-export-ext) to be attached..."
+while [[ ! -b /dev/disk/by-id/google-disk-image-export-ext ]]; do
+  sleep 1
+done
 SOURCE_DEVICE=$(readlink -f /dev/disk/by-id/google-disk-image-export-ext)
 SIZE_BYTES=$(lsblk "${SOURCE_DEVICE}" --output=size -b | sed -n 2p)
 # 2. Round up to the next GB.

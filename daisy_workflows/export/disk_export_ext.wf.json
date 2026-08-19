@@ -72,7 +72,6 @@
           "Name": "inst-${NAME}",
           "Disks": [
             {"Source": "disk-${NAME}-os"},
-            {"Source": "${source_disk}", "Mode": "READ_ONLY"},
             {"Source": "disk-${NAME}-buffer-${ID}"}
           ],
           "MachineType": "n1-highcpu-4",
@@ -101,6 +100,16 @@
             }
           ],
           "AutoDelete": true
+        }
+      ]
+    },
+    "attach-source-disk-${NAME}": {
+      "AttachDisks": [
+        {
+          "Source": "${source_disk}",
+          "Instance": "inst-${NAME}",
+          "Mode": "READ_ONLY",
+          "DeviceName": "disk-image-export-ext"
         }
       ]
     },
@@ -134,7 +143,8 @@
   },
   "Dependencies": {
     "run-${NAME}": ["setup-disks"],
-    "wait-for-inst-${NAME}": ["run-${NAME}"],
+    "attach-source-disk-${NAME}": ["run-${NAME}"],
+    "wait-for-inst-${NAME}": ["attach-source-disk-${NAME}"],
     "delete-inst": ["wait-for-inst-${NAME}"],
     "copy-image-object": ["wait-for-inst-${NAME}"]
   }
