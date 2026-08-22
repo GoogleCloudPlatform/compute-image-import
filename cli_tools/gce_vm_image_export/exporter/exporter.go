@@ -26,6 +26,7 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
+    computeV1 "google.golang.org/api/compute/v1"
 	"google.golang.org/api/option"
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
@@ -81,6 +82,7 @@ type ImageExportRequest struct {
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
 	QemuImgDockerImage          string
+	ExternalIP                  string
 }
 
 func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string) (map[string]string, error) {
@@ -228,7 +230,38 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		args.Format, args.Network, args.Subnet, *region, args.ComputeServiceAccount, args.QemuImgDockerImage)
 
 	workflowProvider := func() (*daisy.Workflow, error) {
-		return daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
+		wf, err := daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
+		if err != nil {
+			return nil, err
+		}
+		if args.ExternalIP != "" {
+			for _, step := range wf.Steps {
+				if step.CreateInstances != nil {
+					if strings.EqualFold(args.ExternalIP, "none") {
+						daisy.UpdateInstanceNoExternalIP(step)
+					} else {
+						// Ephemeral or Specific IP
+						isEphemeral := strings.EqualFold(args.ExternalIP, "ephemeral")
+						for _, instance := range step.CreateInstances.Instances {
+							if instance.Instance.NetworkInterfaces != nil {
+								for _, networkInterface := range instance.Instance.NetworkInterfaces {
+									if networkInterface.AccessConfigs == nil {
+										networkInterface.AccessConfigs = []*computeV1.AccessConfig{{Type: "ONE_TO_ONE_NAT"}}
+									}
+									if isEphemeral && len(networkInterface.AccessConfigs) > 0 {
+										networkInterface.AccessConfigs[0].NatIP = ""
+									}
+									if !isEphemeral && len(networkInterface.AccessConfigs) > 0 {
+										networkInterface.AccessConfigs[0].NatIP = args.ExternalIP
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return wf, nil
 	}
 
 	env := daisyutils.EnvironmentSettings{
