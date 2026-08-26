@@ -19,6 +19,7 @@ import (
 	"context"
 	"log"
 	"math"
+	"net"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -85,7 +86,20 @@ type ImageExportRequest struct {
 	ExternalIP                  string
 }
 
-func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string) (map[string]string, error) {
+func validateExternalIP(externalIP string) error {
+	if externalIP == "" {
+		return nil
+	}
+	if strings.EqualFold(externalIP, "none") || strings.EqualFold(externalIP, "ephemeral") {
+		return nil
+	}
+	if net.ParseIP(externalIP) != nil {
+		return nil
+	}
+	return daisy.Errf("External IP must be 'ephemeral', 'none', or a valid IP address")
+}
+
+func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string, externalIP string) (map[string]string, error) {
 	if err := validation.ValidateStringFlagNotEmpty(destinationURI, DestinationURIFlagKey); err != nil {
 		return nil, err
 	}
@@ -93,6 +107,10 @@ func validateAndParseFlags(destinationURI string, sourceImage string, sourceDisk
 		SourceImageFlagKey:        sourceImage,
 		SourceDiskSnapshotFlagKey: sourceDiskSnapshot,
 	}); err != nil {
+		return nil, err
+	}
+
+	if err := validateExternalIP(externalIP); err != nil {
 		return nil, err
 	}
 
@@ -179,7 +197,7 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 // Run runs export workflow.
 func Run(logger logging.Logger, args *ImageExportRequest) error {
 
-	userLabels, err := validateAndParseFlags(args.DestinationURI, args.SourceImage, args.SourceDiskSnapshot, args.Labels)
+	userLabels, err := validateAndParseFlags(args.DestinationURI, args.SourceImage, args.SourceDiskSnapshot, args.Labels, args.ExternalIP)
 	if err != nil {
 		return err
 	}
@@ -234,33 +252,7 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		if err != nil {
 			return nil, err
 		}
-		if args.ExternalIP != "" {
-			for _, step := range wf.Steps {
-				if step.CreateInstances != nil {
-					if strings.EqualFold(args.ExternalIP, "none") {
-						daisy.UpdateInstanceNoExternalIP(step)
-					} else {
-						// Ephemeral or Specific IP
-						isEphemeral := strings.EqualFold(args.ExternalIP, "ephemeral")
-						for _, instance := range step.CreateInstances.Instances {
-							if instance.Instance.NetworkInterfaces != nil {
-								for _, networkInterface := range instance.Instance.NetworkInterfaces {
-									if networkInterface.AccessConfigs == nil {
-										networkInterface.AccessConfigs = []*computeV1.AccessConfig{{Type: "ONE_TO_ONE_NAT"}}
-									}
-									if isEphemeral && len(networkInterface.AccessConfigs) > 0 {
-										networkInterface.AccessConfigs[0].NatIP = ""
-									}
-									if !isEphemeral && len(networkInterface.AccessConfigs) > 0 {
-										networkInterface.AccessConfigs[0].NatIP = args.ExternalIP
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		updateInstanceExternalIP(wf, args.ExternalIP)
 		return wf, nil
 	}
 
@@ -297,6 +289,40 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		TargetsSizeGb: []int64{stringutils.SafeStringToInt(values[targetSizeGBKey])},
 	})
 	return err
+}
+
+func updateInstanceExternalIP(wf *daisy.Workflow, externalIP string) {
+	if externalIP == "" {
+		return
+	}
+	for _, step := range wf.Steps {
+		if step.IncludeWorkflow != nil && step.IncludeWorkflow.Workflow != nil {
+			updateInstanceExternalIP(step.IncludeWorkflow.Workflow, externalIP)
+			continue
+		}
+		if step.CreateInstances == nil {
+			continue
+		}
+
+		if strings.EqualFold(externalIP, "none") {
+			daisy.UpdateInstanceNoExternalIP(step)
+			continue
+		}
+
+		targetIP := externalIP
+		if strings.EqualFold(targetIP, "ephemeral") {
+			targetIP = ""
+		}
+
+		for _, instance := range step.CreateInstances.Instances {
+			for _, nic := range instance.Instance.NetworkInterfaces {
+				if len(nic.AccessConfigs) == 0 {
+					nic.AccessConfigs = []*computeV1.AccessConfig{{Type: "ONE_TO_ONE_NAT"}}
+				}
+				nic.AccessConfigs[0].NatIP = targetIP
+			}
+		}
+	}
 }
 
 // validateImageExists checks whether imageName exists in the specified project.
