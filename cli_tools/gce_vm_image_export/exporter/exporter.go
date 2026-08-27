@@ -19,6 +19,7 @@ import (
 	"context"
 	"log"
 	"math"
+	"net"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -26,6 +27,7 @@ import (
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 	daisyCompute "github.com/GoogleCloudPlatform/compute-daisy/compute"
+    computeV1 "google.golang.org/api/compute/v1"
 	"google.golang.org/api/option"
 
 	"github.com/GoogleCloudPlatform/compute-image-import/cli_tools/common/utils/compute"
@@ -81,9 +83,23 @@ type ImageExportRequest struct {
 	NestedVirtualizationEnabled bool
 	WorkerMachineSeries         []string
 	QemuImgDockerImage          string
+	ExternalIP                  string
 }
 
-func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string) (map[string]string, error) {
+func validateExternalIP(externalIP string) error {
+	if externalIP == "" {
+		return nil
+	}
+	if strings.EqualFold(externalIP, "none") || strings.EqualFold(externalIP, "ephemeral") {
+		return nil
+	}
+	if net.ParseIP(externalIP) != nil {
+		return nil
+	}
+	return daisy.Errf("External IP must be 'ephemeral', 'none', or a valid IP address")
+}
+
+func validateAndParseFlags(destinationURI string, sourceImage string, sourceDiskSnapshot string, labels string, externalIP string) (map[string]string, error) {
 	if err := validation.ValidateStringFlagNotEmpty(destinationURI, DestinationURIFlagKey); err != nil {
 		return nil, err
 	}
@@ -91,6 +107,10 @@ func validateAndParseFlags(destinationURI string, sourceImage string, sourceDisk
 		SourceImageFlagKey:        sourceImage,
 		SourceDiskSnapshotFlagKey: sourceDiskSnapshot,
 	}); err != nil {
+		return nil, err
+	}
+
+	if err := validateExternalIP(externalIP); err != nil {
 		return nil, err
 	}
 
@@ -177,7 +197,7 @@ func buildDaisyVars(destinationURI string, sourceImage string, sourceDiskSnapsho
 // Run runs export workflow.
 func Run(logger logging.Logger, args *ImageExportRequest) error {
 
-	userLabels, err := validateAndParseFlags(args.DestinationURI, args.SourceImage, args.SourceDiskSnapshot, args.Labels)
+	userLabels, err := validateAndParseFlags(args.DestinationURI, args.SourceImage, args.SourceDiskSnapshot, args.Labels, args.ExternalIP)
 	if err != nil {
 		return err
 	}
@@ -228,7 +248,12 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		args.Format, args.Network, args.Subnet, *region, args.ComputeServiceAccount, args.QemuImgDockerImage)
 
 	workflowProvider := func() (*daisy.Workflow, error) {
-		return daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
+		wf, err := daisy.NewFromFile(getWorkflowPath(args.Format, args.CurrentExecutablePath))
+		if err != nil {
+			return nil, err
+		}
+		updateInstanceExternalIP(wf, args.ExternalIP)
+		return wf, nil
 	}
 
 	env := daisyutils.EnvironmentSettings{
@@ -264,6 +289,40 @@ func Run(logger logging.Logger, args *ImageExportRequest) error {
 		TargetsSizeGb: []int64{stringutils.SafeStringToInt(values[targetSizeGBKey])},
 	})
 	return err
+}
+
+func updateInstanceExternalIP(wf *daisy.Workflow, externalIP string) {
+	if externalIP == "" {
+		return
+	}
+	for _, step := range wf.Steps {
+		if step.IncludeWorkflow != nil && step.IncludeWorkflow.Workflow != nil {
+			updateInstanceExternalIP(step.IncludeWorkflow.Workflow, externalIP)
+			continue
+		}
+		if step.CreateInstances == nil {
+			continue
+		}
+
+		if strings.EqualFold(externalIP, "none") {
+			daisy.UpdateInstanceNoExternalIP(step)
+			continue
+		}
+
+		targetIP := externalIP
+		if strings.EqualFold(targetIP, "ephemeral") {
+			targetIP = ""
+		}
+
+		for _, instance := range step.CreateInstances.Instances {
+			for _, nic := range instance.Instance.NetworkInterfaces {
+				if len(nic.AccessConfigs) == 0 {
+					nic.AccessConfigs = []*computeV1.AccessConfig{{Type: "ONE_TO_ONE_NAT"}}
+				}
+				nic.AccessConfigs[0].NatIP = targetIP
+			}
+		}
+	}
 }
 
 // validateImageExists checks whether imageName exists in the specified project.

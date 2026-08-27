@@ -50,6 +50,8 @@ var (
 	nestedVirtualizationEnabled = flag.Bool("enable_nested_virtualization", true, "When enabled, temporary worker VMs will be created with enabled nested virtualization. See https://cloud.google.com/compute/docs/instances/nested-virtualization/enabling for details.")
 	workerMachineSeries         flags.StringArrayFlag
 	qemuImgDockerImage          = flag.String("qemu_img_docker_image", "", "Override the default qemu-img container image tag used in the workflow.")
+	externalIP                  = flag.String("external_ip", "", "External IP to use for the image export. Can be 'ephemeral', 'none', or a specific reserved IP. If not specified, ephemeral is used.")
+
 )
 
 func init() {
@@ -84,6 +86,7 @@ func exportEntry() (service.Loggable, error) {
 		WorkerMachineSeries:         *&workerMachineSeries,
 		NestedVirtualizationEnabled: *nestedVirtualizationEnabled,
 		QemuImgDockerImage:          *qemuImgDockerImage,
+		ExternalIP:                  *externalIP,
 	}
 
 	err := exporter.Run(logger, args)

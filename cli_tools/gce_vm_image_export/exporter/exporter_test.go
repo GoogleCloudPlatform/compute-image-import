@@ -27,7 +27,7 @@ import (
 )
 
 var (
-	destinationURI, sourceImage, sourceDiskSnapshot, format, network, subnet, labels string
+	destinationURI, sourceImage, sourceDiskSnapshot, format, network, subnet, labels, externalIP string
 )
 
 func TestGetWorkflowPathWithoutFormatConversion(t *testing.T) {
@@ -39,10 +39,10 @@ func TestGetWorkflowPathWithoutFormatConversion(t *testing.T) {
 	}
 }
 
-func TestGetWorkflowPathWithFormatConversion(t *testing.T) {
+func TestGetWorkflowPathTarGz(t *testing.T) {
 	resetArgs()
-	workflow := getWorkflowPath("vmdk", "")
-	expectedWorkflow := path.ToWorkingDir(WorkflowDir+ExportAndConvertWorkflow, "")
+	workflow := getWorkflowPath("tar.gz", "")
+	expectedWorkflow := path.ToWorkingDir(WorkflowDir+ExportTarWorkflow, "")
 	if workflow != expectedWorkflow {
 		t.Errorf("%v != %v", workflow, expectedWorkflow)
 	}
@@ -69,7 +69,7 @@ func TestFlagsDestinationUriNotProvided(t *testing.T) {
 }
 
 func assertErrorOnValidate(errorMsg string, t *testing.T) {
-	if _, err := validateAndParseFlags(destinationURI, sourceImage, sourceDiskSnapshot, labels); err == nil {
+	if _, err := validateAndParseFlags(destinationURI, sourceImage, sourceDiskSnapshot, labels, externalIP); err == nil {
 		t.Error(errorMsg)
 	}
 }
@@ -86,13 +86,13 @@ func TestBuildDaisyVarsWithoutFormatConversion(t *testing.T) {
 		ws+network+ws,
 		ws+subnet+ws,
 		ws+"aRegion"+ws,
-		"")
+		"", "")
 
 	assert.Equal(t, "global/images/anImage", got["source_image"])
 	assert.Equal(t, "gs://bucket/exported_image", got["destination"])
 	assert.Equal(t, "global/networks/aNetwork", got["export_network"])
 	assert.Equal(t, "regions/aRegion/subnetworks/aSubnet", got["export_subnet"])
-	assert.Equal(t, "16", got["export_instance_disk_size"])
+	assert.Equal(t, "31", got["export_instance_disk_size"])
 	assert.Equal(t, 5, len(got))
 }
 
@@ -108,14 +108,14 @@ func TestBuildDaisyVarsWithFormatConversion(t *testing.T) {
 		ws+network+ws,
 		ws+subnet+ws,
 		ws+"aRegion"+ws,
-		"")
+		"", "")
 
 	assert.Equal(t, "global/images/anImage", got["source_image"])
 	assert.Equal(t, "gs://bucket/exported_image", got["destination"])
 	assert.Equal(t, "vmdk", got["format"])
 	assert.Equal(t, "global/networks/aNetwork", got["export_network"])
 	assert.Equal(t, "regions/aRegion/subnetworks/aSubnet", got["export_subnet"])
-	assert.Equal(t, "5250", got["export_instance_disk_size"])
+	assert.Equal(t, "10250", got["export_instance_disk_size"])
 	assert.Equal(t, 6, len(got))
 }
 
@@ -131,7 +131,7 @@ func TestBuildDaisyVarsWithSimpleImageName(t *testing.T) {
 		ws+network+ws,
 		ws+subnet+ws,
 		ws+"aRegion"+ws,
-		"")
+		"", "")
 
 	assert.Equal(t, "global/images/anImage", got["source_image"])
 }
@@ -148,7 +148,7 @@ func TestBuildDaisyVarsWithSimpleSnapshotName(t *testing.T) {
 		ws+network+ws,
 		ws+subnet+ws,
 		ws+"aRegion"+ws,
-		"")
+		"", "")
 
 	assert.Equal(t, "global/snapshots/aSnapshot", got["source_disk_snapshot"])
 }
@@ -158,7 +158,7 @@ func TestBuildDaisyVarsWithComputeServiceAccount(t *testing.T) {
 	ws := "\t \r\n\f\u0085\u00a0\u2000\u3000"
 	got := buildDaisyVars(
 		"", "", "", 0, "", "", "", "",
-		ws+"account1"+ws)
+		ws+"account1"+ws, "")
 
 	assert.Equal(t, "account1", got["compute_service_account"])
 }
@@ -168,7 +168,7 @@ func TestBuildDaisyVarsWithoutComputeServiceAccount(t *testing.T) {
 	ws := "\t \r\n\f\u0085\u00a0\u2000\u3000"
 	got := buildDaisyVars(
 		"", "", "", 0, "", "", "", "",
-		ws)
+		ws, "")
 
 	_, hasVar := got["compute_service_account"]
 	assert.False(t, hasVar)
@@ -255,4 +255,54 @@ func resetArgs() {
 	network = "aNetwork"
 	subnet = "aSubnet"
 	labels = "userkey1=uservalue1,userkey2=uservalue2"
+	externalIP = ""
+}
+func TestValidateExternalIP(t *testing.T) {
+	tests := []struct {
+		name       string
+		externalIP string
+		wantErr    bool
+	}{
+		{
+			name:       "empty",
+			externalIP: "",
+			wantErr:    false,
+		},
+		{
+			name:       "none",
+			externalIP: "none",
+			wantErr:    false,
+		},
+		{
+			name:       "ephemeral",
+			externalIP: "ephemeral",
+			wantErr:    false,
+		},
+		{
+			name:       "valid IP",
+			externalIP: "192.168.1.1",
+			wantErr:    false,
+		},
+		{
+			name:       "invalid IP",
+			externalIP: "invalid-ip",
+			wantErr:    true,
+		},
+		{
+			name:       "case insensitive none",
+			externalIP: "None",
+			wantErr:    false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			resetArgs()
+			externalIP = tc.externalIP
+			_, err := validateAndParseFlags(destinationURI, sourceImage, sourceDiskSnapshot, labels, externalIP)
+			if (err != nil) != tc.wantErr {
+				t.Fatalf("validateAndParseFlags(..., externalIP = %q) err = %v, wantErr = %t", tc.externalIP, err, tc.wantErr)
+			}
+		})
+	}
 }
