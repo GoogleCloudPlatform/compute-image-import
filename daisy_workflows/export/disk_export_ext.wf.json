@@ -103,6 +103,19 @@
         }
       ]
     },
+    "wait-for-udev-rule-${NAME}": {
+      "WaitForInstancesSignal": [
+        {
+          "Name": "inst-${NAME}",
+          "SerialOutput": {
+            "Port": 1,
+            "SuccessMatch": "GCEExport: <serial-output key:'udev-rule' value:'created'>",
+            "FailureMatch": "ExportFailed:",
+            "StatusMatch": "GCEExport:"
+          }
+        }
+      ]
+    },
     "attach-source-disk-${NAME}": {
       "AttachDisks": [
         {
@@ -143,7 +156,8 @@
   },
   "Dependencies": {
     "run-${NAME}": ["setup-disks"],
-    "attach-source-disk-${NAME}": ["run-${NAME}"],
+    "wait-for-udev-rule-${NAME}": ["run-${NAME}"],
+    "attach-source-disk-${NAME}": ["wait-for-udev-rule-${NAME}"],
     "wait-for-inst-${NAME}": ["attach-source-disk-${NAME}"],
     "delete-inst": ["wait-for-inst-${NAME}"],
     "copy-image-object": ["wait-for-inst-${NAME}"]

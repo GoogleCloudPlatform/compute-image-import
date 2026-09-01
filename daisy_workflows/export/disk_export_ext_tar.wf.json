@@ -57,8 +57,7 @@
         {
           "Name": "inst-${NAME}",
           "Disks": [
-            {"Source": "disk-${NAME}-os"},
-            {"Source": "${source_disk}", "Mode": "READ_ONLY"}
+            {"Source": "disk-${NAME}-os"}
           ],
           "MachineType": "n1-highcpu-4",
           "Metadata": {
@@ -84,6 +83,29 @@
             }
           ],
           "AutoDelete": true
+        }
+      ]
+    },
+    "wait-for-udev-rule-${NAME}": {
+      "WaitForInstancesSignal": [
+        {
+          "Name": "inst-${NAME}",
+          "SerialOutput": {
+            "Port": 1,
+            "SuccessMatch": "GCEExport: <serial-output key:'udev-rule' value:'created'>",
+            "FailureMatch": "ExportFailed:",
+            "StatusMatch": "GCEExport:"
+          }
+        }
+      ]
+    },
+    "attach-source-disk-${NAME}": {
+      "AttachDisks": [
+        {
+          "Source": "${source_disk}",
+          "Instance": "inst-${NAME}",
+          "Mode": "READ_ONLY",
+          "DeviceName": "disk-image-export-ext"
         }
       ]
     },
@@ -117,7 +139,9 @@
   },
   "Dependencies": {
     "run-${NAME}": ["setup-disks"],
-    "wait-for-inst-${NAME}": ["run-${NAME}"],
+    "wait-for-udev-rule-${NAME}": ["run-${NAME}"],
+    "attach-source-disk-${NAME}": ["wait-for-udev-rule-${NAME}"],
+    "wait-for-inst-${NAME}": ["attach-source-disk-${NAME}"],
     "delete-inst": ["wait-for-inst-${NAME}"],
     "copy-image-object": ["wait-for-inst-${NAME}"]
   }
