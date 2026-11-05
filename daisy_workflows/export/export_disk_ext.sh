@@ -12,6 +12,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+exec > /dev/console 2>&1
+
 function serialOutputPrefixedKeyValue() {
   stdbuf -oL echo "$1: <serial-output key:'$2' value:'$3'>"
 }

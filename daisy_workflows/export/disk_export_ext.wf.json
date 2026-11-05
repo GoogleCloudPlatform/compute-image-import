@@ -15,7 +15,7 @@
       "Description": "Format to export disk as"
     },
     "export_instance_disk_image": {
-      "Value": "projects/cos-cloud/global/images/family/cos-stable",
+      "Value": "projects/cos-cloud/global/images/family/cos-133-lts",
       "Description": "image to use for the exporter instance"
     },
     "export_instance_disk_size": {
