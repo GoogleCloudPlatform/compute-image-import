@@ -18,6 +18,8 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"sync/atomic"
+	"time"
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
@@ -113,6 +115,16 @@ type defaultDaisyWorker struct {
 
 // Run runs the daisy workflow with the supplied vars.
 func (w *defaultDaisyWorker) Run(vars map[string]string) (err error) {
+	stopTimer, timedOut := w.cancelAfterTimeout()
+	defer stopTimer()
+	defer func() {
+		// Daisy returns no error for a workflow that was canceled before or
+		// between its steps. Without this, a run that was cut short by the
+		// timeout would be reported as a success.
+		if err == nil {
+			err = timedOut()
+		}
+	}()
 	var wf *daisy.Workflow
 	for attempts := 0; attempts <= 1; attempts++ {
 		if wf, err = w.workflowProvider(); err != nil {
@@ -130,6 +142,37 @@ func (w *defaultDaisyWorker) Run(vars map[string]string) (err error) {
 	}
 	w.finishedWf = wf
 	return err
+}
+
+// cancelAfterTimeout cancels the worker once the timeout from the environment
+// settings has elapsed since the call. Daisy applies that timeout to each step
+// separately, so without this the worker as a whole (including setup steps and
+// retries) can outlive the timeout, and be killed by its caller before Daisy has
+// a chance to clean up the resources it created.
+//
+// The returned stop function stops the timer. The returned timedOut function
+// returns an error if the timer has fired, and nil otherwise.
+func (w *defaultDaisyWorker) cancelAfterTimeout() (stop func(), timedOut func() error) {
+	timeout, err := time.ParseDuration(w.env.Timeout)
+	if err != nil || timeout <= 0 {
+		// No timeout, or one that Daisy will reject when validating the workflow.
+		return func() {}, func() error { return nil }
+	}
+	// The wording matches the timeout errors of Daisy steps and of the import tool.
+	reason := fmt.Sprintf("did not complete within the specified timeout of %v", timeout)
+	var fired atomic.Bool
+	timer := time.AfterFunc(timeout, func() {
+		fired.Store(true)
+		w.Cancel(reason)
+	})
+	stop = func() { timer.Stop() }
+	timedOut = func() error {
+		if fired.Load() {
+			return fmt.Errorf("workflow canceled: %s", reason)
+		}
+		return nil
+	}
+	return stop, timedOut
 }
 
 // checkIfCancelled determines whether the workflow has been cancelled internally,
