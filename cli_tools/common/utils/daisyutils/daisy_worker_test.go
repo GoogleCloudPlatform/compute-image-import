@@ -17,6 +17,7 @@ package daisyutils
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"cloud.google.com/go/storage"
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
@@ -426,4 +427,98 @@ func configWorkflowForUnitTesting(t *testing.T, wf *daisy.Workflow, mockCtrl *go
 	wf.DisableCloudLogging()
 	wf.DisableCloudLogging()
 	wf.DisableGCSLogging()
+}
+
+func newWorkerWithTimeout(timeout string) *defaultDaisyWorker {
+	return NewDaisyWorker(func() (*daisy.Workflow, error) {
+		return daisy.New(), nil
+	}, EnvironmentSettings{
+		ExecutionID: "b1234",
+		Tool:        Tool{ResourceLabelName: "unit-test"},
+		Timeout:     timeout,
+	}, logging.NewToolLogger("test")).(*defaultDaisyWorker)
+}
+
+func Test_DaisyWorkerCancelAfterTimeout_CancelsWhenTimeoutElapses(t *testing.T) {
+	worker := newWorkerWithTimeout("10ms")
+	stop, _ := worker.cancelAfterTimeout()
+	defer stop()
+
+	select {
+	case reason := <-worker.cancel:
+		assert.Equal(t, "did not complete within the specified timeout of 10ms", reason)
+	case <-time.After(10 * time.Second):
+		t.Fatal("worker was not canceled after its timeout elapsed")
+	}
+}
+
+func Test_DaisyWorkerCancelAfterTimeout_DoesntCancelWhenStopped(t *testing.T) {
+	worker := newWorkerWithTimeout("50ms")
+	stop, _ := worker.cancelAfterTimeout()
+	stop()
+
+	select {
+	case reason := <-worker.cancel:
+		t.Fatalf("worker was canceled after the timer was stopped: %q", reason)
+	case <-time.After(250 * time.Millisecond):
+	}
+}
+
+func Test_DaisyWorkerCancelAfterTimeout_DoesntCancelWithoutValidTimeout(t *testing.T) {
+	for _, timeout := range []string{"", "not-a-duration", "0s", "-5s"} {
+		t.Run(timeout, func(t *testing.T) {
+			worker := newWorkerWithTimeout(timeout)
+			stop, _ := worker.cancelAfterTimeout()
+			defer stop()
+
+			select {
+			case reason := <-worker.cancel:
+				t.Fatalf("worker was canceled without a valid timeout: %q", reason)
+			case <-time.After(50 * time.Millisecond):
+			}
+		})
+	}
+}
+
+func Test_DaisyWorkerRun_FailsWhenTimeoutElapsesBeforeRun(t *testing.T) {
+	worker := newWorkerWithTimeout("1ns")
+	stop, _ := worker.cancelAfterTimeout()
+	defer stop()
+	// Wait for the timer to fire so that Run observes the cancellation.
+	deadline := time.Now().Add(10 * time.Second)
+	for len(worker.cancel) == 0 && time.Now().Before(deadline) {
+		time.Sleep(time.Millisecond)
+	}
+	assert.EqualError(t, worker.Run(map[string]string{}), "workflow canceled: did not complete within the specified timeout of 1ns")
+}
+
+func Test_DaisyWorkerRun_FailsWhenTimeoutElapsesDuringRun(t *testing.T) {
+	wf := daisy.New()
+
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	env := EnvironmentSettings{
+		Project:            "lucky-lemur",
+		Zone:               "us-west1-c",
+		GCSPath:            "gs://test",
+		Timeout:            "20ms",
+		DaisyLogLinePrefix: "import-image",
+		ExecutionID:        "b1234",
+		Tool:               Tool{ResourceLabelName: "unit-test"},
+	}
+	configWorkflowForUnitTesting(t, wf, mockCtrl, env)
+
+	// The hook runs after the worker has checked for cancellation, so sleeping
+	// here makes the timeout elapse while the run is in progress.
+	slowHook := mocks.NewMockWorkflowPreHook(mockCtrl)
+	slowHook.EXPECT().PreRunHook(wf).DoAndReturn(func(*daisy.Workflow) error {
+		time.Sleep(200 * time.Millisecond)
+		return nil
+	})
+
+	worker := NewDaisyWorker(func() (*daisy.Workflow, error) {
+		return wf, nil
+	}, env, logging.NewToolLogger("test"), slowHook)
+	assert.EqualError(t, worker.Run(map[string]string{}), "workflow canceled: did not complete within the specified timeout of 20ms")
 }

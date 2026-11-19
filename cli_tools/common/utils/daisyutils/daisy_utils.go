@@ -23,6 +23,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"syscall"
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
 
@@ -389,12 +390,35 @@ func PostProcessDErrorForNetworkFlag(action string, err error, network string, w
 	}
 }
 
+// cancelSignals are the OS signals that cause a running workflow to be canceled.
+// SIGTERM is included since container runtimes (such as Cloud Build, when a build
+// times out or is canceled) send SIGTERM, wait for a short grace period, and then
+// send SIGKILL. Without trapping SIGTERM, the process dies before Daisy can clean
+// up the resources it created.
+var cancelSignals = []os.Signal{os.Interrupt, syscall.SIGTERM}
+
 // RunWorkflowWithCancelSignal runs a Daisy workflow, and allows for cancellation from two sources:
-//  1. The user types Ctrl-C on their keyboard.
+//  1. The process receives SIGINT (eg: the user types Ctrl-C on their keyboard) or
+//     SIGTERM (eg: Cloud Build times out or cancels the build).
 //  2. The caller sends a cancellation reason on the cancel channel (or closes it).
 func RunWorkflowWithCancelSignal(w *daisy.Workflow, cancel <-chan string) error {
+	// Stop listening once the workflow has finished, so that a signal arriving
+	// while no workflow is running terminates the process as usual, rather than
+	// being swallowed.
+	stop := cancelWorkflowOnSignal(w, cancel)
+	defer stop()
+	// Daisy doesn't support cancellation through context; if the context that's passed in
+	// is cancelled, then all of its clients die, causing confusing errors and resources
+	// being left that should have been cleaned up.
+	return w.Run(context.Background())
+}
+
+// cancelWorkflowOnSignal cancels the workflow when the process receives one of
+// cancelSignals, or when the caller sends on (or closes) the cancel channel. The
+// returned function stops the delivery of OS signals to the listener.
+func cancelWorkflowOnSignal(w *daisy.Workflow, cancel <-chan string) (stop func()) {
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, cancelSignals...)
 	go func(w *daisy.Workflow) {
 		select {
 		case reason := <-cancel:
@@ -404,17 +428,18 @@ func RunWorkflowWithCancelSignal(w *daisy.Workflow, cancel <-chan string) error 
 				w.CancelWorkflow()
 			}
 			break
-		case <-c:
-			w.LogWorkflowInfo("\nCtrl-C caught, sending cancel signal to %q...\n", w.Name)
+		case sig := <-c:
+			// The logger is created when the workflow starts running; skip logging
+			// if the signal arrives before then.
+			if w.Logger != nil {
+				w.LogWorkflowInfo("\nSignal %q caught, sending cancel signal to %q...\n", sig, w.Name)
+			}
 			w.CancelWorkflow()
 			break
 		case <-w.Cancel:
 		}
 	}(w)
-	// Daisy doesn't support cancellation through context; if the context that's passed in
-	// is cancelled, then all of its clients die, causing confusing errors and resources
-	// being left that should have been cleaned up.
-	return w.Run(context.Background())
+	return func() { signal.Stop(c) }
 }
 
 // NewStep creates a new step for the workflow along with dependencies.

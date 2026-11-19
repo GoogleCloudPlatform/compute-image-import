@@ -15,16 +15,21 @@
 package daisyutils
 
 import (
+	"bytes"
 	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"path"
 	"reflect"
 	"sort"
 	"strings"
+	"syscall"
 	"testing"
+	"time"
 
 	daisy "github.com/GoogleCloudPlatform/compute-daisy"
+	"github.com/GoogleCloudPlatform/compute-image-import/common/logging"
 	"github.com/stretchr/testify/assert"
 	computeBeta "google.golang.org/api/compute/v0.beta"
 	"google.golang.org/api/compute/v1"
@@ -572,4 +577,57 @@ func randomString(n int) string {
 		b[i] = letter[rand.Intn(len(letter))]
 	}
 	return string(b)
+}
+
+func Test_CancelSignals_IncludeInterruptAndSIGTERM(t *testing.T) {
+	assert.ElementsMatch(t, []os.Signal{os.Interrupt, syscall.SIGTERM}, cancelSignals)
+}
+
+func Test_CancelWorkflowOnSignal_CancelsWorkflowOnOSSignal(t *testing.T) {
+	// Some test runners install their own SIGTERM handler that aborts the test
+	// binary, so SIGUSR1 is used to exercise the listener.
+	sig := syscall.SIGUSR1
+	originalSignals := cancelSignals
+	cancelSignals = []os.Signal{sig}
+	defer func() { cancelSignals = originalSignals }()
+
+	for _, withLogger := range []bool{true, false} {
+		t.Run(fmt.Sprintf("withLogger=%v", withLogger), func(t *testing.T) {
+			w := daisy.New()
+			var logs bytes.Buffer
+			if withLogger {
+				w.Logger = logging.AsDaisyLogger(log.New(&logs, "", 0))
+			}
+			stop := cancelWorkflowOnSignal(w, make(chan string))
+			defer stop()
+
+			if err := syscall.Kill(os.Getpid(), sig); err != nil {
+				t.Fatalf("syscall.Kill(%v) failed: %v", sig, err)
+			}
+
+			select {
+			case <-w.Cancel:
+			case <-time.After(10 * time.Second):
+				t.Fatalf("workflow was not canceled after receiving %v", sig)
+			}
+			if withLogger && !strings.Contains(logs.String(), sig.String()) {
+				t.Errorf("logs = %q, want mention of signal %q", logs.String(), sig)
+			}
+		})
+	}
+}
+
+func Test_CancelWorkflowOnSignal_CancelsWorkflowOnCancelChannel(t *testing.T) {
+	w := daisy.New()
+	cancel := make(chan string, 1)
+	stop := cancelWorkflowOnSignal(w, cancel)
+	defer stop()
+
+	cancel <- "timed out"
+
+	select {
+	case <-w.Cancel:
+	case <-time.After(10 * time.Second):
+		t.Fatal("workflow was not canceled after sending on the cancel channel")
+	}
 }
