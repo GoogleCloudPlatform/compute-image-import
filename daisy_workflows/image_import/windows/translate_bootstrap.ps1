@@ -207,10 +207,10 @@ try {
   $daisy_sources = Get-MetadataValue -key 'daisy-sources-path'
 
   Write-Output 'TranslateBootstrap: Pulling components.'
-  & 'gsutil' -m cp -r "${daisy_sources}/components/*" $script:components_dir
+  & 'gcloud' storage cp --recursive "${daisy_sources}/components/*" $script:components_dir
 
   Write-Output 'TranslateBootstrap: Pulling drivers.'
-  & 'gsutil' -m cp -r "${daisy_sources}/drivers/*" $driver_dir
+  & 'gcloud' storage cp --recursive "${daisy_sources}/drivers/*" $driver_dir
 
   Copy-Item "${driver_dir}\netkvmco.dll" "${script:os_drive}\Windows\System32\netkvmco.dll" -Verbose
 
